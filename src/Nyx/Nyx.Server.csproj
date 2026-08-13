@@ -112,7 +112,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nyx.Monsters\Nyx.Monsters.csproj" />
-    <ProjectReference Include="..\..\Modules\Nyx.AttackEngine\Nyx.AttackEngine.csproj" />
+    <ProjectReference Include="..\..\Modules\Nyx.Combat\Nyx.Combat.csproj" />
     <ProjectReference Include="..\..\Modules\Nyx.Inventory\Nyx.Inventory.csproj" />
     <ProjectReference Include="..\..\Modules\Nyx.AI\Nyx.AI.csproj" />
     <ProjectReference Include="..\..\Modules\Nyx.Brain\Nyx.Brain.csproj" />

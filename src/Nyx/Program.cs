@@ -392,10 +392,9 @@ public sealed class Program
         // Monster system (DI + tuples + lazy map loading, DB-backed repository)
         services.AddMonsterSystem();
 
-        // Attack engine (Nyx.AttackEngine): generic validation → target resolution
-        // → damage → post-effect pipeline, fed from cq_magictype.
-        services.AddAttackEngine();
-        services.AddSingleton<Game.Attacking.AttackEngineAdapter>();
+        // Combat engine (Nyx.Combat): validation → targeting → scenario damage →
+        // observers, with skill data read from cq_magictype.
+        services.AddCombat();
         services.AddSingleton<Nyx.Monsters.Services.IMonsterRepository, Database.Monsters.PostgresMonsterRepository>();
         services.AddSingleton<Nyx.Monsters.Services.IWorldView, Game.Monsters.ServerWorldView>();
         services.AddSingleton<Nyx.Monsters.Services.IMonsterNetworkService, Game.Monsters.ServerMonsterNetworkService>();
@@ -417,22 +416,32 @@ public sealed class Program
         DataHolder.Configure(AbstractDbContext.Configuration);
         DataHolder.ReadStats();
 
-        // Nyx.AttackEngine: seed cq_magictype (if empty) from the legacy text dump,
-        // then eagerly build the engine so skills load from the DB at startup
-        // (regardless of the UseAttackEngine flag — that only gates live combat).
+        // Nyx.Combat: load the skill catalog from cq_magictype and build the engine
+        // eagerly, regardless of the UseCombatEngine flag — that flag only gates
+        // whether the engine authors live damage, and a boot-time load surfaces a
+        // bad table now rather than on the first punch thrown.
         try
         {
-            //Nyx.Server.Database.SkillDataSeeder.EnsureSeededAsync(CancellationToken.None)
-            //    .GetAwaiter().GetResult();
+            var catalog = ApplicationHost!.Services
+                .GetRequiredService<Nyx.Combat.Skills.SkillCatalogHost>();
 
-            var engineHolder = ApplicationHost!.Services
-                .GetRequiredService<Nyx.Server.Extensions.AttackEngineHolder>();
-            Log.Information("AttackEngine: built at startup — {SkillCount} skills loaded from cq_magictype",
-                engineHolder.Cache.Count);
+            catalog.ReloadAsync(CancellationToken.None).AsTask().GetAwaiter().GetResult();
+
+            // Touch the engine so a misconfiguration throws here, at startup.
+            _ = ApplicationHost.Services.GetRequiredService<Nyx.Combat.Engine.CombatEngine>();
+
+            var combatCfg = ApplicationHost.Services.GetRequiredService<Nyx.Server.CombatConfiguration>();
+
+            Log.Information(
+                "Nyx.Combat: {SkillCount} skill ranks across {TypeCount} skills loaded from cq_magictype (engine {State})",
+                catalog.Count, catalog.TypeCount, combatCfg.UseCombatEngine ? "ACTIVE" : "standby");
+
+            if (catalog.Count == 0)
+                Log.Warning("Nyx.Combat: cq_magictype is empty — skill casts will fall back to the legacy path");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "AttackEngine: startup build/seed failed — skills may not resolve from cq_magictype");
+            Log.Error(ex, "Nyx.Combat: startup load failed — skills will not resolve from cq_magictype");
         }
 
         // Nyx.Threading must be ready before World timers and packet routing
@@ -657,6 +666,10 @@ public sealed class Program
             // Start processing packets from the session
             _ = ProcessAuthSessionPacketsAsync(session);
         };
+
+        // Socket teardown -> auth-state teardown. This subscription was missing, so
+        // AuthServer_OnClientDisconnect was dead code and auth sessions were never released.
+        authService.OnSessionDisconnected += AuthServer_OnClientDisconnect;
         
         // Initialize Game Network Service  
         var gameService = ApplicationHost!.Services.GetRequiredService<Nyx.Network.GameNetworkService>();
@@ -669,6 +682,16 @@ public sealed class Program
             // Start processing packets from the session
             _ = ProcessGameSessionPacketsAsync(session);
         };
+
+        // Socket teardown -> game-state teardown.
+        //
+        // This subscription was missing, which made GameServer_OnClientDisconnect dead code:
+        // when a connection dropped, GameClient.Disconnect() never ran, so the player was never
+        // removed from Kernel.GamePool or from other players' screens, and -- worst of all --
+        // their character was never saved. NetworkService raises this from the finally block of
+        // the per-connection handler, so it fires for every termination path (clean close,
+        // socket error, idle reap, and server shutdown).
+        gameService.OnSessionDisconnected += GameServer_OnClientDisconnect;
         
         Log.Information("Network services initialized successfully");
     }
@@ -839,47 +862,78 @@ public sealed class Program
         }
     }
     
+    /// <summary>
+    /// Upper bound on decrypted bytes held per connection while waiting for a packet to complete.
+    /// Comfortably above the 8192-byte maximum packet size.
+    /// </summary>
+    private const int MaxPendingPacketBytes = 16384;
+
     private static async Task ProcessEncryptedDataAsync(byte[] buffer, int length, Client.GameClient client)
     {
         try
         {
-            // Decrypt in place
+            // Decrypt in place. The cipher is stateful and stream-ordered, so every received byte
+            // must be decrypted exactly once, in arrival order -- including bytes that turn out to
+            // belong to a packet that is still incomplete.
             client.Cryptography.Decrypt(buffer, length);
-            
+
+            // Prepend the plaintext tail left over from the previous read, so a packet split across
+            // two socket reads is reassembled instead of dropped.
+            var data = client.CombineWithRemainder(buffer, length, out int available);
+
             // Frame packets from decrypted data
             // TQ format: [Length:2][Data:Length-4][Seal:8]
             // The Length field does NOT include the 8-byte seal
             const int SealSize = 8;
             int offset = 0;
-            while (offset + 2 <= length)
+            while (offset + 2 <= available)
             {
-                ushort packetLen = BitConverter.ToUInt16(buffer, offset);
+                ushort packetLen = BitConverter.ToUInt16(data, offset);
                 
                 // Validate packet length
                 if (packetLen < 4 || packetLen > 8192)
                 {
+                    // A bad length means the stream is no longer trustworthy: either the cipher is
+                    // out of sync or the peer is malicious. Framing cannot resynchronise, so drop
+                    // the connection rather than resume at a guessed offset.
                     Log.Warning("Invalid packet length {Length} at offset {Offset} from {Name}", packetLen, offset, client.Entity?.Name ?? "Unknown");
-                    break;
+                    client.SaveReceiveRemainder(data, 0, 0);
+                    client.Disconnect();
+                    return;
                 }
                 
                 // Total size = packet length + seal (8 bytes)
                 int totalSize = packetLen + SealSize;
                 
-                if (offset + totalSize > length)
+                if (offset + totalSize > available)
                 {
-                    // Not enough data for complete packet + seal
+                    // Incomplete packet: keep the tail and wait for the rest of it.
                     break;
                 }
                 
                 // Extract packet INCLUDING seal
                 byte[] packet = new byte[totalSize];
-                Buffer.BlockCopy(buffer, offset, packet, 0, totalSize);
+                Buffer.BlockCopy(data, offset, packet, 0, totalSize);
                 
                 // Process the framed packet
                 await ProcessDecryptedPacketAsync(packet, client);
                 
                 offset += totalSize;
             }
+
+            // Carry the unconsumed tail (if any) into the next read.
+            int remaining = available - offset;
+            if (remaining > MaxPendingPacketBytes)
+            {
+                // Guard against a peer that sends a valid-looking header and then stalls, pinning
+                // memory per connection indefinitely.
+                Log.Warning("Reassembly buffer overflow ({Bytes} bytes) from {Name}", remaining, client.Entity?.Name ?? "Unknown");
+                client.SaveReceiveRemainder(data, 0, 0);
+                client.Disconnect();
+                return;
+            }
+
+            client.SaveReceiveRemainder(data, offset, remaining);
         }
         catch (Exception ex)
         {

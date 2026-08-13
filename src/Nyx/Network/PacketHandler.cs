@@ -18,7 +18,6 @@ using Serilog;
 using Nyx.Server.Bots;
 using Nyx.Server.Utilities;
 using Microsoft.Extensions.DependencyInjection;
-using Nyx.AttackEngine.Combat;
 namespace Nyx.Server.Network
 {
     public static class PacketHandler
@@ -27,6 +26,7 @@ namespace Nyx.Server.Network
         // public static readonly ILogger logger = Log.ForContext<PacketHandler>();
 
         public static Network.DataCollection DataCollection = new Network.DataCollection();
+
         public static string ReadString(byte[] data, ushort position, ushort count)
         {
             StringBuilder builder = new StringBuilder();
@@ -47,11 +47,22 @@ namespace Nyx.Server.Network
             if (client == null)
                 return;
 
-            // Try the new attribute-based packet system first; fall through to legacy handlers if unmatched
+            // Try the new attribute-based packet system first; fall through to the legacy switch
+            // below if no handler claimed the packet.
+            //
+            // ProcessAsync returns true when it has fully handled the packet. That result used to be
+            // discarded into an empty block, so a packet claimed by the new system was ALSO run
+            // through the legacy switch -- double dispatch. Returning makes the handoff exclusive,
+            // which is the precondition for migrating handlers out of this file one at a time:
+            // register a real [PacketAttribute] handler, then delete the matching legacy case.
+            //
+            // Exclusive dispatch is only safe because every registered handler is authoritative.
+            // The five "example" stubs that used to be registered (walk/action/talk/attack/sign-in)
+            // parsed nothing and applied no game logic -- returning on those would have silently
+            // dropped core gameplay packets. They have been removed; the registry is empty until
+            // real handlers land.
             if (await PacketProcessor.ProcessAsync(client, packet))
-            {
-
-            }
+                return;
 
             ushort Length = BitConverter.ToUInt16(packet, 0);
             ushort ID = BitConverter.ToUInt16(packet, 2);
@@ -1371,8 +1382,15 @@ namespace Nyx.Server.Network
                                         {
                                             if (client.Union != null)
                                             {
-                                                var Union = Kernel.Unions[client.UnionID];
-                                                Union.RemoveMember(client);
+                                                // Kernel.Unions is a SafeDictionary: a missing key
+                                                // yields null rather than throwing, so guard the
+                                                // deref. client.Union can be stale if the union was
+                                                // disbanded by its leader while this client was
+                                                // still holding a reference.
+                                                if (Kernel.Unions.TryGetValue(client.UnionID, out var Union) && Union != null)
+                                                    Union.RemoveMember(client);
+                                                else
+                                                    client.Union = null;
                                             }
                                             Kernel.Guilds[Id].AddMember(client);
                                             if (Kernel.Unions.ContainsKey(Kernel.Guilds[Id].UnionID) && Kernel.Unions[Kernel.Guilds[Id].UnionID] != null)
@@ -1963,31 +1981,15 @@ namespace Nyx.Server.Network
                                     client.Entity.RemoveMagicDefender();
                                     client.Entity.AttackPacket = attack;
 
-                                    // Nyx.AttackEngine integration seam.
-                                    // While Combat.UseAttackEngine is off, Handle remains the
-                                    // sole executor (no behavior change). When on, the engine
-                                    // performs skill resolution + validation; a failed validation
-                                    // short-circuits here, otherwise Handle still executes for
-                                    // full damage/targeting. Damage takeover is enabled once the
-                                    // engine's damage steps are ported to the MyMath formula.
-                                    var combatCfg = Program.ApplicationHost!.Services
-                                        .GetRequiredService<Nyx.Server.CombatConfiguration>();
-                                    if (combatCfg.UseAttackEngine)
-                                    {
-                                        var adapter = Program.ApplicationHost.Services
-                                            .GetRequiredService<Game.Attacking.AttackEngineAdapter>();
-                                        if (adapter.TryResolveSkill(attack.MagicType, (byte)attack.MagicLevel, out _))
-                                        {
-                                            if (Kernel.GamePool.TryGetValue(attack.Attacked, out var targetClient))
-                                            {
-                                                var outcome = adapter.Resolve(
-                                                    client.Entity, targetClient.Entity, attack, out _);
-                                                if (outcome != AttackOutcome.Success)
-                                                    Log.Warning("Attack Engine rejected User '{name}' attack , reson : {reson}", client.Entity.Name, outcome);
-                                                    break; // engine rejected (e.g. wrong weapon / not enough MP)
-                                            }
-                                        }
-                                    }
+                                    // Nyx.Combat seam. The engine takes ownership of an
+                                    // exchange only when it fully understands it and
+                                    // actually resolved a hit; in every other case it
+                                    // declines and the legacy Handle path runs exactly as
+                                    // it always has. Declining beats rejecting here — a
+                                    // swallowed attack leaves the player animating against
+                                    // a target that never takes damage.
+                                    if (Game.Attacking.CombatGateway.TryHandle(client.Entity, attack))
+                                        break;
 
                                     new Game.Attacking.Handle(attack, client.Entity, null);
                                     break;
@@ -2981,8 +2983,11 @@ namespace Nyx.Server.Network
                                                     {
                                                         if (client.Union != null)
                                                         {
-                                                            var Union = Kernel.Unions[client.UnionID];
-                                                            Union.RemoveMember(client);
+                                                            // See note above: guard the SafeDictionary lookup.
+                                                            if (Kernel.Unions.TryGetValue(client.UnionID, out var Union) && Union != null)
+                                                                Union.RemoveMember(client);
+                                                            else
+                                                                client.Union = null;
                                                         }
                                                         g.AddMember(client);
                                                         if (Kernel.Unions.ContainsKey(g.UnionID) && Kernel.Unions[g.UnionID] != null)
@@ -8237,7 +8242,9 @@ namespace Nyx.Server.Network
             info.UID = client.Entity.UID;
             info.Level = client.Entity.Level;
             info.Experience = client.Entity.Experience;
-            Kernel.ReincarnatedCharacters.Add(info.UID, info);
+            // TryAdd closes the check-then-act gap with the ContainsKey guard above and, unlike
+            // SafeDictionary.Add, will not overwrite an existing restore record.
+            Kernel.ReincarnatedCharacters.TryAdd(info.UID, info);
             client.Entity.FirstRebornClass = client.Entity.SecondRebornClass;
             client.Entity.SecondRebornClass = client.Entity.Class;
             client.Entity.Class = new_class;

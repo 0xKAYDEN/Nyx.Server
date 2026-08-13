@@ -127,7 +127,9 @@ namespace Nyx.Server.Game.ConquerStructures
         private void UpdateCache()
         {
             _conquerItemCache.Clear();
-            var items = _newInventory.GetAllAsync().Result;
+            // Synchronous call: the inventory module is in-memory, so blocking on its
+            // synthetic Task (.Result) was pure sync-over-async overhead on the game thread.
+            var items = _newInventory.GetAll();
             foreach (var item in items)
             {
                 _conquerItemCache[item.UID] = ToConquerItem(item);
@@ -474,7 +476,7 @@ namespace Nyx.Server.Game.ConquerStructures
                     // Add to new inventory system
                     var invItem = ToInventoryItem(item);
                     invItem.ComputeHash();
-                    _newInventory.AddAsync(invItem).Wait();
+                    _newInventory.Add(invItem);
                     _conquerItemCache[item.UID] = item;
                     item.Mode = Enums.ItemMode.Default;
                     if (use != Enums.ItemUse.None)
@@ -507,7 +509,7 @@ namespace Nyx.Server.Game.ConquerStructures
                         case Enums.ItemUse.Move: Database.ConquerItemTable.UpdateLocation(item, Owner); break;
                     }
 
-                    _newInventory.RemoveAsync(item.UID).Wait();
+                    _newInventory.Remove(item.UID);
                     _conquerItemCache.Remove(item.UID);
                     Network.GamePackets.ItemUsage iu = new Network.GamePackets.ItemUsage(true);
                     iu.UID = item.UID;
@@ -524,7 +526,7 @@ namespace Nyx.Server.Game.ConquerStructures
         {
             if (_conquerItemCache.ContainsKey(item.UID))
             {
-                _newInventory.RemoveAsync(item.UID).Wait();
+                _newInventory.Remove(item.UID);
                 _conquerItemCache.Remove(item.UID);
                 Network.GamePackets.ItemUsage iu = new Network.GamePackets.ItemUsage(true);
                 iu.UID = item.UID;
@@ -544,7 +546,7 @@ namespace Nyx.Server.Game.ConquerStructures
                     case Enums.ItemUse.Remove: Database.ConquerItemTable.RemoveItem(UID); break;
                     case Enums.ItemUse.Move: Database.ConquerItemTable.UpdateLocation(_conquerItemCache[UID], Owner); break;
                 }
-                _newInventory.RemoveAsync(UID).Wait();
+                _newInventory.Remove(UID);
                 _conquerItemCache.Remove(UID);
                 if (sendRemove)
                 {
@@ -711,17 +713,17 @@ namespace Nyx.Server.Game.ConquerStructures
                                 // Update in new inventory
                                 var invItem = ToInventoryItem(item);
                                 invItem.ComputeHash();
-                                _newInventory.UpdateAsync(item.UID, i => 
+                                _newInventory.Update(item.UID, i =>
                                 {
                                     i.StackSize = item.StackSize;
-                                }).Wait();
+                                });
                                 _conquerItemCache[item.UID] = item;
                                 return true;
                             }
                             else
                             {
                                 Database.ConquerItemTable.DeleteItem(item.UID);
-                                _newInventory.RemoveAsync(item.UID).Wait();
+                                _newInventory.Remove(item.UID);
                                 _conquerItemCache.Remove(item.UID);
                                 Network.GamePackets.ItemUsage iu = new Network.GamePackets.ItemUsage(true);
                                 iu.UID = item.UID;

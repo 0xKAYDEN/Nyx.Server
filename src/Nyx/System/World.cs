@@ -1988,7 +1988,10 @@ namespace Nyx.Server
                                             AttackPacket.Damage != 12340 &&
                                             AttackPacket.Damage != 12210)
                                         {
-                                            new Game.Attacking.Handle(AttackPacket, client.Entity, null);
+                                            // Nyx.Combat first; it declines whatever it does
+                                            // not fully understand and the legacy path runs.
+                                            if (!Game.Attacking.CombatGateway.TryHandle(client.Entity, AttackPacket))
+                                                new Game.Attacking.Handle(AttackPacket, client.Entity, null);
                                         }
                                     }
                                 }
@@ -2006,7 +2009,8 @@ namespace Nyx.Server
                                                                                           ? 1
                                                                                           : 1)))
                                     {
-                                        new Game.Attacking.Handle(AttackPacket, client.Entity, null);
+                                        if (!Game.Attacking.CombatGateway.TryHandle(client.Entity, AttackPacket))
+                                            new Game.Attacking.Handle(AttackPacket, client.Entity, null);
                                     }
                                 }
                             }

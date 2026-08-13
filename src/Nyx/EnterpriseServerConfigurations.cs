@@ -15,11 +15,16 @@ namespace Nyx.Server
     public sealed class CombatConfiguration
     {
         /// <summary>
-        /// When true, attack/skill resolution routes through Nyx.AttackEngine
-        /// instead of the legacy Handle.cs path. Defaults to false so the engine
-        /// is loaded but does not yet author live combat until verified.
+        /// When true, damage resolution routes through the Nyx.Combat engine
+        /// instead of the legacy Handle.cs path.
         /// </summary>
-        public bool UseAttackEngine { get; set; } = false;
+        /// <remarks>
+        /// Defaults to false. The catalog still loads from <c>cq_magictype</c> at
+        /// startup either way, so the flag can be flipped on a staging shard and
+        /// compared against live numbers before it authors anyone's combat. When
+        /// off, not a single instruction of the legacy path changes.
+        /// </remarks>
+        public bool UseCombatEngine { get; set; } = false;
     }
 
     public sealed class RedisConfiguration

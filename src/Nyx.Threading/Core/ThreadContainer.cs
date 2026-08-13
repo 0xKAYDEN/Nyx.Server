@@ -10,8 +10,10 @@ using Serilog;
 namespace Nyx.Threading.Core;
 
 /// <summary>
-/// High-performance async processing unit pinned to a specific CPU core.
-/// Processes task queues sequentially using Channels for lock-free thread safety.
+/// High-performance async processing unit that owns a single task queue.
+/// Processes tasks sequentially using Channels for lock-free thread safety, which makes each
+/// container a single-writer execution context: state owned by exactly one container needs no
+/// locking.
 /// 
 /// This is a fully async implementation - no blocking calls.
 /// Thread Safety: All public methods are thread-safe.
@@ -43,7 +45,8 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     public string Name { get; }
 
     /// <summary>
-    /// Gets the CPU core index this container is pinned to.
+    /// Gets the nominal CPU core index for this container.
+    /// Diagnostic/logging only -- see WorkerLoopAsync for why affinity is not applied.
     /// </summary>
     public int CoreIndex { get; }
 
@@ -83,7 +86,7 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     /// Creates a new ThreadContainer with the specified configuration.
     /// </summary>
     /// <param name="name">Name for logging/debugging.</param>
-    /// <param name="coreIndex">CPU core to pin the worker thread to.</param>
+    /// <param name="coreIndex">Nominal core index, used for logging only.</param>
     /// <param name="capacity">
     /// Maximum number of pending tasks. 
     /// If null or 0, creates an unbounded channel.
@@ -191,8 +194,19 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     /// </summary>
     private async Task WorkerLoopAsync(CancellationToken ct)
     {
-        // Pin to CPU core (must be done from the thread that will run)
-        ThreadAffinityHelper.TrySetThreadAffinity(CoreIndex);
+        // NOTE: CPU affinity is deliberately NOT set here.
+        //
+        // This loop used to call ThreadAffinityHelper.TrySetThreadAffinity(CoreIndex), which
+        // cannot work for an async worker: the mask applies to the thread running the
+        // synchronous prologue, but every `await` below resumes the continuation on an
+        // arbitrary thread-pool thread. In practice the pin was lost on the first suspension,
+        // so it bought no cache locality while still constraining the OS scheduler -- and it
+        // failed outright under a restricted cpuset (e.g. Docker --cpuset-cpus), because the
+        // 1UL << coreIndex mask refers to physical CPU ids that need not be in the process's
+        // allowed set.
+        //
+        // Real core pinning would require a dedicated Thread with a fully synchronous work
+        // loop and a custom TaskScheduler. CoreIndex is retained for logging/diagnostics only.
         Thread.CurrentThread.Name = $"Container-{Name}-Async";
 
         try

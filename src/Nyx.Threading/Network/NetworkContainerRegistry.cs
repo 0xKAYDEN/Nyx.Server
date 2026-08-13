@@ -19,6 +19,37 @@ namespace Nyx.Threading.Network
         private static int _roundRobinIndex = 0;
 
         /// <summary>
+        /// Immutable snapshot of the registered containers, used by the packet routing hot path.
+        /// </summary>
+        /// <remarks>
+        /// Routing previously did `new List&lt;NetworkThreadContainer&gt;(GetAllContainers())` on
+        /// every single packet -- a dictionary enumeration plus a list allocation and copy, per
+        /// packet, purely to index a collection that never changes after startup. The container
+        /// set is fixed by InitializeNetworkContainers at boot, so we publish an array snapshot
+        /// and read it with a single volatile read instead.
+        ///
+        /// Rebuilt (not mutated) whenever a container is added, so readers always observe a
+        /// consistent array and never need a lock.
+        /// </remarks>
+        private static volatile NetworkThreadContainer[] _containerSnapshot = Array.Empty<NetworkThreadContainer>();
+
+        /// <summary>
+        /// Rebuilds the routing snapshot from the registry. Called after any structural change.
+        /// </summary>
+        private static void RebuildSnapshot()
+        {
+            var snapshot = new List<NetworkThreadContainer>(_networkContainers.Count);
+
+            // Order by name so routing is deterministic and stable across restarts; the
+            // ConcurrentDictionary's own enumeration order is unspecified.
+            foreach (var kvp in _networkContainers)
+                snapshot.Add(kvp.Value);
+
+            snapshot.Sort(static (a, b) => string.CompareOrdinal(a.Name, b.Name));
+            _containerSnapshot = snapshot.ToArray();
+        }
+
+        /// <summary>
         /// Creates or retrieves a network container by name.
         /// </summary>
         public static NetworkThreadContainer GetOrCreateContainer(string name, int coreIndex, int? capacity = null)
@@ -26,7 +57,9 @@ namespace Nyx.Threading.Network
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Container name cannot be empty", nameof(name));
 
-            return _networkContainers.GetOrAdd(name, n => new NetworkThreadContainer(n, coreIndex, capacity));
+            var container = _networkContainers.GetOrAdd(name, n => new NetworkThreadContainer(n, coreIndex, capacity));
+            RebuildSnapshot();
+            return container;
         }
 
         /// <summary>
@@ -37,7 +70,9 @@ namespace Nyx.Threading.Network
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Container name cannot be empty", nameof(name));
 
-            return (NetworkThreadContainer<TState>)_networkContainers.GetOrAdd(name, n => new NetworkThreadContainer<TState>(n, coreIndex, state, capacity));
+            var container = (NetworkThreadContainer<TState>)_networkContainers.GetOrAdd(name, n => new NetworkThreadContainer<TState>(n, coreIndex, state, capacity));
+            RebuildSnapshot();
+            return container;
         }
 
         /// <summary>
@@ -45,14 +80,15 @@ namespace Nyx.Threading.Network
         /// </summary>
         public static NetworkThreadContainer GetNextContainer()
         {
-            var containers = GetAllContainers();
-            var containerList = new List<NetworkThreadContainer>(containers);
-            
-            if (containerList.Count == 0)
+            var containers = _containerSnapshot;
+
+            if (containers.Length == 0)
                 throw new InvalidOperationException("No network containers registered");
 
-            var index = Interlocked.Increment(ref _roundRobinIndex) % containerList.Count;
-            return containerList[index];
+            // Mask off the sign bit: Interlocked.Increment wraps to negative at int.MaxValue,
+            // and a negative modulus would produce a negative index.
+            var index = (Interlocked.Increment(ref _roundRobinIndex) & int.MaxValue) % containers.Length;
+            return containers[index];
         }
 
         /// <summary>
@@ -61,15 +97,16 @@ namespace Nyx.Threading.Network
         /// </summary>
         public static NetworkThreadContainer GetContainerForSession(uint connectionId)
         {
-            var containers = GetAllContainers();
-            var containerList = new List<NetworkThreadContainer>(containers);
+            // Hot path: one volatile array read, no allocation.
+            var containers = _containerSnapshot;
 
-            if (containerList.Count == 0)
+            if (containers.Length == 0)
                 throw new InvalidOperationException("No network containers registered");
 
-            // Use connection ID hash for consistent routing
-            var index = (int)(connectionId % (uint)containerList.Count);
-            return containerList[index];
+            // Consistent routing: a given connection always maps to the same container, so all
+            // packets from one session are processed in arrival order by a single worker.
+            var index = (int)(connectionId % (uint)containers.Length);
+            return containers[index];
         }
 
         /// <summary>
@@ -87,7 +124,8 @@ namespace Nyx.Threading.Network
         /// </summary>
         public static IEnumerable<NetworkThreadContainer> GetAllContainers()
         {
-            return _networkContainers.Values;
+            // Returns the stable snapshot rather than the live dictionary view.
+            return _containerSnapshot;
         }
 
         /// <summary>
@@ -100,6 +138,7 @@ namespace Nyx.Threading.Network
                 container.Dispose();
             }
             _networkContainers.Clear();
+            RebuildSnapshot();
         }
 
         /// <summary>
@@ -118,6 +157,8 @@ namespace Nyx.Threading.Network
             {
                 GetOrCreateContainer($"NetworkContainer-{i}", i, capacityPerContainer);
             }
+
+            RebuildSnapshot();
         }
     }
 }
