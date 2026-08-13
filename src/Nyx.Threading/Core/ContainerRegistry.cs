@@ -1,3 +1,4 @@
+using Nyx.Threading.Configuration;
 using Nyx.Threading.Contracts;
 using System;
 using System.Collections.Concurrent;
@@ -22,6 +23,22 @@ namespace Nyx.Threading.Core
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Container name cannot be empty", nameof(name));
             
             return _containers.GetOrAdd(name, n => new ThreadContainer(n, coreIndex, capacity));
+        }
+
+        /// <summary>
+        /// Retrieves an existing container by name, or creates it from a
+        /// <see cref="ContainerConfiguration"/>. The configuration supplies both the channel
+        /// capacity and the unhealthy threshold that judges it, so capacity and its health
+        /// threshold are kept together.
+        /// </summary>
+        public static IThreadContainer GetOrCreateContainer(string name, int coreIndex, ContainerConfiguration configuration)
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Container name cannot be empty", nameof(name));
+            ArgumentNullException.ThrowIfNull(configuration);
+
+            return _containers.GetOrAdd(
+                name,
+                n => new ThreadContainer(n, coreIndex, configuration.Capacity, configuration.UnhealthyThreshold));
         }
 
         /// <summary>
