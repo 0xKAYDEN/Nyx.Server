@@ -24,7 +24,7 @@ namespace Nyx.Server
         /// compared against live numbers before it authors anyone's combat. When
         /// off, not a single instruction of the legacy path changes.
         /// </remarks>
-        public bool UseCombatEngine { get; set; } = false;
+        public bool UseCombatEngine { get; set; } = true;
     }
 
     public sealed class RedisConfiguration
@@ -41,7 +41,7 @@ namespace Nyx.Server
 
     public sealed class ServerConfiguration
     {
-        public string ServerAddress { get; set; } = "192.168.1.16";
+        public string ServerAddress { get; set; } = "192.168.1.237";
         public int AuthPort { get; set; } = 9960;
         public int GamePort { get; set; } = 5816;
     }

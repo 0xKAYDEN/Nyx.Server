@@ -18,6 +18,7 @@ using Serilog;
 using Nyx.Server.Bots;
 using Nyx.Server.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using Nyx.Threading.Core;
 namespace Nyx.Server.Network
 {
     public static class PacketHandler
@@ -1537,8 +1538,10 @@ namespace Nyx.Server.Network
                             EnitityCreate EC = new EnitityCreate();
                             EC.Deserialize(packet);
                             EC.Name = EC.Name.Remove("pm").Remove("gm").Remove("guard").Remove("owner").Remove("SnowBanshee").Remove("NemesisTyrant").Remove("TeratoDragon").Remove("GoldenOctopus").Remove("SilverOctopus").Remove("kosom").Remove("kosm").Remove("mtnak").Remove("kos").Remove("dick").Remove("mother").Remove("fuck").Remove("ass").Remove("pussy").Remove("bitch").Remove("omk").Remove("sharmot").Remove("sharmoot").Remove("5wl").Remove("5owl").Remove("5awl").Remove("zanya").Remove("zania").Remove("3rs").Remove("kosomen").Remove("mayteen").Remove("mayten").Remove("a7a").Remove("a7eh");
-                            string Message = "";
-                            Boolean Created = Database.EntityTable.CreateEntity(EC, client, ref Message);
+                            // Character creation makes two database round-trips. HandlePacket is
+                            // already async, so awaiting keeps the packet thread free instead of
+                            // blocking it inside the old ref-parameter signature.
+                            var (Created, Message) = await Database.EntityTable.CreateEntityAsync(EC, client);
                             if (Created)
                             {
                                 client.JustCreated = true;
@@ -6609,7 +6612,7 @@ namespace Nyx.Server.Network
                         {
                             Network.GamePackets.Connect connect = new Network.GamePackets.Connect();
                             connect.Deserialize(packet);
-                            AppendConnect(connect, client);
+                            await AppendConnect(connect, client);
                         }
                         break;
                     }
@@ -23349,12 +23352,23 @@ namespace Nyx.Server.Network
                                 }
                             case "unban":
                                 {
-                                    var Account = new Database.AccountTable(Data[1]);
-                                    if (Account.State == Nyx.Server.Database.AccountTable.AccountState.Banned)
-                                    {
-                                        Account.State = Nyx.Server.Database.AccountTable.AccountState.Player;
-                                        Account.SaveState();
-                                    }
+                                    // Two database round-trips (load the account, then write its
+                                    // state) issued from the packet-handling path. Loading used to
+                                    // happen inside the AccountTable constructor, which blocked
+                                    // this thread on the query. The whole command is now handed to
+                                    // the database repository; nothing here needs its result.
+                                    string unbanTarget = Data[1];
+                                    _ = ThreadingController.EnqueueAsync(
+                                        Nyx.Threading.Enums.RepositoryCategory.Database,
+                                        async _ =>
+                                        {
+                                            var account = await Database.AccountTable.CreateAsync(unbanTarget).ConfigureAwait(false);
+                                            if (account.State == Nyx.Server.Database.AccountTable.AccountState.Banned)
+                                            {
+                                                account.State = Nyx.Server.Database.AccountTable.AccountState.Player;
+                                                account.SaveState();
+                                            }
+                                        });
                                     break;
                                 }
                             case "banip":
@@ -24652,7 +24666,17 @@ namespace Nyx.Server.Network
             client.Screen.Reload(null);
         }
         public static object LoginSyncRoot = new object();
-        public static void AppendConnect(Connect appendConnect, Client.GameClient client)
+        /// <summary>
+        /// Completes a client's handover from the auth server into the game world.
+        /// </summary>
+        /// <remarks>
+        /// Async because the login sequence it triggers loads the character from the database. The
+        /// <c>lock (LoginSyncRoot)</c> section below is unchanged and still fully synchronous --
+        /// the await happens only after that block has exited, so no lock is ever held across an
+        /// await. That ordering is the reason the pool bookkeeping is staged into
+        /// <c>doLogin</c> rather than calling the loader inline.
+        /// </remarks>
+        public static async Task AppendConnect(Connect appendConnect, Client.GameClient client)
         {
             if (client.LoggedIn)
             {
@@ -24734,19 +24758,28 @@ namespace Nyx.Server.Network
             }
             if (doLogin)
             {
-                LoadEntity(client);
+                await LoadEntityAsync(client).ConfigureAwait(false);
                 if (client.Entity != null && client.Entity.SpawnPacket != null && client.Entity.SpawnPacket.Length > 0 && client.Entity.GuildID != 0)
                 {
                     client.Entity.GuildBattlePower = client.Guild.GetSharedBattlepower(client.Entity.GuildRank);
                 }
             }
         }
-        public static void LoadEntity(GameClient client)
+        /// <summary>
+        /// Runs the full login sequence for a client.
+        /// </summary>
+        /// <remarks>
+        /// Character loading is a database round-trip, and this method used to make it
+        /// synchronously via <c>EntityTable.LoadEntity</c>. It is now async so the query no longer
+        /// blocks the caller's thread. Everything after the load is unchanged and still runs in
+        /// order, so the sequence the client observes is identical.
+        /// </remarks>
+        public static async Task LoadEntityAsync(GameClient client)
         {
             try
             {
                 client.ReadyToPlay();
-                if (Database.EntityTable.LoadEntity(client))
+                if (await Database.EntityTable.LoadEntityAsync(client).ConfigureAwait(false))
                 {
                     if (client.Entity.FullyLoaded)
                     {

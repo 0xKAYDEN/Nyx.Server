@@ -1,5 +1,6 @@
 using Nyx.Network;
 using Nyx.Threading.Contracts;
+using Nyx.Threading.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,9 +56,24 @@ namespace Nyx.Threading.Network
             await _innerContainer.EnqueueAsync(task);
         }
 
+        public async ValueTask EnqueueAsync(IRepositoryTask task, TaskPriority priority)
+        {
+            await _innerContainer.EnqueueAsync(task, priority);
+        }
+
         public bool TryEnqueue(IRepositoryTask task)
         {
             return _innerContainer.TryEnqueue(task);
+        }
+
+        public bool TryEnqueue(IRepositoryTask task, TaskPriority priority)
+        {
+            return _innerContainer.TryEnqueue(task, priority);
+        }
+
+        public int GetPendingCount(TaskPriority priority)
+        {
+            return _innerContainer.GetPendingCount(priority);
         }
 
         public double GetAverageLatencyMs()

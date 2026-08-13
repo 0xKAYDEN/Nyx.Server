@@ -608,12 +608,6 @@ public sealed class Program
             monsterManager.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
             World.SetMonsterManager(monsterManager);
             
-            // Configure the server-side bridge with a DI logger. The non-generic
-            // ILogger is not registered in DI on its own, so resolve the typed
-            // ILogger<T> (which implements the non-generic ILogger the bridge expects).
-            var logger = ApplicationHost.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Nyx.Server.Game.Monsters.ServerMonsterBridge>>();
-            Nyx.Server.Game.Monsters.ServerMonsterBridge.Configure(logger);
-            
             Log.Information("Phase 2: MonsterManager wired (lazy load + 20 TPS AI tick)");
         }
         catch (Exception ex)
@@ -703,7 +697,7 @@ public sealed class Program
             await foreach (var packet in session.Channel.Reader.ReadAllAsync())
             {
                 if (!session.Alive) return;
-                AuthServer_OnClientReceive(packet, packet.Length, session);
+                await AuthServer_OnClientReceiveAsync(packet, packet.Length, session);
             }
         }
         catch (OperationCanceledException)
@@ -1000,7 +994,7 @@ public sealed class Program
         session.Disconnect();
     }
     
-    private static void AuthServer_OnClientReceive(byte[] buffer, int length, Nyx.Network.GameSession session)
+    private static async Task AuthServer_OnClientReceiveAsync(byte[] buffer, int length, Nyx.Network.GameSession session)
     {
         try
         {
@@ -1050,7 +1044,9 @@ public sealed class Program
                 {
                     player.Info = new Network.AuthPackets.Authentication();
                     player.Info.Deserialize(packet);
-                    player.Account = new AccountTable(player.Info.Username);
+                    // Awaited, not blocked: the account lookup is a database round-trip and this
+                    // runs on the auth session's packet-processing loop.
+                    player.Account = await AccountTable.CreateAsync(player.Info.Username);
                     
                     // Check brute force protection
                     if (!BruteForceProtection.AcceptJoin(session.IP))
@@ -1106,7 +1102,7 @@ public sealed class Program
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error in AuthServer_OnClientReceive");
+            Log.Error(ex, "Error in AuthServer_OnClientReceiveAsync");
             session.Disconnect();
         }
     }
