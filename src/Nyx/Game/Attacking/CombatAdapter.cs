@@ -125,17 +125,17 @@ public sealed class CombatAdapter
         Attack packet = state.Packet;
         packet.Attacked = victim.UID;
         packet.Effect1 = ToWireEffects(hit.Effects);
-        packet.Damage = (uint)hit.Damage;
 
         // A miss still costs the attacker their swing and still animates; it simply
-        // lands for nothing.
-        if (hit.Status == AttackStatus.Miss)
-        {
-            packet.Damage = 0;
-            return;
-        }
+        // lands for nothing. It must NOT short-circuit: ReceiveAttack is the only
+        // code that broadcasts the swing to the screen and refreshes AttackStamp /
+        // AttackPacket, and World.cs:1979 drives the auto-attack loop off exactly
+        // those two fields. Returning early here would make the miss invisible to
+        // every client and stall the attacker's chain until they re-clicked.
+        uint damage = hit.Status == AttackStatus.Miss ? 0u : (uint)hit.Damage;
 
-        uint damage = (uint)hit.Damage;
+        packet.Damage = damage;
+
         Handle.ReceiveAttack(state.Attacker, victim, packet, ref damage, null);
     }
 
