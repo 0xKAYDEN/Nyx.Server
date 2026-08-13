@@ -101,15 +101,22 @@ public readonly struct Combatant
     /// <summary>Armour weight; feeds the ranged evasion term.</summary>
     public int Weight { get; init; }
 
-    // ---- refinery / Chi attributes, all in percent ----------------------
+    // ---- refinery / Chi attributes --------------------------------------
 
-    public byte CriticalStrike { get; init; }
-    public byte SkillCriticalStrike { get; init; }
-    public byte Immunity { get; init; }
-    public byte Penetration { get; init; }
-    public byte Breakthrough { get; init; }
-    public byte Counteraction { get; init; }
-    public byte ShieldBlockPercent { get; init; }
+    /// <remarks>
+    /// These are <see cref="ushort"/> rather than <see cref="byte"/> because the
+    /// live server stores them in hundredths of a percent — a fully refined
+    /// character carries a Critical Strike of 1500, which a byte would silently
+    /// truncate to 220. The divisors in
+    /// <see cref="Configuration.CombatOptions"/> convert them to a roll.
+    /// </remarks>
+    public ushort CriticalStrike { get; init; }
+    public ushort SkillCriticalStrike { get; init; }
+    public ushort Immunity { get; init; }
+    public ushort Penetration { get; init; }
+    public ushort Breakthrough { get; init; }
+    public ushort Counteraction { get; init; }
+    public ushort ShieldBlockPercent { get; init; }
 
     // ---- damage percentages --------------------------------------------
 

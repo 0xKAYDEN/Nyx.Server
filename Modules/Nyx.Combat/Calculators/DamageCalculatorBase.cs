@@ -87,9 +87,13 @@ public abstract class DamageCalculatorBase : IDamageCalculator
                 {
                     if (attacker.CriticalStrike > target.Immunity)
                     {
+                        // Both terms are in hundredths of a percent, and the
+                        // divisor turns their difference straight into a percent
+                        // chance: 1500 crit vs 0 immunity is 3.75%, matching
+                        // Calculate.Refinary on the live path.
                         double rate = (attacker.CriticalStrike / o.CriticalRateDivisor)
                                     - (target.Immunity / o.CriticalRateDivisor);
-                        if (ctx.Random.Chance(rate * 100.0))
+                        if (ctx.Random.Chance(rate))
                         {
                             damage += damage * o.CriticalBonusPercent / 100.0;
                             ctx.Effects |= HitEffects.CriticalStrike;
@@ -106,7 +110,7 @@ public abstract class DamageCalculatorBase : IDamageCalculator
                 // Magic: penetration first, skill-crit as the fallback.
                 bool procced = false;
 
-                if (attacker.Penetration > 0 && ctx.Random.Chance(attacker.Penetration / 100.0 * 100.0))
+                if (attacker.Penetration > 0 && ctx.Random.Chance(attacker.Penetration / 100.0))
                 {
                     damage += damage * o.PenetrationBonusPercent / 100.0;
                     ctx.Effects |= HitEffects.Penetration;
@@ -117,7 +121,7 @@ public abstract class DamageCalculatorBase : IDamageCalculator
                 {
                     if (attacker.SkillCriticalStrike >= target.Immunity)
                     {
-                        double rate = attacker.SkillCriticalStrike - target.Immunity;
+                        double rate = (attacker.SkillCriticalStrike - target.Immunity) / 100.0;
                         if (ctx.Random.Chance(rate))
                         {
                             damage += damage * o.CriticalBonusPercent / 100.0;

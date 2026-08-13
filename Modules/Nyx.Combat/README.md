@@ -16,10 +16,11 @@ sockets, does not write to the database during combat, and does not know that
 
 ## Why another one
 
-There were already four overlapping attack code paths in this repo
+There were four overlapping attack code paths in this repo
 (`Game/Attacking/Handle.cs` at ten thousand lines, the `Skills/` dispatcher,
 `Nyx.AttackEngine`, and the `Nyx.AttackSystem` stub). This is a clean-room
-replacement for the latter two, built to the design in
+replacement for the latter two — **`Nyx.AttackEngine` has since been deleted and
+this module took over its wiring** — built to the design in
 `docs/Generic_Attack_System_Design.md` but with the damage math taken from what the
 live server actually computes in `src/Nyx/Game/Attacking/Battle/*` rather than
 invented.
@@ -234,18 +235,49 @@ Optional seams: `ICombatObserver` (events), `IDamageModifier` (custom damage rul
 
 The engine reports effects as `HitEffects` flags and leaves packet encoding to the
 host, because the wire format is the host's concern and changes between client
-versions. The adapter mapping for the current client:
+versions. The live mapping is implemented in
+`src/Nyx/Game/Attacking/CombatAdapter.cs` (`ToWireEffects`):
 
 | `HitEffects` | `MsgAttack.Effect1` |
 |---|---|
+| `Block` | `0x01` |
+| `Penetration` | `0x02` |
 | `CriticalStrike` | `0x04` |
-| `Breakthrough` | `Break` (10) |
-| `Block`, `Immunity`, `Lucky`, `Penetration` | server-side only; no wire bit in this client |
+| `Immunity` | `Immu` (`0x08`) |
+| `Breakthrough` | `Break` (**10 decimal**, not a clean bit — reproduced as-is because the retail client renders it that way) |
+| `MetalResist` … `FireResist` | `0x10` … `0x80` |
+| `Lucky` | no wire bit; the live server advertises it via `MsgRefineEffect` |
 | `Dodged` | send the attack with damage `0` |
 
 `AttackKind` maps to the packet's attack type: `Melee = 2`, `Magic = 24`,
 `Ranged = 28`; a killing blow uses `Kill = 14`. Note that `MsgAttack` overloads
-offset 28, so read the existing `[1022] - MsgAttack.cs` before writing the adapter.
+offset 28 — `Damage`, `SpellID`, `MagicType` and `MagicLevel` all alias it — which
+is why the adapter reads the skill id *before* writing damage back.
+
+---
+
+## How it is wired into Nyx.Server
+
+Four host-side files, all under `src/Nyx`, plus one flag:
+
+| File | Role |
+|---|---|
+| `Game/Attacking/CombatProjection.cs` | `Entity` → `Combatant` snapshot. The only place that knows both models. |
+| `Game/Attacking/NyxCombatWorld.cs` | `ICombatWorld`: proximity over `Kernel.Maps[id].Entities` + `Kernel.GamePool`, hostility delegated to `Handle.CanAttack`. |
+| `Game/Attacking/CombatAdapter.cs` | Packet ↔ engine translation; hands resolved damage to `Handle.ReceiveAttack`. |
+| `Extensions/CombatServiceCollectionExtensions.cs` | `AddCombat()` — the composition root. |
+
+`Program.InitializeServer` loads the catalog from `cq_magictype` after
+`DataHolder.Configure` and logs the rank/type counts. `PacketHandler` case `1022`
+calls the adapter, which **declines rather than rejects** anything it does not
+fully own, so the legacy `Handle` path still runs for every case the engine has
+not taken over.
+
+**The switch is `Combat.UseCombatEngine` (default `false`).** With it off the
+catalog still loads — so a bad table is caught at boot — but not one instruction of
+live combat changes. The engine deliberately keeps damage *application* (experience,
+durability, death, PK flags, quests, tournament scoring) in `Handle.ReceiveAttack`
+rather than reimplementing the most side-effect-heavy code in the server.
 
 ---
 

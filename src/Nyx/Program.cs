@@ -392,10 +392,9 @@ public sealed class Program
         // Monster system (DI + tuples + lazy map loading, DB-backed repository)
         services.AddMonsterSystem();
 
-        // Attack engine (Nyx.AttackEngine): generic validation → target resolution
-        // → damage → post-effect pipeline, fed from cq_magictype.
-        services.AddAttackEngine();
-        services.AddSingleton<Game.Attacking.AttackEngineAdapter>();
+        // Combat engine (Nyx.Combat): validation → targeting → scenario damage →
+        // observers, with skill data read from cq_magictype.
+        services.AddCombat();
         services.AddSingleton<Nyx.Monsters.Services.IMonsterRepository, Database.Monsters.PostgresMonsterRepository>();
         services.AddSingleton<Nyx.Monsters.Services.IWorldView, Game.Monsters.ServerWorldView>();
         services.AddSingleton<Nyx.Monsters.Services.IMonsterNetworkService, Game.Monsters.ServerMonsterNetworkService>();
@@ -417,22 +416,32 @@ public sealed class Program
         DataHolder.Configure(AbstractDbContext.Configuration);
         DataHolder.ReadStats();
 
-        // Nyx.AttackEngine: seed cq_magictype (if empty) from the legacy text dump,
-        // then eagerly build the engine so skills load from the DB at startup
-        // (regardless of the UseAttackEngine flag — that only gates live combat).
+        // Nyx.Combat: load the skill catalog from cq_magictype and build the engine
+        // eagerly, regardless of the UseCombatEngine flag — that flag only gates
+        // whether the engine authors live damage, and a boot-time load surfaces a
+        // bad table now rather than on the first punch thrown.
         try
         {
-            //Nyx.Server.Database.SkillDataSeeder.EnsureSeededAsync(CancellationToken.None)
-            //    .GetAwaiter().GetResult();
+            var catalog = ApplicationHost!.Services
+                .GetRequiredService<Nyx.Combat.Skills.SkillCatalogHost>();
 
-            var engineHolder = ApplicationHost!.Services
-                .GetRequiredService<Nyx.Server.Extensions.AttackEngineHolder>();
-            Log.Information("AttackEngine: built at startup — {SkillCount} skills loaded from cq_magictype",
-                engineHolder.Cache.Count);
+            catalog.ReloadAsync(CancellationToken.None).AsTask().GetAwaiter().GetResult();
+
+            // Touch the engine so a misconfiguration throws here, at startup.
+            _ = ApplicationHost.Services.GetRequiredService<Nyx.Combat.Engine.CombatEngine>();
+
+            var combatCfg = ApplicationHost.Services.GetRequiredService<Nyx.Server.CombatConfiguration>();
+
+            Log.Information(
+                "Nyx.Combat: {SkillCount} skill ranks across {TypeCount} skills loaded from cq_magictype (engine {State})",
+                catalog.Count, catalog.TypeCount, combatCfg.UseCombatEngine ? "ACTIVE" : "standby");
+
+            if (catalog.Count == 0)
+                Log.Warning("Nyx.Combat: cq_magictype is empty — skill casts will fall back to the legacy path");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "AttackEngine: startup build/seed failed — skills may not resolve from cq_magictype");
+            Log.Error(ex, "Nyx.Combat: startup load failed — skills will not resolve from cq_magictype");
         }
 
         // Nyx.Threading must be ready before World timers and packet routing
