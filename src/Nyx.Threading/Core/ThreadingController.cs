@@ -72,38 +72,47 @@ public static class ThreadingController
             NetworkContainerRegistry.InitializeNetworkContainers(networkCount, capacity);
             _networkContainerCount = networkCount;
 
-            // Game logic: Single container with multiple repos for sharding
+            // Game logic: ONE CONTAINER PER SHARD.
+            //
+            // This previously created a single "GameLogic" container and wrapped it in N
+            // Repository objects. Because a ThreadContainer owns exactly one channel drained by
+            // exactly one sequential worker, every "shard" enqueued into the same queue and the
+            // shard key only selected a different wrapper object -- all game logic ran on one
+            // thread. Giving each shard its own container is what makes the shard key mean
+            // something: shard N is owned by worker N, so state partitioned by shard key (see
+            // MapManager, which shards on map id) is single-writer without locking.
             var gameLogicShards = Math.Min(4, Environment.ProcessorCount);
             _gameLogicRepos = new Repository[gameLogicShards];
-            
-            var gameLogicContainer = ContainerRegistry.GetOrCreateContainer(
-                "GameLogic",
-                0,
-                10000);
-            
+
             for (var i = 0; i < gameLogicShards; i++)
             {
-                _gameLogicRepos[i] = new Repository($"GameLogicRepo-{i}", gameLogicContainer);
+                var shardContainer = ContainerRegistry.GetOrCreateContainer(
+                    $"GameLogic-{i}",
+                    i,
+                    10000);
+
+                _gameLogicRepos[i] = new Repository($"GameLogicRepo-{i}", shardContainer);
             }
 
-            // Database: Single container with repos
+            // Database: dedicated container. Blocking DB work belongs here and NOT on a
+            // game-logic shard, where it would stall every entity owned by that shard.
             var dbContainer = ContainerRegistry.GetOrCreateContainer(
                 "Database",
-                1,
+                0,
                 5000);
             _databaseRepo = new Repository("DatabaseRepo", dbContainer);
 
-            // Background: Single container with repos
+            // Background: low-urgency periodic work.
             var bgContainer = ContainerRegistry.GetOrCreateContainer(
                 "BackgroundTasks",
-                2,
+                0,
                 5000);
             _backgroundRepo = new Repository("BackgroundRepo", bgContainer);
 
-            // High priority: Single container with repos
+            // High priority: latency-sensitive work that must not queue behind game logic.
             var hpContainer = ContainerRegistry.GetOrCreateContainer(
                 "HighPriority",
-                3,
+                0,
                 5000);
             _highPriorityRepo = new Repository("HighPriorityRepo", hpContainer);
 

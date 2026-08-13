@@ -47,11 +47,22 @@ namespace Nyx.Server.Network
             if (client == null)
                 return;
 
-            // Try the new attribute-based packet system first; fall through to legacy handlers if unmatched
+            // Try the new attribute-based packet system first; fall through to the legacy switch
+            // below if no handler claimed the packet.
+            //
+            // ProcessAsync returns true when it has fully handled the packet. That result used to be
+            // discarded into an empty block, so a packet claimed by the new system was ALSO run
+            // through the legacy switch -- double dispatch. Returning makes the handoff exclusive,
+            // which is the precondition for migrating handlers out of this file one at a time:
+            // register a real [PacketAttribute] handler, then delete the matching legacy case.
+            //
+            // Exclusive dispatch is only safe because every registered handler is authoritative.
+            // The five "example" stubs that used to be registered (walk/action/talk/attack/sign-in)
+            // parsed nothing and applied no game logic -- returning on those would have silently
+            // dropped core gameplay packets. They have been removed; the registry is empty until
+            // real handlers land.
             if (await PacketProcessor.ProcessAsync(client, packet))
-            {
-
-            }
+                return;
 
             ushort Length = BitConverter.ToUInt16(packet, 0);
             ushort ID = BitConverter.ToUInt16(packet, 2);

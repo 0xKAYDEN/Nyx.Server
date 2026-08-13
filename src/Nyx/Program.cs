@@ -666,6 +666,10 @@ public sealed class Program
             // Start processing packets from the session
             _ = ProcessAuthSessionPacketsAsync(session);
         };
+
+        // Socket teardown -> auth-state teardown. This subscription was missing, so
+        // AuthServer_OnClientDisconnect was dead code and auth sessions were never released.
+        authService.OnSessionDisconnected += AuthServer_OnClientDisconnect;
         
         // Initialize Game Network Service  
         var gameService = ApplicationHost!.Services.GetRequiredService<Nyx.Network.GameNetworkService>();
@@ -678,6 +682,16 @@ public sealed class Program
             // Start processing packets from the session
             _ = ProcessGameSessionPacketsAsync(session);
         };
+
+        // Socket teardown -> game-state teardown.
+        //
+        // This subscription was missing, which made GameServer_OnClientDisconnect dead code:
+        // when a connection dropped, GameClient.Disconnect() never ran, so the player was never
+        // removed from Kernel.GamePool or from other players' screens, and -- worst of all --
+        // their character was never saved. NetworkService raises this from the finally block of
+        // the per-connection handler, so it fires for every termination path (clean close,
+        // socket error, idle reap, and server shutdown).
+        gameService.OnSessionDisconnected += GameServer_OnClientDisconnect;
         
         Log.Information("Network services initialized successfully");
     }
@@ -848,47 +862,78 @@ public sealed class Program
         }
     }
     
+    /// <summary>
+    /// Upper bound on decrypted bytes held per connection while waiting for a packet to complete.
+    /// Comfortably above the 8192-byte maximum packet size.
+    /// </summary>
+    private const int MaxPendingPacketBytes = 16384;
+
     private static async Task ProcessEncryptedDataAsync(byte[] buffer, int length, Client.GameClient client)
     {
         try
         {
-            // Decrypt in place
+            // Decrypt in place. The cipher is stateful and stream-ordered, so every received byte
+            // must be decrypted exactly once, in arrival order -- including bytes that turn out to
+            // belong to a packet that is still incomplete.
             client.Cryptography.Decrypt(buffer, length);
-            
+
+            // Prepend the plaintext tail left over from the previous read, so a packet split across
+            // two socket reads is reassembled instead of dropped.
+            var data = client.CombineWithRemainder(buffer, length, out int available);
+
             // Frame packets from decrypted data
             // TQ format: [Length:2][Data:Length-4][Seal:8]
             // The Length field does NOT include the 8-byte seal
             const int SealSize = 8;
             int offset = 0;
-            while (offset + 2 <= length)
+            while (offset + 2 <= available)
             {
-                ushort packetLen = BitConverter.ToUInt16(buffer, offset);
+                ushort packetLen = BitConverter.ToUInt16(data, offset);
                 
                 // Validate packet length
                 if (packetLen < 4 || packetLen > 8192)
                 {
+                    // A bad length means the stream is no longer trustworthy: either the cipher is
+                    // out of sync or the peer is malicious. Framing cannot resynchronise, so drop
+                    // the connection rather than resume at a guessed offset.
                     Log.Warning("Invalid packet length {Length} at offset {Offset} from {Name}", packetLen, offset, client.Entity?.Name ?? "Unknown");
-                    break;
+                    client.SaveReceiveRemainder(data, 0, 0);
+                    client.Disconnect();
+                    return;
                 }
                 
                 // Total size = packet length + seal (8 bytes)
                 int totalSize = packetLen + SealSize;
                 
-                if (offset + totalSize > length)
+                if (offset + totalSize > available)
                 {
-                    // Not enough data for complete packet + seal
+                    // Incomplete packet: keep the tail and wait for the rest of it.
                     break;
                 }
                 
                 // Extract packet INCLUDING seal
                 byte[] packet = new byte[totalSize];
-                Buffer.BlockCopy(buffer, offset, packet, 0, totalSize);
+                Buffer.BlockCopy(data, offset, packet, 0, totalSize);
                 
                 // Process the framed packet
                 await ProcessDecryptedPacketAsync(packet, client);
                 
                 offset += totalSize;
             }
+
+            // Carry the unconsumed tail (if any) into the next read.
+            int remaining = available - offset;
+            if (remaining > MaxPendingPacketBytes)
+            {
+                // Guard against a peer that sends a valid-looking header and then stalls, pinning
+                // memory per connection indefinitely.
+                Log.Warning("Reassembly buffer overflow ({Bytes} bytes) from {Name}", remaining, client.Entity?.Name ?? "Unknown");
+                client.SaveReceiveRemainder(data, 0, 0);
+                client.Disconnect();
+                return;
+            }
+
+            client.SaveReceiveRemainder(data, offset, remaining);
         }
         catch (Exception ex)
         {

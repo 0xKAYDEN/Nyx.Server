@@ -30,7 +30,7 @@ namespace Nyx.Threading.Network
 
         /// <summary>
         /// Enqueues a packet for processing within this container.
-        /// The packet will be processed by the worker thread pinned to the CPU core.
+        /// The packet is processed sequentially by this container's single worker.
         /// </summary>
         public async ValueTask ProcessPacketAsync(GameSession session, byte[] packet, Func<GameSession, byte[], CancellationToken, ValueTask> handler)
         {

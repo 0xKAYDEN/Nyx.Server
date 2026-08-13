@@ -140,8 +140,13 @@ namespace Nyx.Server
         public static ConcurrentDictionary<uint, Network.GamePackets.ConquerItem> AuctionItems = new ConcurrentDictionary<uint, Network.GamePackets.ConquerItem>();
         public static Game.ConquerStructures.QuizShow QuizShow = new Game.ConquerStructures.QuizShow();
         public static ConcurrentDictionary<uint, Game.Entity> BlackSpoted = new ConcurrentDictionary<uint, Game.Entity>();
-        public static Dictionary<uint, Clan> Clans = new Dictionary<uint, Clan>();
-        public static Dictionary<uint, Game.Features.Reincarnation.ReincarnateInfo> ReincarnatedCharacters = new Dictionary<uint, Game.Features.Reincarnation.ReincarnateInfo>();
+        // THREAD-SAFETY: was a plain Dictionary mutated from packet handlers, guild logic and
+        // timer callbacks. Safe only while all work was serialised on one thread; a data race
+        // the moment game-logic sharding is enabled. SafeDictionary is a ConcurrentDictionary
+        // wrapper that keeps Dictionary-compatible Add/Remove semantics.
+        public static SafeDictionary<uint, Clan> Clans = new SafeDictionary<uint, Clan>();
+        // THREAD-SAFETY: see Clans above.
+        public static SafeDictionary<uint, Game.Features.Reincarnation.ReincarnateInfo> ReincarnatedCharacters = new SafeDictionary<uint, Game.Features.Reincarnation.ReincarnateInfo>();
         public static ConcurrentDictionary<ulong, Database.AccountTable> AwaitingPool = new ConcurrentDictionary<ulong, Database.AccountTable>();
         public static ConcurrentDictionary<uint, Client.GameClient> GamePool = new ConcurrentDictionary<uint, Client.GameClient>();
         public static ConcurrentDictionary<uint, BotClient> Bots = new ConcurrentDictionary<uint, BotClient>();
@@ -149,7 +154,8 @@ namespace Nyx.Server
         public static SafeDictionary<uint, Game.ConquerStructures.Society.Guild> Guilds_adv = new SafeDictionary<uint, Nyx.Server.Game.ConquerStructures.Society.Guild>();
         public static SafeDictionary<ushort, Game.Map> Maps = new SafeDictionary<ushort, Game.Map>();
         public static SafeDictionary<uint, Game.ConquerStructures.Society.Guild> Guilds = new SafeDictionary<uint, Nyx.Server.Game.ConquerStructures.Society.Guild>();
-        public static Dictionary<uint, Nyx.Server.Network.GamePackets.Union.UnionClass> Unions = new Dictionary<uint, Nyx.Server.Network.GamePackets.Union.UnionClass>();
+        // THREAD-SAFETY: see Clans above.
+        public static SafeDictionary<uint, Nyx.Server.Network.GamePackets.Union.UnionClass> Unions = new SafeDictionary<uint, Nyx.Server.Network.GamePackets.Union.UnionClass>();
         public static SafeDictionary<uint, string> Furnitures = new SafeDictionary<uint, string>();
         public static List<char> InvalidCharacters = new List<char>() { ' ', '[', ']', '#', '\\', '/', '"', '=', '', };
         public static List<string> Insults = new List<string>() { "k o s", "Dick", "head", "mother", "fucker", "Kick", "ass", "Fuck ur self", "5od yad", "abok", "Dick", "cock", "M3rsen", "pussy", "son of bitch", "kos", "omk", " k o s", "mtnak", "sharmot", "5owl", "5awl", "zanya", "3rs", "hanekak", "Dana hanekak", "Den", "Sharmota", "Kosomen omak", "Kosomen", "Mayten", "a7a", "a7eh", "fuck", "a 7 a", "a7 a" };

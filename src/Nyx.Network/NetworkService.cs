@@ -44,6 +44,21 @@ public abstract class NetworkService : BackgroundService
     private int _port;
     private CancellationTokenSource? _linkedCts;
 
+    /// <summary>
+    /// Monotonic source for <see cref="GameSession.ConnectionId"/>.
+    /// </summary>
+    /// <remarks>
+    /// Previously nothing ever assigned ConnectionId, so every session carried the default
+    /// value of 0. Packet routing hashes this value (connectionId % containerCount), so every
+    /// connection resolved to container 0 and the remaining network containers stayed idle for
+    /// the lifetime of the process. Assigning a unique id here is what actually distributes
+    /// sessions across the container pool.
+    ///
+    /// Starts at 0 and is pre-incremented, so the first session gets id 1; 0 is reserved as the
+    /// "unassigned" sentinel and is never handed out.
+    /// </remarks>
+    private static int _connectionIdCounter;
+
     #endregion
 
     #region Events
@@ -191,13 +206,19 @@ public abstract class NetworkService : BackgroundService
         try
         {
             session = CreateSession(socket);
-            
+
+            // Assign a unique, monotonic connection id BEFORE any listener runs.
+            // Packet routing shards on this value, so it must be set before OnSessionConnected
+            // fires and before the receive loop can enqueue the first packet.
+            // Interlocked.Increment wraps to negative at int.MaxValue; the unchecked cast to
+            // uint keeps the value well-defined and the modulo routing correct across the wrap.
+            session.ConnectionId = unchecked((uint)Interlocked.Increment(ref _connectionIdCounter));
+
             var sessionInfo = new SessionInfo
             {
                 Session = session,
                 SessionId = sessionId,
-                ConnectedAt = DateTime.UtcNow,
-                LastActivity = DateTime.UtcNow
+                ConnectedAt = DateTime.UtcNow
             };
 
             if (!_sessions.TryAdd(sessionId, sessionInfo))
@@ -270,6 +291,11 @@ public abstract class NetworkService : BackgroundService
                 var now = DateTime.UtcNow;
                 var inactiveSessions = new List<string>();
 
+                // Idle is measured from GameSession.LastReceiveTime, which the receive loop
+                // stamps on every read. The old code compared SessionInfo.LastActivity, which
+                // was only ever written once at construction (its only mutator,
+                // UpdateSessionActivity, had no callers), so this check could never be true and
+                // half-open connections accumulated for the lifetime of the process.
                 foreach (var kvp in _sessions)
                 {
                     if (now - kvp.Value.LastActivity > SessionTimeout)
@@ -287,9 +313,11 @@ public abstract class NetworkService : BackgroundService
                             sessionId,
                             sessionInfo.Session.IP,
                             now - sessionInfo.LastActivity);
-                        
+
+                        // Disconnect() tears down the socket, which unblocks the receive loop in
+                        // HandleClientAsync; its finally block raises OnSessionDisconnected and
+                        // disposes the session. Disposing here as well would race that path.
                         sessionInfo.Session.Disconnect();
-                        sessionInfo.Session.Dispose();
                     }
                 }
             }
@@ -384,7 +412,10 @@ public abstract class NetworkService : BackgroundService
     {
         if (_sessions.TryGetValue(sessionId, out var info))
         {
-            info.LastActivity = DateTime.UtcNow;
+            // Activity is now tracked on the session itself by the receive loop, so this is a
+            // no-op kept for API compatibility. Stamping it here is still correct for callers
+            // that want to keep a session alive across a long non-socket operation.
+            info.Session.LastReceiveTime = DateTime.UtcNow;
         }
     }
 
@@ -435,7 +466,15 @@ public abstract class NetworkService : BackgroundService
         public required GameSession Session { get; init; }
         public required string SessionId { get; init; }
         public DateTime ConnectedAt { get; init; }
-        public DateTime LastActivity { get; set; }
+
+        /// <summary>
+        /// Last time this session read data from its socket.
+        /// </summary>
+        /// <remarks>
+        /// Delegates to <see cref="GameSession.LastReceiveTime"/>, which the receive loop keeps
+        /// current, instead of holding a private copy that nothing updated.
+        /// </remarks>
+        public DateTime LastActivity => Session.LastReceiveTime;
     }
 
     #endregion
