@@ -18,6 +18,7 @@ using Serilog;
 using Nyx.Server.Bots;
 using Nyx.Server.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using Nyx.Threading.Core;
 namespace Nyx.Server.Network
 {
     public static class PacketHandler
@@ -23349,12 +23350,23 @@ namespace Nyx.Server.Network
                                 }
                             case "unban":
                                 {
-                                    var Account = new Database.AccountTable(Data[1]);
-                                    if (Account.State == Nyx.Server.Database.AccountTable.AccountState.Banned)
-                                    {
-                                        Account.State = Nyx.Server.Database.AccountTable.AccountState.Player;
-                                        Account.SaveState();
-                                    }
+                                    // Two database round-trips (load the account, then write its
+                                    // state) issued from the packet-handling path. Loading used to
+                                    // happen inside the AccountTable constructor, which blocked
+                                    // this thread on the query. The whole command is now handed to
+                                    // the database repository; nothing here needs its result.
+                                    string unbanTarget = Data[1];
+                                    _ = ThreadingController.EnqueueAsync(
+                                        Nyx.Threading.Enums.RepositoryCategory.Database,
+                                        async _ =>
+                                        {
+                                            var account = await Database.AccountTable.CreateAsync(unbanTarget).ConfigureAwait(false);
+                                            if (account.State == Nyx.Server.Database.AccountTable.AccountState.Banned)
+                                            {
+                                                account.State = Nyx.Server.Database.AccountTable.AccountState.Player;
+                                                account.SaveState();
+                                            }
+                                        });
                                     break;
                                 }
                             case "banip":

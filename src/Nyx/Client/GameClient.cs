@@ -4689,7 +4689,10 @@ namespace Nyx.Server.Client
             if (!Kernel.GamePool.ContainsKey(UID))
             {
                 this.ReadyToPlay();
-                this.Account = new Database.AccountTable(null);
+                // Booth placeholders are not real logins: they need an AccountTable purely as a
+                // carrier for EntityID. This used to be `new AccountTable(null)`, which threw
+                // ArgumentNullException from the constructor's guard before any lookup happened.
+                this.Account = Database.AccountTable.CreateDetached();
                 this.Account.EntityID = UID;
                 this.Entity = new Entity(EntityFlag.Player, false);
                 this.Entity.Owner = this;

@@ -70,6 +70,20 @@ namespace Nyx.Server.Database
             return table;
         }
 
+        /// <summary>
+        /// Creates an account object that is not backed by a database row and performs no I/O.
+        /// </summary>
+        /// <remarks>
+        /// Used by synthetic, non-authenticated clients (booth/bot placeholders) that need an
+        /// <see cref="AccountTable"/> only as a carrier for <see cref="EntityID"/>. Previously
+        /// those call sites passed <c>null</c> to the public constructor, which threw
+        /// <see cref="ArgumentNullException"/> before it ever reached the database -- making the
+        /// booth loader dead code that could only fail. Making the intent explicit means the
+        /// authenticated path can keep its non-empty username guard.
+        /// </remarks>
+        public static AccountTable CreateDetached(string? username = null)
+            => new AccountTable(username ?? string.Empty) { Exists = false };
+
         private async Task LoadAsync()
         {
             try
