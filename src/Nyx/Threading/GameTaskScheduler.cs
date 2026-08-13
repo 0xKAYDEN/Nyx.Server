@@ -5,7 +5,8 @@ namespace Nyx.Server.Threading;
 
 /// <summary>
 /// Priority levels for game work items.
-/// Maps to <see cref="RepositoryCategory"/> when enqueuing.
+/// Resolves to a <see cref="RepositoryCategory"/> (which container runs the work) plus a
+/// <see cref="TaskPriority"/> (its order within that container) when enqueuing.
 /// </summary>
 public enum WorkPriority : byte
 {
@@ -86,6 +87,14 @@ public readonly record struct QueueMetrics(
 /// <para><b>Migrated 2026-07-27:</b> All enqueue calls now route directly through
 /// <see cref="ThreadingController"/>.  This type is kept as a backward-compatible
 /// facade; new code should call <see cref="ThreadingController"/> methods directly.</para>
+///
+/// <para><b>Priorities are real as of the threading rework.</b> A <see cref="WorkPriority"/> now
+/// resolves along two axes: <see cref="MapWorkPriority"/> picks the container (which thread, which
+/// partition of state) and <see cref="MapTaskPriority"/> picks the ordering within that
+/// container's backlog. Previously only the first axis existed, so Critical, Combat, PlayerInput
+/// and AI all became one FIFO queue and the declared priority had no effect on execution order.
+/// New code should pass a <see cref="TaskPriority"/> to <see cref="ThreadingController"/>
+/// directly rather than going through <see cref="WorkPriority"/>.</para>
 /// </summary>
 [Obsolete("All scheduling now routes through ThreadingController directly. "
     + "Use ThreadingController.EnqueueAsync / TryEnqueue with RepositoryCategory instead. "
@@ -103,8 +112,9 @@ public sealed class GameTaskScheduler : System.IDisposable
     public async ValueTask EnqueueAsync(GameTask task, System.Threading.CancellationToken ct = default)
     {
         var category = MapWorkPriority(task.Priority);
+        var priority = MapTaskPriority(task.Priority);
         var shardKey = task.PartitionId > 0 ? task.PartitionId : (int)task.EntityId;
-        await ThreadingController.EnqueueAsync(category, task.Handler, shardKey);
+        await ThreadingController.EnqueueAsync(category, priority, task.Handler, shardKey);
         task.CompletionSource?.TrySetResult(true);
     }
 
@@ -116,8 +126,9 @@ public sealed class GameTaskScheduler : System.IDisposable
     public bool TryEnqueue(GameTask task)
     {
         var category = MapWorkPriority(task.Priority);
+        var priority = MapTaskPriority(task.Priority);
         var shardKey = task.PartitionId > 0 ? task.PartitionId : (int)task.EntityId;
-        return ThreadingController.TryEnqueue(category, task.Handler, shardKey);
+        return ThreadingController.TryEnqueue(category, priority, task.Handler, shardKey);
     }
 
     /// <summary>
@@ -128,14 +139,25 @@ public sealed class GameTaskScheduler : System.IDisposable
     public async ValueTask EnqueueAsync(WorkPriority priority, Func<System.Threading.CancellationToken, ValueTask> handler, int shardKey = 0)
     {
         var category = MapWorkPriority(priority);
-        await ThreadingController.EnqueueAsync(category, handler, shardKey);
+        await ThreadingController.EnqueueAsync(category, MapTaskPriority(priority), handler, shardKey);
     }
 
     #endregion
 
     #region Internal helpers
 
-    private static RepositoryCategory MapWorkPriority(WorkPriority priority)
+    /// <summary>
+    /// Maps a <see cref="WorkPriority"/> onto the container that should run the work.
+    /// </summary>
+    /// <remarks>
+    /// Several priorities intentionally share a category: Critical, Combat, PlayerInput and AI all
+    /// operate on the same partitioned game state, so they must run on the same shard worker to
+    /// keep that state single-writer. What used to be wrong was that the mapping stopped there --
+    /// the urgency was discarded and everything became one FIFO queue. The category is now paired
+    /// with <see cref="MapTaskPriority"/>, which preserves the urgency as an ordering within the
+    /// container.
+    /// </remarks>
+    internal static RepositoryCategory MapWorkPriority(WorkPriority priority)
     {
         return priority switch
         {
@@ -143,6 +165,28 @@ public sealed class GameTaskScheduler : System.IDisposable
             WorkPriority.Monitoring     => RepositoryCategory.BackgroundTasks,
             WorkPriority.AI             => RepositoryCategory.GameLogic,
             _                           => RepositoryCategory.GameLogic  // Critical, Combat, PlayerInput
+        };
+    }
+
+    /// <summary>
+    /// Maps a <see cref="WorkPriority"/> onto the intra-container execution priority.
+    /// </summary>
+    /// <remarks>
+    /// This is the half that was missing. With it, the six declared priorities produce genuinely
+    /// different scheduling behaviour instead of collapsing to two categories and one FIFO queue:
+    /// a Critical packet now overtakes AI ticks already queued on the same shard.
+    /// </remarks>
+    internal static TaskPriority MapTaskPriority(WorkPriority priority)
+    {
+        return priority switch
+        {
+            WorkPriority.Critical       => TaskPriority.Critical,
+            WorkPriority.Combat         => TaskPriority.High,
+            WorkPriority.PlayerInput    => TaskPriority.High,
+            WorkPriority.AI             => TaskPriority.Normal,
+            WorkPriority.BackgroundSave => TaskPriority.Low,
+            WorkPriority.Monitoring     => TaskPriority.Low,
+            _                           => TaskPriority.Normal
         };
     }
 

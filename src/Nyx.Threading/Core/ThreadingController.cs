@@ -29,7 +29,6 @@ public static class ThreadingController
     private static AsyncTimerScheduler? _timerScheduler;
     private static Repository? _databaseRepo;
     private static Repository? _backgroundRepo;
-    private static Repository? _highPriorityRepo;
     private static Repository[] _gameLogicRepos = Array.Empty<Repository>();
     private static int _networkContainerCount;
     private static int _subscriptionCounter;
@@ -132,21 +131,30 @@ public static class ThreadingController
                 "Database",
                 0,
                 5000);
-            _databaseRepo = new Repository("DatabaseRepo", dbContainer);
+            _databaseRepo = new Repository("DatabaseRepo", dbContainer)
+            {
+                DefaultPriority = TaskPriority.Low
+            };
 
             // Background: low-urgency periodic work.
             var bgContainer = ContainerRegistry.GetOrCreateContainer(
                 "BackgroundTasks",
                 0,
                 5000);
-            _backgroundRepo = new Repository("BackgroundRepo", bgContainer);
+            _backgroundRepo = new Repository("BackgroundRepo", bgContainer)
+            {
+                DefaultPriority = TaskPriority.Low
+            };
 
-            // High priority: latency-sensitive work that must not queue behind game logic.
-            var hpContainer = ContainerRegistry.GetOrCreateContainer(
-                "HighPriority",
-                0,
-                5000);
-            _highPriorityRepo = new Repository("HighPriorityRepo", hpContainer);
+            // NOTE: there is no longer a separate "HighPriority" container.
+            //
+            // One used to be created here, but GetRepository had no case that returned it, so it
+            // was an idle thread that never received a task. Urgency is now expressed as a
+            // TaskPriority *within* a container (see ThreadContainer's priority channels) rather
+            // than as a separate container. That is the correct model: a dedicated high-priority
+            // container would run on a different thread from the shard that owns the state the
+            // urgent task needs to touch, reintroducing exactly the cross-thread access that
+            // shard ownership exists to eliminate.
 
             // NOTE: _playerRepo / _mapRepo / _databaseShardedRepo are created lazily on first use
             // (see GetOrCreateShardedRepo). They were previously declared but never assigned, so
@@ -200,7 +208,6 @@ public static class ThreadingController
             _gameLogicRepos = Array.Empty<Repository>();
             _databaseRepo = null;
             _backgroundRepo = null;
-            _highPriorityRepo = null;
             _playerRepo = null;
             _mapRepo = null;
             _databaseShardedRepo = null;
@@ -234,7 +241,12 @@ public static class ThreadingController
             RepositoryCategory.Database => _databaseRepo!,
             RepositoryCategory.BackgroundTasks or RepositoryCategory.LongRunningOperations =>
                 _backgroundRepo!,
-            _ => _highPriorityRepo!
+
+            // Every declared category is handled above. An unhandled value means a new category
+            // was added without a routing decision, which used to fall through to the unreachable
+            // HighPriority repo and silently run the work on an unexpected thread.
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(category), category, "No repository is mapped to this category.")
         };
     }
 
@@ -310,8 +322,14 @@ public static class ThreadingController
     #region Task Queueing
 
     /// <summary>
-    /// Enqueues an async task to the specified category.
+    /// Enqueues an async task to the specified category at that category's default priority.
     /// </summary>
+    /// <remarks>
+    /// The category selects the container -- i.e. the thread and the partition of state the task
+    /// will run against. The priority selects the order within that container's own backlog. Use
+    /// the overload taking a <see cref="TaskPriority"/> for work that must overtake queued
+    /// gameplay, such as authentication or a disconnect.
+    /// </remarks>
     public static ValueTask EnqueueAsync(
         RepositoryCategory category,
         Func<CancellationToken, ValueTask> handler,
@@ -322,7 +340,20 @@ public static class ThreadingController
     }
 
     /// <summary>
-    /// Non-blocking attempt to enqueue a task.
+    /// Enqueues an async task to the specified category at an explicit priority.
+    /// </summary>
+    public static ValueTask EnqueueAsync(
+        RepositoryCategory category,
+        TaskPriority priority,
+        Func<CancellationToken, ValueTask> handler,
+        int shardKey = 0)
+    {
+        var repo = GetRepository(category, shardKey);
+        return repo.EnqueueTaskAsync(handler, priority);
+    }
+
+    /// <summary>
+    /// Non-blocking attempt to enqueue a task at the category's default priority.
     /// </summary>
     public static bool TryEnqueue(
         RepositoryCategory category,
@@ -331,6 +362,19 @@ public static class ThreadingController
     {
         var repo = GetRepository(category, shardKey);
         return repo.TryEnqueueTask(handler);
+    }
+
+    /// <summary>
+    /// Non-blocking attempt to enqueue a task at an explicit priority.
+    /// </summary>
+    public static bool TryEnqueue(
+        RepositoryCategory category,
+        TaskPriority priority,
+        Func<CancellationToken, ValueTask> handler,
+        int shardKey = 0)
+    {
+        var repo = GetRepository(category, shardKey);
+        return repo.TryEnqueueTask(handler, priority);
     }
 
     #endregion
