@@ -40,6 +40,38 @@ public static class ThreadingController
     private static ShardedRepository? _databaseShardedRepo;
     private static readonly ConcurrentDictionary<string, ShardedRepository> _customRepos = new();
 
+    /// <summary>
+    /// Default shard count for the lazily created sharded repositories.
+    /// </summary>
+    private static int DefaultShardCount => Math.Min(4, Environment.ProcessorCount);
+
+    /// <summary>
+    /// Lazily creates a sharded repository, so its dedicated worker threads are only spawned if
+    /// the corresponding API is actually used.
+    /// </summary>
+    /// <remarks>
+    /// Double-checked locking on the shared init lock. Reference assignment is atomic and the
+    /// .NET memory model gives writes release semantics, so a caller that observes a non-null
+    /// field also observes a fully constructed repository.
+    /// </remarks>
+    private static ShardedRepository GetOrCreateShardedRepo(
+        ref ShardedRepository? field, string name, int? capacity)
+    {
+        var existing = field;
+        if (existing != null) return existing;
+
+        lock (_initLock)
+        {
+            // Re-read under the lock: another thread may have created it while we waited.
+            existing = field;
+            if (existing != null) return existing;
+
+            var created = new ShardedRepository(name, DefaultShardCount, capacity);
+            field = created;
+            return created;
+        }
+    }
+
     #endregion
 
     #region Properties
@@ -116,6 +148,13 @@ public static class ThreadingController
                 5000);
             _highPriorityRepo = new Repository("HighPriorityRepo", hpContainer);
 
+            // NOTE: _playerRepo / _mapRepo / _databaseShardedRepo are created lazily on first use
+            // (see GetOrCreateShardedRepo). They were previously declared but never assigned, so
+            // every caller silently took the null-check fallback and collapsed onto the unsharded
+            // repo -- the shard key was computed and then discarded. They are not built eagerly
+            // here because each shard owns a dedicated LongRunning thread, and most deployments
+            // use only a subset of these three.
+
             _timerScheduler = new AsyncTimerScheduler();
             _timerScheduler.Start();
 
@@ -141,10 +180,30 @@ public static class ThreadingController
             NetworkContainerRegistry.ShutdownAll();
             ContainerRegistry.ShutdownAll();
 
+            // Dispose the sharded repositories so any IDisposable shard state is released.
+            // Their containers were already torn down by ContainerRegistry.ShutdownAll above,
+            // which also clears the name->container map, so a later EnsureInitialized builds
+            // fresh containers and cannot collide on RegisterRepository.
+            foreach (var repo in new[] { _playerRepo, _mapRepo, _databaseShardedRepo })
+            {
+                try { repo?.Dispose(); }
+                catch (Exception ex) { _logger.Error(ex, "Error disposing sharded repository"); }
+            }
+
+            foreach (var kvp in _customRepos)
+            {
+                try { kvp.Value.Dispose(); }
+                catch (Exception ex) { _logger.Error(ex, "Error disposing custom repository '{Name}'", kvp.Key); }
+            }
+            _customRepos.Clear();
+
             _gameLogicRepos = Array.Empty<Repository>();
             _databaseRepo = null;
             _backgroundRepo = null;
             _highPriorityRepo = null;
+            _playerRepo = null;
+            _mapRepo = null;
+            _databaseShardedRepo = null;
             _networkContainerCount = 0;
             _initialized = false;
 
@@ -168,7 +227,10 @@ public static class ThreadingController
             RepositoryCategory.NetworkIO => throw new InvalidOperationException(
                 "Use NetworkContainerRegistry for network I/O packet routing"),
             RepositoryCategory.GameLogic or RepositoryCategory.Tournament =>
-                _gameLogicRepos[Math.Abs(shardKey) % _gameLogicRepos.Length],
+                // Masked remainder, not Math.Abs: Math.Abs(int.MinValue) throws OverflowException.
+                // Shard keys are frequently casts of uint entity/map ids, so int.MinValue is
+                // reachable from a real id (0x80000000) rather than being merely theoretical.
+                _gameLogicRepos[(int)((uint)shardKey % (uint)_gameLogicRepos.Length)],
             RepositoryCategory.Database => _databaseRepo!,
             RepositoryCategory.BackgroundTasks or RepositoryCategory.LongRunningOperations =>
                 _backgroundRepo!,
@@ -306,15 +368,8 @@ public static class ThreadingController
     {
         EnsureInitialized();
         
-        if (_playerRepo == null)
-        {
-            // Fallback to regular game logic repo
-            var repo = GetRepository(RepositoryCategory.GameLogic, (int)entityId);
-            return repo.EnqueueTaskAsync(handler);
-        }
-        
-        var shardKey = (int)entityId;
-        return _playerRepo.GetShard(shardKey).EnqueueTaskAsync(handler);
+        var playerRepo = GetOrCreateShardedRepo(ref _playerRepo, "Player", 10000);
+        return playerRepo.GetShard(unchecked((int)entityId)).EnqueueTaskAsync(handler);
     }
 
     /// <summary>
@@ -324,15 +379,8 @@ public static class ThreadingController
     {
         EnsureInitialized();
         
-        if (_mapRepo == null)
-        {
-            // Fallback to regular game logic repo
-            var repo = GetRepository(RepositoryCategory.GameLogic, (int)mapId);
-            return repo.EnqueueTaskAsync(handler);
-        }
-        
-        var shardKey = (int)mapId;
-        return _mapRepo.GetShard(shardKey).EnqueueTaskAsync(handler);
+        var mapRepo = GetOrCreateShardedRepo(ref _mapRepo, "Map", 10000);
+        return mapRepo.GetShard(unchecked((int)mapId)).EnqueueTaskAsync(handler);
     }
 
     /// <summary>
@@ -342,23 +390,32 @@ public static class ThreadingController
     {
         EnsureInitialized();
         
-        if (_databaseShardedRepo == null)
-        {
-            // Fallback to regular database repo
-            return _databaseRepo!.EnqueueTaskAsync(handler);
-        }
-        
-        return _databaseShardedRepo.GetShard(shardKey).EnqueueTaskAsync(handler);
+        var dbRepo = GetOrCreateShardedRepo(ref _databaseShardedRepo, "DatabaseSharded", 5000);
+        return dbRepo.GetShard(shardKey).EnqueueTaskAsync(handler);
     }
 
     /// <summary>
-    /// Gets or creates a custom sharded repository.
+    /// Gets or creates a custom sharded repository, with one container (thread) per shard.
     /// </summary>
-    public static ShardedRepository GetOrCreateCustomRepository(string name, int shardCount, ThreadContainer container)
+    public static ShardedRepository GetOrCreateCustomRepository(string name, int shardCount, int? capacityPerShard = 10000)
     {
         EnsureInitialized();
-        
-        return _customRepos.GetOrAdd(name, _ => new ShardedRepository(name, shardCount, container));
+
+        return _customRepos.GetOrAdd(name, n => new ShardedRepository(n, shardCount, capacityPerShard));
+    }
+
+    /// <summary>
+    /// Gets or creates a custom sharded repository whose shards all share one container.
+    /// </summary>
+    /// <remarks>
+    /// All shards execute sequentially on a single thread. Prefer the overload taking a shard
+    /// capacity unless you specifically need global ordering across shards.
+    /// </remarks>
+    public static ShardedRepository GetOrCreateCustomRepository(string name, int shardCount, IThreadContainer container)
+    {
+        EnsureInitialized();
+
+        return _customRepos.GetOrAdd(name, n => new ShardedRepository(n, shardCount, container));
     }
 
     /// <summary>

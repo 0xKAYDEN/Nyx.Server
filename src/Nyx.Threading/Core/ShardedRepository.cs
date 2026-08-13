@@ -62,29 +62,78 @@ public sealed class ShardedRepository : IDisposable
     }
     
     /// <summary>
-    /// Creates a new ShardedRepository with the specified configuration.
+    /// Creates a new ShardedRepository whose shards each run on their own thread.
     /// </summary>
+    /// <remarks>
+    /// This is the constructor that actually delivers parallelism. Each shard gets its own
+    /// <see cref="ThreadContainer"/>, so shard N is drained by worker N and state partitioned by
+    /// shard key is single-writer without locking.
+    /// </remarks>
     /// <param name="name">Name for logging/debugging.</param>
     /// <param name="shardCount">Number of shards (sub-repositories).</param>
-    /// <param name="container">Container to use for all shards.</param>
-    public ShardedRepository(string name, int shardCount, ThreadContainer container)
+    /// <param name="capacityPerShard">Bounded channel capacity per shard, or null for unbounded.</param>
+    public ShardedRepository(string name, int shardCount, int? capacityPerShard = 10000)
     {
         _name = name ?? throw new ArgumentNullException(nameof(name));
         _shardCount = shardCount > 0 ? shardCount : throw new ArgumentOutOfRangeException(nameof(shardCount));
-        
+
+        _shards = new Repository[shardCount];
+        for (var i = 0; i < shardCount; i++)
+        {
+            // Container names are global keys in ContainerRegistry, so they must incorporate the
+            // repository name to avoid two ShardedRepositories colliding on "Shard-0".
+            var shardContainer = ContainerRegistry.GetOrCreateContainer(
+                $"{name}-Shard-{i}",
+                i,
+                capacityPerShard);
+
+            _shards[i] = new Repository($"{name}-Repo-{i}", shardContainer);
+        }
+
+        _logger.Information(
+            "ShardedRepository '{Name}' created with {ShardCount} shards, one container each",
+            _name, _shardCount);
+    }
+
+    /// <summary>
+    /// Creates a new ShardedRepository where every shard shares a single container.
+    /// </summary>
+    /// <remarks>
+    /// WARNING: this does NOT parallelise. A ThreadContainer owns one channel drained by one
+    /// sequential worker, so all shards funnel through the same queue on the same thread and the
+    /// shard key merely selects a different wrapper object. This overload exists only for callers
+    /// that deliberately want strict global ordering across shards; if you want throughput, use
+    /// the constructor that takes a shard count.
+    /// </remarks>
+    /// <param name="name">Name for logging/debugging.</param>
+    /// <param name="shardCount">Number of shards (sub-repositories).</param>
+    /// <param name="container">The single container shared by all shards.</param>
+    public ShardedRepository(string name, int shardCount, IThreadContainer container)
+    {
+        _name = name ?? throw new ArgumentNullException(nameof(name));
+        _shardCount = shardCount > 0 ? shardCount : throw new ArgumentOutOfRangeException(nameof(shardCount));
+        ArgumentNullException.ThrowIfNull(container);
+
         _shards = new Repository[shardCount];
         for (var i = 0; i < shardCount; i++)
         {
             _shards[i] = new Repository($"{name}-Shard-{i}", container);
         }
-        
-        _logger.Information("ShardedRepository '{Name}' created with {ShardCount} shards", _name, _shardCount);
+
+        _logger.Warning(
+            "ShardedRepository '{Name}' created with {ShardCount} shards sharing ONE container " +
+            "('{Container}') - all shards execute sequentially on a single thread",
+            _name, _shardCount, container.Name);
     }
     
     /// <summary>
     /// Gets the shard index for a given shard key.
     /// </summary>
-    public int GetShardIndex(int shardKey) => Math.Abs(shardKey) % _shardCount;
+    /// <remarks>
+    /// Uses a masked remainder rather than Math.Abs: Math.Abs(int.MinValue) throws
+    /// OverflowException, which would turn a single unlucky negative key into a crash.
+    /// </remarks>
+    public int GetShardIndex(int shardKey) => (int)((uint)shardKey % (uint)_shardCount);
     
     /// <summary>
     /// Gets the repository for a given shard key.
