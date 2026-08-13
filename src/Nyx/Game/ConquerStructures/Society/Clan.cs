@@ -209,13 +209,15 @@ namespace Nyx.Server
 
         public UInt32 GetClanId(String name)
         {
-            lock (Kernel.Clans)
+            // No lock needed: Kernel.Clans is a SafeDictionary (ConcurrentDictionary-backed) and
+            // .Values returns a snapshot, so this enumeration cannot throw
+            // InvalidOperationException on concurrent mutation. The previous lock(Kernel.Clans)
+            // was also unsound as written -- writers elsewhere never took it, so it excluded
+            // nothing while still serialising every reader.
+            foreach (Clan clans in Kernel.Clans.Values)
             {
-                foreach (Clan clans in Kernel.Clans.Values)
-                {
-                    if (clans.Name == name)
-                        return clans.ID;
-                }
+                if (clans.Name == name)
+                    return clans.ID;
             }
             return 0;
         }
@@ -318,28 +320,47 @@ namespace Nyx.Server
             SendMessage(new Message(String.Format("{0} Has Joined the Clan!", c.Entity.Name), Color.Red, Message.Clan));
         }
 
+        /// <summary>
+        /// Serialises clan id allocation. NextClanId scans for the first free id and the caller
+        /// then inserts it, which is a check-then-act: two players creating a clan concurrently
+        /// could both observe the same free id, and the second Add would silently overwrite the
+        /// first clan (SafeDictionary.Add has add-or-update semantics).
+        /// </summary>
+        private static readonly Object _clanCreationLock = new Object();
+
         public static void CreateClan(GameClient c, String cname)
         {
-            UInt32 id = NextClanId;
-            Clan clan = new Clan(c.Entity.UID, id, cname, c.Entity.Name);
-            clan.Fund = 250000;
-            clan.ID = id;
-            clan.BPTower = 0;
-            clan.Level = 1;
-            clan.Name = cname;
-            clan.LeaderName = c.Entity.Name;
+            Clan clan;
+            UInt32 id;
 
-            clan.Members.Add(c.Entity.UID, new ClanMember()
+            lock (_clanCreationLock)
             {
-                Class = c.Entity.Class,
-                Donation = 250000,
-                Identifier = c.Entity.UID,
-                Level = c.Entity.Level,
-                Name = c.Entity.Name,
-                Rank = Ranks.ClanLeader
-            });
+                id = NextClanId;
+                clan = new Clan(c.Entity.UID, id, cname, c.Entity.Name);
+                clan.Fund = 250000;
+                clan.ID = id;
+                clan.BPTower = 0;
+                clan.Level = 1;
+                clan.Name = cname;
+                clan.LeaderName = c.Entity.Name;
 
-            Kernel.Clans.Add(id, clan);
+                clan.Members.Add(c.Entity.UID, new ClanMember()
+                {
+                    Class = c.Entity.Class,
+                    Donation = 250000,
+                    Identifier = c.Entity.UID,
+                    Level = c.Entity.Level,
+                    Name = c.Entity.Name,
+                    Rank = Ranks.ClanLeader
+                });
+
+                // TryAdd, not Add: never clobber an existing clan if the scan raced anyway.
+                if (!Kernel.Clans.TryAdd(id, clan))
+                {
+                    c.Send(new Message("Failed to create the Clan, please try again.", Color.Red, Message.TopLeft));
+                    return;
+                }
+            }
             foreach (var client2 in Kernel.GamePool.Values)
             {
                 client2.Send(

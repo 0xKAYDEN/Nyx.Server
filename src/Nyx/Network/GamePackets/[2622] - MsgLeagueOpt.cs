@@ -433,7 +433,10 @@ namespace Nyx.Server.Network.GamePackets.Union
                         {
                             if (client.Union == null && client.Guild != null && client.Entity.GuildRank == 1000)
                             {
-                                var Union1 = Kernel.Unions[LeagueOpt.dwParam3];
+                                // dwParam3 is attacker-controlled: a forged union id used to throw
+                                // KeyNotFoundException and now yields null from SafeDictionary.
+                                if (!Kernel.Unions.TryGetValue(LeagueOpt.dwParam3, out var Union1) || Union1 == null)
+                                    break;
                                 Union1.AddGuild(client);
                                 foreach (var player in Kernel.GamePool.Values)
                                 {
@@ -462,7 +465,9 @@ namespace Nyx.Server.Network.GamePackets.Union
                         {
                             if (client.Union == null && client.Guild == null)
                             {
-                                var Union2 = Kernel.Unions[LeagueOpt.dwParam3];
+                                // dwParam3 is attacker-controlled; see note above.
+                                if (!Kernel.Unions.TryGetValue(LeagueOpt.dwParam3, out var Union2) || Union2 == null)
+                                    break;
                                 Union2.AddMember(client);
                                 foreach (var player in Kernel.GamePool.Values)
                                 {

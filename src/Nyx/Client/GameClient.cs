@@ -1230,8 +1230,15 @@ namespace Nyx.Server.Client
                             {
                                 if (Entity.Myclan.LeaderName == name200)
                                 {
-                                    Kernel.Clans[Entity.ClanId].LeaderName = Entity.NewName;
-                                    Kernel.Clans[Entity.ClanId].Members[Entity.UID].Name = Entity.NewName;
+                                    // Kernel.Clans is a SafeDictionary: a missing key returns null
+                                    // instead of throwing, so the chained member access below would
+                                    // NRE on a stale ClanId. Guard both the clan and the member.
+                                    if (Kernel.Clans.TryGetValue(Entity.ClanId, out var renamedClan) && renamedClan != null)
+                                    {
+                                        renamedClan.LeaderName = Entity.NewName;
+                                        if (renamedClan.Members.TryGetValue(Entity.UID, out var renamedMember) && renamedMember != null)
+                                            renamedMember.Name = Entity.NewName;
+                                    }
                                 }
                             }
                         }

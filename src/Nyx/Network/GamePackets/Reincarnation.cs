@@ -141,7 +141,9 @@ namespace Nyx.Server.Game.Features.Reincarnation
             info.UID = client.Entity.UID;
             info.Level = client.Entity.Level;
             info.Experience = client.Entity.Experience;
-            Kernel.ReincarnatedCharacters.Add(info.UID, info);
+            // TryAdd, not Add: SafeDictionary.Add overwrites on a duplicate key, which would
+            // destroy the pre-reincarnation level/experience record used to restore the character.
+            Kernel.ReincarnatedCharacters.TryAdd(info.UID, info);
             client.Entity.FirstRebornClass = client.Entity.SecondRebornClass;
             client.Entity.SecondRebornClass = client.Entity.Class;
             client.Entity.Class = new_class;
@@ -903,7 +905,8 @@ namespace Nyx.Server.Game.Features.Reincarnation
             info.UID = Entity.UID;
             info.Level = Entity.Level;
             info.Experience = Entity.Experience;
-            Kernel.ReincarnatedCharacters.Add(info.UID, info);
+            // TryAdd: never clobber an existing reincarnation record (see note above).
+            Kernel.ReincarnatedCharacters.TryAdd(info.UID, info);
             Entity.FirstRebornClass = First;
             Entity.SecondRebornClass = Second;
             Entity.Class = Class;

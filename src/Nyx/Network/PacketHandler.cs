@@ -1382,8 +1382,15 @@ namespace Nyx.Server.Network
                                         {
                                             if (client.Union != null)
                                             {
-                                                var Union = Kernel.Unions[client.UnionID];
-                                                Union.RemoveMember(client);
+                                                // Kernel.Unions is a SafeDictionary: a missing key
+                                                // yields null rather than throwing, so guard the
+                                                // deref. client.Union can be stale if the union was
+                                                // disbanded by its leader while this client was
+                                                // still holding a reference.
+                                                if (Kernel.Unions.TryGetValue(client.UnionID, out var Union) && Union != null)
+                                                    Union.RemoveMember(client);
+                                                else
+                                                    client.Union = null;
                                             }
                                             Kernel.Guilds[Id].AddMember(client);
                                             if (Kernel.Unions.ContainsKey(Kernel.Guilds[Id].UnionID) && Kernel.Unions[Kernel.Guilds[Id].UnionID] != null)
@@ -2976,8 +2983,11 @@ namespace Nyx.Server.Network
                                                     {
                                                         if (client.Union != null)
                                                         {
-                                                            var Union = Kernel.Unions[client.UnionID];
-                                                            Union.RemoveMember(client);
+                                                            // See note above: guard the SafeDictionary lookup.
+                                                            if (Kernel.Unions.TryGetValue(client.UnionID, out var Union) && Union != null)
+                                                                Union.RemoveMember(client);
+                                                            else
+                                                                client.Union = null;
                                                         }
                                                         g.AddMember(client);
                                                         if (Kernel.Unions.ContainsKey(g.UnionID) && Kernel.Unions[g.UnionID] != null)
@@ -8232,7 +8242,9 @@ namespace Nyx.Server.Network
             info.UID = client.Entity.UID;
             info.Level = client.Entity.Level;
             info.Experience = client.Entity.Experience;
-            Kernel.ReincarnatedCharacters.Add(info.UID, info);
+            // TryAdd closes the check-then-act gap with the ContainsKey guard above and, unlike
+            // SafeDictionary.Add, will not overwrite an existing restore record.
+            Kernel.ReincarnatedCharacters.TryAdd(info.UID, info);
             client.Entity.FirstRebornClass = client.Entity.SecondRebornClass;
             client.Entity.SecondRebornClass = client.Entity.Class;
             client.Entity.Class = new_class;

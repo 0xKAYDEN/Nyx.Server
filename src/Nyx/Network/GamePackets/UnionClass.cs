@@ -185,7 +185,10 @@ namespace Nyx.Server.Network.GamePackets.Union
             ID = Union.UnionCounter.Next;
             UnionTable.CreateUnion(this);
             Kernel.Unions.Add(this.ID, this);
-            Owner.Union = Kernel.Unions[this.ID];
+            // Was: Owner.Union = Kernel.Unions[this.ID]; -- a round-trip through the dictionary to
+            // fetch the instance we just inserted. Assign directly so the reference is correct even
+            // if a concurrent writer replaces the entry between the Add and the read.
+            Owner.Union = this;
             Owner.UnionID = Owner.Union.ID;
             Owner.Offical = 1;
             Owner.Harem = 0;
@@ -400,23 +403,48 @@ namespace Nyx.Server.Network.GamePackets.Union
                 {
                     if (client.Union.LeaderUID == client.Entity.UID)
                     {
-                        Kernel.Unions.Remove(client.Union.ID);
-                        UnionTable.DeleteUnion(client.Union.ID);
-                        foreach (var mem in Kernel.Unions[client.Union.ID].Members)
+                        // Disbanding: snapshot the union BEFORE removing it from the pool.
+                        // This block used to remove the union and then immediately index
+                        // Kernel.Unions[client.Union.ID] to enumerate its members, which is a
+                        // lookup of the key that was just deleted -- it threw
+                        // KeyNotFoundException every single time a leader disbanded, aborting
+                        // RemoveMember before any member was cleaned up.
+                        var disbanding = client.Union;
+                        var disbandingId = disbanding.ID;
+
+                        Kernel.Unions.Remove(disbandingId);
+                        UnionTable.DeleteUnion(disbandingId);
+
+                        // Copy the member list: the loop below mutates per-member state and
+                        // GetClientFromName walks the live game pool.
+                        foreach (var mem in disbanding.Members.ToArray())
                         {
-                            RemoveCoreoffical(Client.GameClient.GetClientFromName(mem.Name));
-                            RemoveHarem(Client.GameClient.GetClientFromName(mem.Name));
-                            RemoveGuards(Client.GameClient.GetClientFromName(mem.Name));
-                            Client.GameClient.GetClientFromName(mem.Name).Union = null;
-                            Client.GameClient.GetClientFromName(mem.Name).Offical = 0;
-                            Client.GameClient.GetClientFromName(mem.Name).Harem = 0;
-                            Client.GameClient.GetClientFromName(mem.Name).Guards = 0;
-                            UnionTable.UpdateData(Client.GameClient.GetClientFromName(mem.Name).Entity.UID, "UnionID", 0);
+                            // Members may be offline, in which case there is no GameClient to
+                            // update. The original code called GetClientFromName up to nine
+                            // times per member and dereferenced every result unchecked, so a
+                            // single offline member threw NullReferenceException.
+                            var memberClient = Client.GameClient.GetClientFromName(mem.Name);
+                            if (memberClient == null)
+                            {
+                                // Still clear the persisted association so the member does not
+                                // rejoin a union that no longer exists.
+                                UnionTable.UpdateData(mem.ID, "UnionID", 0);
+                                continue;
+                            }
+
+                            RemoveCoreoffical(memberClient);
+                            RemoveHarem(memberClient);
+                            RemoveGuards(memberClient);
+                            memberClient.Union = null;
+                            memberClient.Offical = 0;
+                            memberClient.Harem = 0;
+                            memberClient.Guards = 0;
+                            UnionTable.UpdateData(memberClient.Entity.UID, "UnionID", 0);
                             Union.MsgLeagueOpt Res2 = new Union.MsgLeagueOpt(true);
                             Res2.Action = Union.Actions.KingdomIcon;
                             Res2.dwParam3 = Kernel.ServerKingdom;
-                            Client.GameClient.GetClientFromName(mem.Name).Send(Res2.Encode());
-                            Client.GameClient.GetClientFromName(mem.Name).Send(SendOverheadLeagueInfo(Client.GameClient.GetClientFromName(mem.Name)));
+                            memberClient.Send(Res2.Encode());
+                            memberClient.Send(SendOverheadLeagueInfo(memberClient));
                         }
                     }
                     RemoveCoreoffical(client);
