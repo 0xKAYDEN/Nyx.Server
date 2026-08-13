@@ -4317,14 +4317,17 @@ namespace Nyx.Server.Database
             return mf;
         }
 
-        public static void Load()
+        /// <summary>
+        /// Loads every monster template into the static cache without blocking the caller.
+        /// </summary>
+        public static async System.Threading.Tasks.Task LoadAsync()
         {
             // Phase-1 bridge: prefer the new repository path (PostgreSQL via Nyx.Monsters).
             if (_repository is not null)
             {
                 try
                 {
-                    _repository.LoadAllAsync().AsTask().GetAwaiter().GetResult();
+                    await _repository.LoadAllAsync().ConfigureAwait(false);
                     foreach (var t in _repository.AllTemplates())
                         MonsterInformations[t.Id] = FromTemplate(t);
                     Serilog.Log.Information(
@@ -4338,6 +4341,27 @@ namespace Nyx.Server.Database
                         "MonsterInformation.Load: repository path failed, falling back to legacy query");
                 }
             }
+        }
+
+        /// <summary>
+        /// Blocking wrapper over <see cref="LoadAsync"/>, kept for callers that cannot await.
+        /// </summary>
+        /// <remarks>
+        /// <para>Two such callers exist, and blocking is defensible in both:</para>
+        /// <list type="bullet">
+        /// <item>server startup (<c>InitializeServer</c>), which is a synchronous sequence that runs
+        /// before any listener accepts a connection -- there is no player thread to stall;</item>
+        /// <item><c>MonsterScriptGlobals</c>, whose methods are Lua entry points with synchronous
+        /// signatures fixed by the scripting contract. Those are administrative reload/spawn
+        /// operations, not per-tick work.</item>
+        /// </list>
+        /// <para>Anything on the packet or game-tick path must call <see cref="LoadAsync"/>. This
+        /// wrapper exists to make the remaining blocking call sites explicit rather than hiding a
+        /// <c>GetAwaiter().GetResult()</c> in the middle of the loader.</para>
+        /// </remarks>
+        public static void Load()
+        {
+            LoadAsync().GetAwaiter().GetResult();
 
             // ---- Legacy direct-SQL path (unchanged, retained as fallback) ----
             //using (var command = new NyxSqlCommand(MySqlCommandType.SELECT))
