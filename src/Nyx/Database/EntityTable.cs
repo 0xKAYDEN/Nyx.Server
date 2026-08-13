@@ -27,13 +27,20 @@ namespace Nyx.Server.Database
         private static EntityRepository Repository => _repository ??= new EntityRepository(DataHolder.Factory);
         
         /// <summary>
-        /// Loads an entity from the database.
+        /// Loads an entity from the database without blocking the calling thread.
         /// </summary>
-        public static bool LoadEntity(Client.GameClient client)
+        /// <remarks>
+        /// This used to be a synchronous <c>LoadEntity</c> that drove the repository with
+        /// <c>GetAwaiter().GetResult()</c>. It sits on the login path, so the blocking call ran on
+        /// whichever thread was processing packets -- every character load stalled that thread for
+        /// a full database round-trip. The method is now genuinely asynchronous, and its caller
+        /// runs the whole login sequence on the database container rather than the network path.
+        /// </remarks>
+        public static async System.Threading.Tasks.Task<bool> LoadEntityAsync(Client.GameClient client)
         {
             try
             {
-                var entity = Repository.GetByUidAsync(client.Account.EntityID).GetAwaiter().GetResult();
+                var entity = await Repository.GetByUidAsync(client.Account.EntityID).ConfigureAwait(false);
                 if (entity == null)
                     return false;
                 
@@ -644,26 +651,42 @@ namespace Nyx.Server.Database
         /// <summary>
         /// Creates a new entity in the database.
         /// </summary>
-        public static bool CreateEntity(Network.GamePackets.EnitityCreate eC, Client.GameClient client, ref string message)
+        /// <summary>
+        /// Creates a new character without blocking the calling thread.
+        /// </summary>
+        /// <returns>
+        /// Whether the character was created, and the message to show the client.
+        /// </returns>
+        /// <remarks>
+        /// The former signature was <c>bool CreateEntity(..., ref string message)</c>, and a
+        /// <c>ref</c> parameter cannot appear on an async method -- which is precisely why the two
+        /// database calls in here were written as <c>GetAwaiter().GetResult()</c>. Returning the
+        /// message alongside the result removes that constraint. Character creation makes two
+        /// round-trips (a name-uniqueness check and an insert), so on the old signature every
+        /// creation blocked the packet thread twice.
+        /// </remarks>
+        public static async System.Threading.Tasks.Task<(bool Created, string Message)> CreateEntityAsync(
+            Network.GamePackets.EnitityCreate eC, Client.GameClient client)
         {
+            string message = string.Empty;
             try
             {
                 if (eC.Name.Length > 16)
                     eC.Name = eC.Name.Substring(0, 16);
                 if (eC.Name == "")
-                    return false;
+                    return (false, message);
                     
                 if (InvalidCharacters(eC.Name))
                 {
                     message = "Invalid characters inside the name.";
-                    return false;
+                    return (false, message);
                 }
                 
                 // Check if name exists
-                if (Repository.NameExistsAsync(eC.Name).GetAwaiter().GetResult())
+                if (await Repository.NameExistsAsync(eC.Name).ConfigureAwait(false))
                 {
                     message = "The chosen name is already in use.";
-                    return false;
+                    return (false, message);
                 }
                 
                 client.Entity = new Game.Entity(Game.EntityFlag.Player, false);
@@ -755,7 +778,7 @@ namespace Nyx.Server.Database
                     Achievement = ""
                 };
                 
-                var uid = Repository.CreateAsync(entity).GetAwaiter().GetResult();
+                var uid = await Repository.CreateAsync(entity).ConfigureAwait(false);
                 
                 // Update configuration
                 using var conn = DataHolder.GetConnection();
@@ -766,13 +789,13 @@ namespace Nyx.Server.Database
                 client.Account.Save(client);
                 
                 message = "ANSWER_OK";
-                return true;
+                return (true, message);
             }
             catch (Exception ex)
             {
                 Serilog.Log.Error(ex, "Error creating entity");
                 message = "Error creating character.";
-                return false;
+                return (false, message);
             }
         }
         

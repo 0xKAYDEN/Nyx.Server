@@ -697,7 +697,7 @@ public sealed class Program
             await foreach (var packet in session.Channel.Reader.ReadAllAsync())
             {
                 if (!session.Alive) return;
-                AuthServer_OnClientReceive(packet, packet.Length, session);
+                await AuthServer_OnClientReceiveAsync(packet, packet.Length, session);
             }
         }
         catch (OperationCanceledException)
@@ -994,7 +994,7 @@ public sealed class Program
         session.Disconnect();
     }
     
-    private static void AuthServer_OnClientReceive(byte[] buffer, int length, Nyx.Network.GameSession session)
+    private static async Task AuthServer_OnClientReceiveAsync(byte[] buffer, int length, Nyx.Network.GameSession session)
     {
         try
         {
@@ -1044,7 +1044,9 @@ public sealed class Program
                 {
                     player.Info = new Network.AuthPackets.Authentication();
                     player.Info.Deserialize(packet);
-                    player.Account = new AccountTable(player.Info.Username);
+                    // Awaited, not blocked: the account lookup is a database round-trip and this
+                    // runs on the auth session's packet-processing loop.
+                    player.Account = await AccountTable.CreateAsync(player.Info.Username);
                     
                     // Check brute force protection
                     if (!BruteForceProtection.AcceptJoin(session.IP))
@@ -1100,7 +1102,7 @@ public sealed class Program
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error in AuthServer_OnClientReceive");
+            Log.Error(ex, "Error in AuthServer_OnClientReceiveAsync");
             session.Disconnect();
         }
     }

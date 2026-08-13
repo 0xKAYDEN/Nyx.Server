@@ -29,7 +29,6 @@ public static class ThreadingController
     private static AsyncTimerScheduler? _timerScheduler;
     private static Repository? _databaseRepo;
     private static Repository? _backgroundRepo;
-    private static Repository? _highPriorityRepo;
     private static Repository[] _gameLogicRepos = Array.Empty<Repository>();
     private static int _networkContainerCount;
     private static int _subscriptionCounter;
@@ -132,21 +131,30 @@ public static class ThreadingController
                 "Database",
                 0,
                 5000);
-            _databaseRepo = new Repository("DatabaseRepo", dbContainer);
+            _databaseRepo = new Repository("DatabaseRepo", dbContainer)
+            {
+                DefaultPriority = TaskPriority.Low
+            };
 
             // Background: low-urgency periodic work.
             var bgContainer = ContainerRegistry.GetOrCreateContainer(
                 "BackgroundTasks",
                 0,
                 5000);
-            _backgroundRepo = new Repository("BackgroundRepo", bgContainer);
+            _backgroundRepo = new Repository("BackgroundRepo", bgContainer)
+            {
+                DefaultPriority = TaskPriority.Low
+            };
 
-            // High priority: latency-sensitive work that must not queue behind game logic.
-            var hpContainer = ContainerRegistry.GetOrCreateContainer(
-                "HighPriority",
-                0,
-                5000);
-            _highPriorityRepo = new Repository("HighPriorityRepo", hpContainer);
+            // NOTE: there is no longer a separate "HighPriority" container.
+            //
+            // One used to be created here, but GetRepository had no case that returned it, so it
+            // was an idle thread that never received a task. Urgency is now expressed as a
+            // TaskPriority *within* a container (see ThreadContainer's priority channels) rather
+            // than as a separate container. That is the correct model: a dedicated high-priority
+            // container would run on a different thread from the shard that owns the state the
+            // urgent task needs to touch, reintroducing exactly the cross-thread access that
+            // shard ownership exists to eliminate.
 
             // NOTE: _playerRepo / _mapRepo / _databaseShardedRepo are created lazily on first use
             // (see GetOrCreateShardedRepo). They were previously declared but never assigned, so
@@ -200,7 +208,6 @@ public static class ThreadingController
             _gameLogicRepos = Array.Empty<Repository>();
             _databaseRepo = null;
             _backgroundRepo = null;
-            _highPriorityRepo = null;
             _playerRepo = null;
             _mapRepo = null;
             _databaseShardedRepo = null;
@@ -234,7 +241,12 @@ public static class ThreadingController
             RepositoryCategory.Database => _databaseRepo!,
             RepositoryCategory.BackgroundTasks or RepositoryCategory.LongRunningOperations =>
                 _backgroundRepo!,
-            _ => _highPriorityRepo!
+
+            // Every declared category is handled above. An unhandled value means a new category
+            // was added without a routing decision, which used to fall through to the unreachable
+            // HighPriority repo and silently run the work on an unexpected thread.
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(category), category, "No repository is mapped to this category.")
         };
     }
 
@@ -310,8 +322,14 @@ public static class ThreadingController
     #region Task Queueing
 
     /// <summary>
-    /// Enqueues an async task to the specified category.
+    /// Enqueues an async task to the specified category at that category's default priority.
     /// </summary>
+    /// <remarks>
+    /// The category selects the container -- i.e. the thread and the partition of state the task
+    /// will run against. The priority selects the order within that container's own backlog. Use
+    /// the overload taking a <see cref="TaskPriority"/> for work that must overtake queued
+    /// gameplay, such as authentication or a disconnect.
+    /// </remarks>
     public static ValueTask EnqueueAsync(
         RepositoryCategory category,
         Func<CancellationToken, ValueTask> handler,
@@ -322,7 +340,20 @@ public static class ThreadingController
     }
 
     /// <summary>
-    /// Non-blocking attempt to enqueue a task.
+    /// Enqueues an async task to the specified category at an explicit priority.
+    /// </summary>
+    public static ValueTask EnqueueAsync(
+        RepositoryCategory category,
+        TaskPriority priority,
+        Func<CancellationToken, ValueTask> handler,
+        int shardKey = 0)
+    {
+        var repo = GetRepository(category, shardKey);
+        return repo.EnqueueTaskAsync(handler, priority);
+    }
+
+    /// <summary>
+    /// Non-blocking attempt to enqueue a task at the category's default priority.
     /// </summary>
     public static bool TryEnqueue(
         RepositoryCategory category,
@@ -331,6 +362,19 @@ public static class ThreadingController
     {
         var repo = GetRepository(category, shardKey);
         return repo.TryEnqueueTask(handler);
+    }
+
+    /// <summary>
+    /// Non-blocking attempt to enqueue a task at an explicit priority.
+    /// </summary>
+    public static bool TryEnqueue(
+        RepositoryCategory category,
+        TaskPriority priority,
+        Func<CancellationToken, ValueTask> handler,
+        int shardKey = 0)
+    {
+        var repo = GetRepository(category, shardKey);
+        return repo.TryEnqueueTask(handler, priority);
     }
 
     #endregion
@@ -496,12 +540,39 @@ public static class ThreadingController
 }
 
 /// <summary>
-/// Async timer scheduler using PeriodicTimer for efficient, non-blocking scheduling.
-/// Replaces the old Thread.Sleep(1) busy-wait loop.
+/// Async timer scheduler backed by a due-time min-heap.
 /// </summary>
+/// <remarks>
+/// The previous implementation ticked every millisecond and rescanned <em>every</em> subscription
+/// on each tick, calling <c>DateTime.UtcNow</c> per subscription per tick. That is
+/// O(subscriptions) work 1000 times a second regardless of how many timers are actually due.
+/// The game registers eight subscriptions per player (four in <c>World.Register</c>, four in
+/// <c>Screen</c>), so a 1,000-player server performed roughly eight million due-checks and eight
+/// million clock reads per second before any game work happened.
+///
+/// This version keeps subscriptions ordered by due time in a min-heap, so a tick pops only the
+/// entries that are genuinely due -- O(due + log n) instead of O(n). Timing is measured with
+/// <c>Environment.TickCount64</c>, a cheap monotonic counter, rather than <c>DateTime.UtcNow</c>,
+/// which is both slower and non-monotonic (a clock adjustment could previously stall or stampede
+/// every timer at once).
+///
+/// Threading: the heap is owned exclusively by the propagation loop and is never locked.
+/// Subscriptions arriving from other threads (initial subscribe, and rescheduling that happens on
+/// a repository worker after the callback runs) are handed over through a lock-free queue that the
+/// loop drains at the top of each tick. Cancellation is lazy: <see cref="TimerSubscriptionBase.Dispose"/>
+/// flags the subscription and drops it from the lookup map, and the loop discards it when it
+/// surfaces. That avoids an O(n) heap removal on every player logout.
+/// </remarks>
 internal sealed class AsyncTimerScheduler : IDisposable
 {
     private readonly ConcurrentDictionary<int, TimerSubscriptionBase> _subscriptions = new();
+
+    /// <summary>Hand-off queue for subscriptions entering or re-entering the schedule.</summary>
+    private readonly ConcurrentQueue<TimerSubscriptionBase> _incoming = new();
+
+    /// <summary>Due-time ordered heap. Owned solely by the propagation loop.</summary>
+    private readonly PriorityQueue<TimerSubscriptionBase, long> _due = new();
+
     private readonly CancellationTokenSource _cts = new();
     private Task? _propagationTask;
 
@@ -513,7 +584,7 @@ internal sealed class AsyncTimerScheduler : IDisposable
     public void Stop()
     {
         _cts.Cancel();
-        
+
         try
         {
             _propagationTask?.Wait(TimeSpan.FromSeconds(2));
@@ -522,52 +593,97 @@ internal sealed class AsyncTimerScheduler : IDisposable
         {
             // Expected on cancellation
         }
-        
+
         _subscriptions.Clear();
+        _incoming.Clear();
     }
 
     public IDisposable Subscribe(Action<int> action, int periodMs, bool recurring, int initialDelayMs, Repository repo)
     {
         var sub = new TimerSubscription(action, periodMs, recurring, initialDelayMs, repo, this);
-        _subscriptions[sub.Id] = sub;
+        Register(sub);
         return sub;
     }
 
     public IDisposable Subscribe<T>(Action<T, int> action, T param, int periodMs, bool recurring, int initialDelayMs, Repository repo)
     {
         var sub = new TimerSubscription<T>(action, param, periodMs, recurring, initialDelayMs, repo, this);
-        _subscriptions[sub.Id] = sub;
+        Register(sub);
         return sub;
+    }
+
+    private void Register(TimerSubscriptionBase sub)
+    {
+        _subscriptions[sub.Id] = sub;
+        _incoming.Enqueue(sub);
+    }
+
+    /// <summary>
+    /// Returns a subscription to the schedule after its callback has completed.
+    /// Called from a repository worker thread, hence the lock-free hand-off.
+    /// </summary>
+    internal void Reschedule(TimerSubscriptionBase sub)
+    {
+        if (!sub.IsActive) return;
+        _incoming.Enqueue(sub);
     }
 
     internal void Remove(int id) => _subscriptions.TryRemove(id, out _);
 
     /// <summary>
-    /// Async propagation loop using PeriodicTimer.
-    /// Much more efficient than Thread.Sleep(1) busy-wait.
+    /// Propagation loop. Each tick drains the hand-off queue into the heap, then dispatches
+    /// only the subscriptions whose due time has arrived.
     /// </summary>
     private async Task PropagationLoopAsync(CancellationToken ct)
     {
-        // Use PeriodicTimer for efficient async waiting
+        // The tick interval remains 1 ms so scheduling granularity is unchanged. Note that on
+        // Windows the default OS timer resolution is ~15.6 ms unless timeBeginPeriod is called,
+        // so ticks arrive in bursts; the heap handles a burst correctly because it drains every
+        // entry that came due during the gap, instead of one entry per tick.
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(1));
-        
+
         try
         {
             while (await timer.WaitForNextTickAsync(ct))
             {
-                foreach (var sub in _subscriptions.Values)
+                // 1. Admit new and rescheduled subscriptions.
+                while (_incoming.TryDequeue(out var incoming))
                 {
+                    if (incoming.IsActive)
+                        _due.Enqueue(incoming, incoming.NextRunTick);
+                }
+
+                // 2. Dispatch everything that is due. One clock read for the whole batch.
+                long now = Environment.TickCount64;
+
+                while (_due.TryPeek(out var sub, out var dueTick) && dueTick <= now)
+                {
+                    _due.Dequeue();
+
+                    // Lazy cancellation: disposed subscriptions are simply dropped here.
+                    if (!sub.IsActive) continue;
+
                     try
                     {
-                        if (sub.TryMarkDueAndEnqueue())
+                        if (sub.TryMarkQueued())
                         {
                             sub.EnqueueToRepository();
+                        }
+                        else
+                        {
+                            // A previous callback is still in flight. It will hand the subscription
+                            // back on completion, so simply drop this occurrence rather than
+                            // stacking a second invocation on the repository.
                         }
                     }
                     catch (Exception ex)
                     {
-                        // Log but don't stop the scheduler
+                        // Log but don't stop the scheduler.
                         Serilog.Log.Error(ex, "Error in timer subscription {Id}", sub.Id);
+
+                        // The callback never reached its finally block, so recover the subscription
+                        // explicitly; otherwise it would sit claimed and off-heap forever.
+                        sub.OnDispatchFailed();
                     }
                 }
             }
@@ -593,28 +709,71 @@ internal abstract class TimerSubscriptionBase : IDisposable
     protected readonly Repository Repository;
     private readonly AsyncTimerScheduler _scheduler;
     private volatile bool _active = true;
-    private DateTime _nextRun;
+
+    /// <summary>
+    /// Monotonic due time in <c>Environment.TickCount64</c> units.
+    /// Written on a repository worker after the callback completes and read by the propagation
+    /// loop, so it is accessed through <see cref="Volatile"/> -- the previous <c>DateTime _nextRun</c>
+    /// field was a plain 64-bit field torn between those two threads with no synchronisation.
+    /// </summary>
+    private long _nextRunTick;
+
     private int _queued;
 
     public int Id { get; }
+
+    public bool IsActive => _active;
+
+    /// <summary>Due time used as the heap key when the subscription is admitted.</summary>
+    public long NextRunTick => Volatile.Read(ref _nextRunTick);
 
     protected TimerSubscriptionBase(int periodMs, int initialDelayMs, Repository repository, AsyncTimerScheduler scheduler)
     {
         Id = ThreadingController.NextSubscriptionKey();
         Repository = repository;
         _scheduler = scheduler;
-        _nextRun = DateTime.UtcNow.AddMilliseconds(initialDelayMs);
+        Volatile.Write(ref _nextRunTick, Environment.TickCount64 + initialDelayMs);
     }
 
     protected abstract void Invoke();
     protected abstract int PeriodMs { get; }
     protected abstract bool Recurring { get; }
 
-    public bool TryMarkDueAndEnqueue()
+    /// <summary>
+    /// Claims the subscription for dispatch. The heap already established that it is due, so this
+    /// only guards against a second dispatch while a callback is still in flight (a callback that
+    /// overruns its period must not be queued twice).
+    /// </summary>
+    public bool TryMarkQueued()
     {
-        if (!_active || Volatile.Read(ref _queued) != 0) return false;
-        if (DateTime.UtcNow <= _nextRun) return false;
+        if (!_active) return false;
         return Interlocked.CompareExchange(ref _queued, 1, 0) == 0;
+    }
+
+    /// <summary>Advances the due time by one period from now.</summary>
+    public void ScheduleNextRun()
+        => Volatile.Write(ref _nextRunTick, Environment.TickCount64 + PeriodMs);
+
+    /// <summary>Releases the in-flight claim after a dispatch that never reached the callback.</summary>
+    public void ForceReleaseQueued() => Volatile.Write(ref _queued, 0);
+
+    /// <summary>
+    /// Recovery path for a subscription whose enqueue attempt threw: clear the in-flight flag and
+    /// either put it back on the schedule or retire it, so it can never be orphaned.
+    /// </summary>
+    public void OnDispatchFailed()
+    {
+        ForceReleaseQueued();
+
+        if (_active && Recurring)
+        {
+            ScheduleNextRun();
+            _scheduler.Reschedule(this);
+        }
+        else
+        {
+            Dispose();
+        }
     }
 
     public void EnqueueToRepository()
@@ -628,10 +787,20 @@ internal abstract class TimerSubscriptionBase : IDisposable
             finally
             {
                 Volatile.Write(ref _queued, 0);
+
                 if (_active && Recurring)
-                    _nextRun = DateTime.UtcNow.AddMilliseconds(PeriodMs);
-                else if (!_active || !Recurring)
+                {
+                    // Re-arm from completion time, matching the original behaviour, then hand the
+                    // subscription back to the propagation loop. Nothing is left in the heap while
+                    // a callback runs, so a slow callback can no longer be re-examined 1000 times
+                    // a second while it is still executing.
+                    ScheduleNextRun();
+                    _scheduler.Reschedule(this);
+                }
+                else
+                {
                     Dispose();
+                }
             }
         });
     }

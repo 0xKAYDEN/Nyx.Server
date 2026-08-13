@@ -1,4 +1,5 @@
 using Nyx.Threading.Contracts;
+using Nyx.Threading.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -10,25 +11,59 @@ using Serilog;
 namespace Nyx.Threading.Core;
 
 /// <summary>
-/// High-performance async processing unit that owns a single task queue.
+/// High-performance async processing unit that owns one task queue per <see cref="TaskPriority"/>.
 /// Processes tasks sequentially using Channels for lock-free thread safety, which makes each
 /// container a single-writer execution context: state owned by exactly one container needs no
 /// locking.
-/// 
+///
 /// This is a fully async implementation - no blocking calls.
 /// Thread Safety: All public methods are thread-safe.
 /// </summary>
+/// <remarks>
+/// <para><b>Priority.</b> The container previously owned a single channel, so every task was FIFO
+/// regardless of urgency: a login handshake queued behind a thousand monster AI ticks waited for
+/// all of them. There are now four channels drained highest-priority-first, so combat and packet
+/// work overtake background housekeeping already sitting in the backlog.</para>
+///
+/// <para><b>Starvation.</b> Strict priority alone lets a saturated high queue block the lower ones
+/// forever -- an autosave that never runs is a worse bug than an autosave that runs late. Each
+/// priority therefore has a dispatch quota (<see cref="PriorityQuotas"/>): after consuming its
+/// quota the worker yields one slot to the next non-empty lower queue before returning to the top.
+/// Progress is guaranteed at every level while ordering still overwhelmingly favours urgency.</para>
+///
+/// <para><b>Ordering.</b> Tasks of the same priority keep strict FIFO order, which is what
+/// single-writer state ownership relies on. Ordering is only relaxed <em>between</em> priorities,
+/// so callers that need two operations sequenced must submit them at the same priority.</para>
+/// </remarks>
 public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
 {
     #region Fields
 
     private static readonly ILogger _logger = Log.ForContext<ThreadContainer>();
 
-    private readonly Channel<IRepositoryTask> _channel;
+    /// <summary>Number of distinct priority levels; must match <see cref="TaskPriority"/>.</summary>
+    private const int PriorityCount = 4;
+
+    /// <summary>
+    /// Consecutive dispatches allowed at each priority before the worker offers a slot to the next
+    /// non-empty lower queue. Indexed by <see cref="TaskPriority"/>. The lowest level needs no
+    /// quota (nothing below it to starve) but carries one for uniformity.
+    /// </summary>
+    private static readonly int[] PriorityQuotas = { 64, 32, 16, 8 };
+
+    /// <summary>One channel per priority level, indexed by <see cref="TaskPriority"/>.</summary>
+    private readonly Channel<IRepositoryTask>[] _channels = new Channel<IRepositoryTask>[PriorityCount];
+
+    /// <summary>
+    /// Signals the worker that at least one task was written. Lets the worker block on a single
+    /// wait instead of polling four channels, which is what makes an idle container cost nothing.
+    /// </summary>
+    private readonly SemaphoreSlim _workAvailable = new(0);
+
     private readonly ConcurrentDictionary<string, IRepository> _repositories = new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource _cts = new();
     private readonly Task _workerTask;
-    
+
     private int _pendingTasksCount;
     private long _totalProcessedTasks;
     private long _totalLatencyMicroseconds;
@@ -96,24 +131,31 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
         Name = name ?? throw new ArgumentNullException(nameof(name));
         CoreIndex = coreIndex;
 
-        if (capacity.HasValue && capacity.Value > 0)
+        for (var i = 0; i < PriorityCount; i++)
         {
-            _channel = Channel.CreateBounded<IRepositoryTask>(new BoundedChannelOptions(capacity.Value)
+            if (capacity.HasValue && capacity.Value > 0)
             {
-                SingleReader = true,
-                SingleWriter = false,
-                FullMode = BoundedChannelFullMode.Wait,
-                AllowSynchronousContinuations = false
-            });
-        }
-        else
-        {
-            _channel = Channel.CreateUnbounded<IRepositoryTask>(new UnboundedChannelOptions
+                // The configured capacity is the bound for each priority queue rather than a
+                // budget split across them: the point of a bound is backpressure on a runaway
+                // producer, and dividing it would make the container reject Critical work because
+                // Low work is backed up -- exactly the coupling priorities exist to remove.
+                _channels[i] = Channel.CreateBounded<IRepositoryTask>(new BoundedChannelOptions(capacity.Value)
+                {
+                    SingleReader = true,
+                    SingleWriter = false,
+                    FullMode = BoundedChannelFullMode.Wait,
+                    AllowSynchronousContinuations = false
+                });
+            }
+            else
             {
-                SingleReader = true,
-                SingleWriter = false,
-                AllowSynchronousContinuations = false
-            });
+                _channels[i] = Channel.CreateUnbounded<IRepositoryTask>(new UnboundedChannelOptions
+                {
+                    SingleReader = true,
+                    SingleWriter = false,
+                    AllowSynchronousContinuations = false
+                });
+            }
         }
 
         // Start worker as a long-running Task (not a raw Thread)
@@ -149,39 +191,68 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     #region Task Queueing
 
     /// <summary>
-    /// Enqueues a task for asynchronous processing.
-    /// Will wait if the channel is full (backpressure).
+    /// Enqueues a task for asynchronous processing at <see cref="TaskPriority.Normal"/>.
+    /// Will wait if the queue is full (backpressure).
     /// </summary>
-    public async ValueTask EnqueueAsync(IRepositoryTask task)
+    public ValueTask EnqueueAsync(IRepositoryTask task) => EnqueueAsync(task, TaskPriority.Normal);
+
+    /// <summary>
+    /// Enqueues a task for asynchronous processing at the given priority.
+    /// Will wait if that priority's queue is full (backpressure).
+    /// </summary>
+    public async ValueTask EnqueueAsync(IRepositoryTask task, TaskPriority priority)
     {
         ArgumentNullException.ThrowIfNull(task);
-        
+
+        var writer = _channels[PriorityIndex(priority)].Writer;
+
         Interlocked.Increment(ref _pendingTasksCount);
         try
         {
-            await _channel.Writer.WriteAsync(task, _cts.Token);
+            await writer.WriteAsync(task, _cts.Token);
         }
         catch
         {
             Interlocked.Decrement(ref _pendingTasksCount);
             throw;
         }
+
+        // Released only after a successful write, so the count of signals can never exceed the
+        // count of queued tasks -- otherwise the worker would spin on a spurious wake-up.
+        _workAvailable.Release();
     }
 
     /// <summary>
-    /// Attempts to enqueue a task without waiting.
-    /// Returns false if the channel is full or completed.
+    /// Attempts to enqueue a task at <see cref="TaskPriority.Normal"/> without waiting.
+    /// Returns false if the queue is full or completed.
     /// </summary>
-    public bool TryEnqueue(IRepositoryTask task)
+    public bool TryEnqueue(IRepositoryTask task) => TryEnqueue(task, TaskPriority.Normal);
+
+    /// <summary>
+    /// Attempts to enqueue a task at the given priority without waiting.
+    /// Returns false if that priority's queue is full or completed.
+    /// </summary>
+    public bool TryEnqueue(IRepositoryTask task, TaskPriority priority)
     {
         ArgumentNullException.ThrowIfNull(task);
-        
-        if (_channel.Writer.TryWrite(task))
+
+        if (_channels[PriorityIndex(priority)].Writer.TryWrite(task))
         {
             Interlocked.Increment(ref _pendingTasksCount);
+            _workAvailable.Release();
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Clamps a priority to a valid channel index. An out-of-range cast from a caller must not be
+    /// able to throw IndexOutOfRange on the enqueue path.
+    /// </summary>
+    private static int PriorityIndex(TaskPriority priority)
+    {
+        var index = (int)priority;
+        return (uint)index < PriorityCount ? index : (int)TaskPriority.Normal;
     }
 
     #endregion
@@ -209,13 +280,30 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
         // loop and a custom TaskScheduler. CoreIndex is retained for logging/diagnostics only.
         Thread.CurrentThread.Name = $"Container-{Name}-Async";
 
+        // Consecutive dispatches served at each priority, reset whenever a lower queue is served.
+        var served = new int[PriorityCount];
+
         try
         {
-            // Use ReadAllAsync for efficient async enumeration
-            await foreach (var task in _channel.Reader.ReadAllAsync(ct))
+            while (true)
             {
+                // Block until a task is available. One signal was released per enqueued task, so
+                // this wakes exactly once per task and an idle container consumes no CPU -- the
+                // reason for the semaphore rather than polling four channel readers.
+                await _workAvailable.WaitAsync(ct);
+
+                if (!TryDequeueNext(served, out var task))
+                {
+                    // The signal count and the queues are updated in that order by the producer,
+                    // so a signal can momentarily arrive before its task is visible. Hand the
+                    // signal back and retry rather than losing the task.
+                    _workAvailable.Release();
+                    await Task.Yield();
+                    continue;
+                }
+
                 Interlocked.Decrement(ref _pendingTasksCount);
-                
+
                 try
                 {
                     await ExecuteTaskAsync(task, ct);
@@ -248,6 +336,55 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
             _isRunning = false;
             _logger.Information("Container '{Name}' worker loop stopped", Name);
         }
+    }
+
+    /// <summary>
+    /// Selects the next task: highest priority first, subject to each level's fairness quota.
+    /// </summary>
+    /// <param name="served">
+    /// Per-priority count of consecutive dispatches. Owned by the worker loop, so no
+    /// synchronisation is needed.
+    /// </param>
+    /// <param name="task">The dequeued task, when this returns <see langword="true"/>.</param>
+    private bool TryDequeueNext(int[] served, out IRepositoryTask task)
+    {
+        // Pass 1: honour the quotas. Walk from the top and take from the first non-empty queue
+        // that has not yet exhausted its allowance.
+        for (var i = 0; i < PriorityCount; i++)
+        {
+            if (served[i] >= PriorityQuotas[i]) continue;
+
+            if (_channels[i].Reader.TryRead(out task!))
+            {
+                served[i]++;
+
+                // Serving level i means levels below it just waited, so their allowances are
+                // restored; that is what bounds how long a low-priority task can be held back.
+                for (var lower = i + 1; lower < PriorityCount; lower++)
+                    served[lower] = 0;
+
+                return true;
+            }
+
+            // An empty queue is not a reason to hold its allowance in reserve.
+            served[i] = 0;
+        }
+
+        // Pass 2: every non-empty queue is over quota, which means the whole cycle is complete.
+        // Reset and take strictly by priority so the worker never stalls with work pending.
+        Array.Clear(served);
+
+        for (var i = 0; i < PriorityCount; i++)
+        {
+            if (_channels[i].Reader.TryRead(out task!))
+            {
+                served[i] = 1;
+                return true;
+            }
+        }
+
+        task = null!;
+        return false;
     }
 
     /// <summary>
@@ -299,6 +436,14 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     public double GetAverageLatencyMs() => AverageLatencyMs;
 
     /// <summary>
+    /// Approximate pending task count for a single priority level.
+    /// Useful for spotting the case the aggregate count hides: a healthy total that is entirely
+    /// one saturated priority.
+    /// </summary>
+    public int GetPendingCount(TaskPriority priority)
+        => _channels[PriorityIndex(priority)].Reader.Count;
+
+    /// <summary>
     /// Gets health status information for this container.
     /// </summary>
     public ContainerHealthStatus GetHealthStatus()
@@ -342,9 +487,14 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
 
         _isRunning = false;
 
-        // Signal cancellation and complete the channel
+        // Signal cancellation and complete every priority queue
         _cts.Cancel();
-        _channel.Writer.TryComplete();
+
+        for (var i = 0; i < PriorityCount; i++)
+            _channels[i].Writer.TryComplete();
+
+        // Wake the worker if it is parked on the semaphore rather than on cancellation.
+        _workAvailable.Release();
 
         // Wait for worker to finish with timeout
         try
@@ -379,7 +529,8 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
         _repositories.Clear();
 
         _cts.Dispose();
-        
+        _workAvailable.Dispose();
+
         _logger.Information(
             "ThreadContainer '{Name}' disposed. Total tasks processed: {TotalProcessed}, Avg latency: {AvgLatency:F2}ms", 
             Name, TotalProcessedTasks, AverageLatencyMs);
