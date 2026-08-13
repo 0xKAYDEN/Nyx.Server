@@ -24,7 +24,7 @@ namespace Nyx.Server
         /// compared against live numbers before it authors anyone's combat. When
         /// off, not a single instruction of the legacy path changes.
         /// </remarks>
-        public bool UseCombatEngine { get; set; } = false;
+        public bool UseCombatEngine { get; set; } = true;
     }
 
     public sealed class RedisConfiguration
