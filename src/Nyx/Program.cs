@@ -608,12 +608,6 @@ public sealed class Program
             monsterManager.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
             World.SetMonsterManager(monsterManager);
             
-            // Configure the server-side bridge with a DI logger. The non-generic
-            // ILogger is not registered in DI on its own, so resolve the typed
-            // ILogger<T> (which implements the non-generic ILogger the bridge expects).
-            var logger = ApplicationHost.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Nyx.Server.Game.Monsters.ServerMonsterBridge>>();
-            Nyx.Server.Game.Monsters.ServerMonsterBridge.Configure(logger);
-            
             Log.Information("Phase 2: MonsterManager wired (lazy load + 20 TPS AI tick)");
         }
         catch (Exception ex)

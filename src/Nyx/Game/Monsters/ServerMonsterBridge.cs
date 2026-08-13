@@ -1,10 +1,10 @@
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Nyx.Server.Database;
 using Nyx.Server.Game;
 using Nyx.Server.Network;
 using Nyx.Server.Utilities;
+using Serilog;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Nyx.Server.Game.Monsters;
 
@@ -23,10 +23,8 @@ public static class ServerMonsterBridge
     private static readonly ConcurrentDictionary<ushort, int> _playerCounts = new();
     private static readonly ConcurrentDictionary<ushort, bool> _mapsSpawning = new();
     private static readonly object _spawnLock = new();
-    private static ILogger? _logger;
+    public static ILogger _logger = Log.ForContext(typeof(ServerMonsterBridge));
 
-    public static void Configure(ILogger logger)
-        => _logger = logger;
 
     // ── Player enter / leave ──────────────────────────────────────────
 
@@ -45,11 +43,11 @@ public static class ServerMonsterBridge
                 try
                 {
                     map.EnsureMonstersLoaded();
-                    _logger?.LogInformation("MonsterBridge: Lazy-spawned map {MapID}", mapId);
+                    _logger?.Information("MonsterBridge: Lazy-spawned map {MapID}", mapId);
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, "MonsterBridge: spawn failed for map {MapID}", mapId);
+                    _logger?.Error(ex, "MonsterBridge: spawn failed for map {MapID}", mapId);
                 }
             }
         }
@@ -174,12 +172,12 @@ public static class ServerMonsterBridge
             if (spawned > 0)
             {
                 map.Timer = Map.MonsterTimers.Add(map);
-                _logger?.LogInformation("MonsterBridge: Map {ID} spawned {Count} entities", map.ID, spawned);
+                _logger?.Information("MonsterBridge: Map {ID} spawned {Count} entities", map.ID, spawned);
             }
         }
         catch (Exception e)
         {
-            _logger?.LogError(e, "MonsterBridge: Map {ID} legacy spawn failed", map.ID);
+            _logger?.Error(e, "MonsterBridge: Map {ID} legacy spawn failed", map.ID);
         }
     }
 
@@ -201,7 +199,7 @@ public static class ServerMonsterBridge
         if (monsters.Count > 0)
         {
             map.ResetMonsterLoad();
-            _logger?.LogInformation("MonsterBridge: Unloaded map {ID} ({Count} monsters removed)", mapId, monsters.Count);
+            _logger?.Information("MonsterBridge: Unloaded map {ID} ({Count} monsters removed)", mapId, monsters.Count);
         }
     }
 }

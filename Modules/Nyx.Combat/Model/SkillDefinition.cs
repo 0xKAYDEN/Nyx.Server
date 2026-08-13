@@ -160,7 +160,6 @@ public sealed class SkillDefinition
     public ushort NextMagic { get; init; }
 
     /// <summary>True when <see cref="Power"/> encoded a weapon-damage percentage.</summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ScalesWithWeapon => PowerFlat == 0 && PowerPercent != 100;
 
     /// <summary>True when this skill can hit an area rather than a single entity.</summary>
