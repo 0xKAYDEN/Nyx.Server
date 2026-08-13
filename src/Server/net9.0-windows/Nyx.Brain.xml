@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Nyx.Brain</name>
+    </assembly>
+    <members>
+        <member name="T:Nyx.Brain.Models.GameEnvironment">
+            <summary>
+            Extended game environment with comprehensive metrics for Conquer Online
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetAveragePlayerLevel">
+            <summary>
+            Calculate average player level (byte)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetBossSuccessRate">
+            <summary>
+            Calculate boss kill success rate
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetMonstersKilledPerPlayer">
+            <summary>
+            Calculate monster kill rate per player
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetDeathRatePerPlayer">
+            <summary>
+            Calculate death rate per player
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetPlayerRetention">
+            <summary>
+            Calculate player retention (players still online vs joined)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetAverageExpPerHourPerPlayer">
+            <summary>
+            Calculate average exp gained per hour per player
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetAverageMoneyPerPlayer">
+            <summary>
+            Calculate average money per player
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.GameEnvironment.GetAverageCpsPerPlayer">
+            <summary>
+            Calculate average CPS per player
+            </summary>
+        </member>
+        <member name="T:Nyx.Brain.Models.GameRates">
+            <summary>
+            Comprehensive game rates for Conquer Online server balancing
+            </summary>
+        </member>
+        <member name="P:Nyx.Brain.Models.GameRates.IsBalanced">
+            <summary>
+            Check if rates are balanced (difficulty near 50)
+            </summary>
+        </member>
+        <member name="P:Nyx.Brain.Models.GameRates.IsTooDifficult">
+            <summary>
+            Check if game is too difficult
+            </summary>
+        </member>
+        <member name="P:Nyx.Brain.Models.GameRates.IsTooEasy">
+            <summary>
+            Check if game is too easy
+            </summary>
+        </member>
+        <member name="T:Nyx.Brain.Models.RateConfiguration">
+            <summary>
+            Configuration for Conquer Online server balancing
+            Based on: Money drop per monster = 300, CPS drop per monster = 3
+            Target: Players reach level 140 in 2 months
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.RateConfiguration.GetTotalExpToLevel(System.Byte)">
+            <summary>
+            Calculate total exp needed to reach target level from level 1
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Models.RateConfiguration.GetRequiredExpPerHour">
+            <summary>
+            Calculate required exp per hour to reach target level in target days
+            </summary>
+        </member>
+        <member name="T:Nyx.Brain.Services.CalculationService">
+            <summary>
+            Calculates dynamic game rates based on server metrics for Conquer Online
+            Baseline: Money = 300/monster, CPS = 3/monster, Target: Level 140 in 60 days
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.CalculationService.CalculateExpRate(Nyx.Brain.Models.GameEnvironment,System.Decimal)">
+            <summary>
+            Calculate exp rate to achieve Level 140 in 60 days (2 months)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.CalculationService.CalculateMoneyRate(Nyx.Brain.Models.GameEnvironment,System.Decimal)">
+            <summary>
+            Calculate money rate based on economy balance
+            Baseline: 300 money per monster
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.CalculationService.CalculateCpsDropRate(Nyx.Brain.Models.GameEnvironment,System.Decimal)">
+            <summary>
+            Calculate CPS drop rate
+            Baseline: 3 CPS per monster (Bound CPS comes from events, not calculated here)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.CalculationService.CalculateMonsterCountPerMap(Nyx.Brain.Models.GameEnvironment)">
+            <summary>
+            Calculate monsters per map based on player count PER MAP
+            Not global player count!
+            </summary>
+        </member>
+        <member name="T:Nyx.Brain.Services.GameMetricsCollector">
+            <summary>
+            Collects real-time game metrics from the Conquer Online server
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.UpdatePlayerMetrics(System.Int32,System.Collections.Generic.List{Nyx.Brain.Models.Player})">
+            <summary>
+            Update player counts and metrics
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.RecordExpGain(System.UInt64,System.UInt64)">
+            <summary>
+            Record experience gained (ulong)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.RecordDrops(System.UInt32,System.UInt32)">
+            <summary>
+            Record money/CPS drops (uint amounts)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.RecordMonsterKill">
+            <summary>
+            Record monster kill
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.RecordPlayerDeath(System.Boolean)">
+            <summary>
+            Record player death
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.RecordBossAttempt(System.Boolean)">
+            <summary>
+            Record boss attempt and result
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.RecordQuest(System.Boolean)">
+            <summary>
+            Record quest completion or abandonment
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.UpdateEconomyTotals(System.UInt64,System.UInt64,System.UInt64)">
+            <summary>
+            Update economy totals (uint for money/cps, ulong for totals)
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.UpdateMapPlayerCounts(System.Collections.Generic.Dictionary{System.UInt16,System.Int32})">
+            <summary>
+            Update map player distribution for monster spawning
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.ConsolidateHourlyMetrics">
+            <summary>
+            Consolidate hourly metrics - call this every hour
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.GetHistory(System.TimeSpan)">
+            <summary>
+            Get historical metrics for analysis
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.CalculateDifficultyScore">
+            <summary>
+            Calculate difficulty score based on multiple factors
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.GameMetricsCollector.GetSummary">
+            <summary>
+            Get performance summary
+            </summary>
+        </member>
+        <member name="T:Nyx.Brain.Services.LevelExpLoader">
+            <summary>
+            Loads and parses Level.ini file to get exp requirements per level
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.LevelExpLoader.LoadLevelExp(Nyx.Brain.Models.RateConfiguration,System.String)">
+            <summary>
+            Parse Level.ini file and load exp requirements
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.LevelExpLoader.UseDefaultExp(Nyx.Brain.Models.RateConfiguration)">
+            <summary>
+            Use default exp values if Level.ini can't be loaded
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.LevelExpLoader.PrintExpSummary(Nyx.Brain.Models.RateConfiguration)">
+            <summary>
+            Print summary of exp requirements
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.LevelExpLoader.GetAverageExpForLevelRange(Nyx.Brain.Models.RateConfiguration,System.Byte,System.Byte)">
+            <summary>
+            Calculate average exp per level in a range
+            </summary>
+        </member>
+        <member name="M:Nyx.Brain.Services.LevelExpLoader.GetExpForLevel(Nyx.Brain.Models.RateConfiguration,System.Byte)">
+            <summary>
+            Get exp requirement for a specific level
+            </summary>
+        </member>
+    </members>
+</doc>

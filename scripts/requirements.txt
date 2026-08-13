@@ -1,0 +1,5 @@
+# Nyx Database Migration Tool Dependencies
+# Install with: pip install -r requirements.txt
+
+pymysql>=1.1.0
+psycopg2-binary>=2.9.9

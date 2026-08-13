@@ -1,0 +1,589 @@
+------------------------------------------------------------------------------------
+--Name:		160608[简体征服][活动脚本]回收换气活动
+--Creator: 	兰瑞妹
+--Created:	2016/06/10
+------------------------------------------------------------------------------------
+
+-- 命名前缀
+-- Recycle_ExchangeStrength_
+
+-- #stc 掩码说明 
+-- #stc(146,72) 背包信
+-- #stc(146,73) 上限10
+-- #stc(148,00) 使用东皇赐福圣令的次数
+
+-- 改成每天可抽10次			
+-- 满10次送1个明亮星陨石礼包（27天石翻3倍）			
+
+-- 加额外2%出完整八宝护气丹，每天单服限量10个，出现全服公告。
+-- GlobalId 51291
+-- data0 -- 上限10个		datastr5 清理标志
+
+---- 常量表
+--local tRecycle_ExchangeStrength_Count = {}
+--	-- 活动时间
+--	tRecycle_ExchangeStrength_Count["BeforeActivityTime"] = tActivityTime["RecycleExchangeStrength"]["BeforeActivityTime"]
+--	tRecycle_ExchangeStrength_Count["ActivityTime"] = tActivityTime["RecycleExchangeStrength"]["ActivityTime"]
+--
+--	-- 玩家等级要求
+--	tRecycle_ExchangeStrength_Count["Metempsychosis"] = 2
+--	tRecycle_ExchangeStrength_Count["Level"] = 0
+--	
+--	-- 动态掩码id
+--	tRecycle_ExchangeStrength_Count["GlobalId"] = 51291
+--	tRecycle_ExchangeStrength_Count["Limit"] = 10
+--	-- 清理时间
+--	tRecycle_ExchangeStrength_Count["ClearTime"] = "00:00 00:02"
+--	
+---- Log表
+--local tRecycle_ExchangeStrength_Log = {}
+--	-- 抽奖
+--	tRecycle_ExchangeStrength_Log["ExchangeStrength"] = "0,0,0,0,12000444,1[1],0,0"
+--	
+--	-- 获得额外奖励
+--	tRecycle_ExchangeStrength_Log["ExtraReward"] = "0,0,0,0,12000444,1[2],0,0"
+--	
+--	-- 使用东皇赐福圣令
+--	tRecycle_ExchangeStrength_Log["UseTool"] = "0,0,3300155,1,12000444,2,0,0"
+--
+---- 物品数量所需要（赠品OK不）
+--local tRecycle_ExchangeStrength_ItemNum = {}
+--	-- 5个通神丹。
+--	tRecycle_ExchangeStrength_ItemNum[3003125] = 5
+--	-- 3个免费强练丹
+--	tRecycle_ExchangeStrength_ItemNum[3003124] = 3
+--	-- 3个强效护心丹。
+--	tRecycle_ExchangeStrength_ItemNum[3002030] = 3
+--	-- 1个究极通神丹
+--	tRecycle_ExchangeStrength_ItemNum[3003126] = 1
+--	-- 1个秘制免费修炼丹。
+--	tRecycle_ExchangeStrength_ItemNum[3002926] = 1
+--	-- 2个流星卷。
+--	tRecycle_ExchangeStrength_ItemNum[720027] = 2
+--	-- 1个乾坤袋小。
+--	tRecycle_ExchangeStrength_ItemNum[1100003] = 1
+--	
+---- stc掩码
+--local tRecycle_ExchangeStrength_Stc = {}
+--	-- 每日次数上限
+--	tRecycle_ExchangeStrength_Stc[1] = {}
+--	tRecycle_ExchangeStrength_Stc[1]["EventType"] = 146
+--	tRecycle_ExchangeStrength_Stc[1]["DataType"] = 73
+--	tRecycle_ExchangeStrength_Stc[1]["Limit"] = 10
+--	
+--	-- 每日使用道具限制
+--	tRecycle_ExchangeStrength_Stc[2] = {}
+--	tRecycle_ExchangeStrength_Stc[2]["EventType"] = 148
+--	tRecycle_ExchangeStrength_Stc[2]["DataType"] = 00
+--	
+---- 奖励表
+local tRecycle_ExchangeStrength_Reward = {}
+--	-- 120经验包
+--	tRecycle_ExchangeStrength_Reward[3200648] = {}
+--	tRecycle_ExchangeStrength_Reward[3200648]["LogId"] = 12000444
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardNoNeedTip"] = 1
+--	tRecycle_ExchangeStrength_Reward[3200648]["DeleteItem"] = {}
+--	tRecycle_ExchangeStrength_Reward[3200648]["DeleteItem"][1] = {}
+--	tRecycle_ExchangeStrength_Reward[3200648]["DeleteItem"][1]["Id"] = 3200648
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardExpTime"] = {}
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardExpTime"]["Value"] = 120
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardExpTime"]["FullIndex"] = "RewardCultivation"
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardExpTime"]["FullValue"] = 60
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardEffect"] = {}
+--	tRecycle_ExchangeStrength_Reward[3200648]["RewardEffect"]["Effect"] = "angelwing"
+--	
+	-- 200气力包
+	tRecycle_ExchangeStrength_Reward[3200660] = {}
+	tRecycle_ExchangeStrength_Reward[3200660]["LogId"] = 12000444
+	tRecycle_ExchangeStrength_Reward[3200660]["DeleteItem"] = {}
+	tRecycle_ExchangeStrength_Reward[3200660]["DeleteItem"][1] = {}
+	tRecycle_ExchangeStrength_Reward[3200660]["DeleteItem"][1]["Id"] = 3200660
+	tRecycle_ExchangeStrength_Reward[3200660]["RewardStrengthValue"] = {}
+	tRecycle_ExchangeStrength_Reward[3200660]["RewardStrengthValue"]["Value"] = 200
+	tRecycle_ExchangeStrength_Reward[3200660]["RewardEffect"] = {}
+	tRecycle_ExchangeStrength_Reward[3200660]["RewardEffect"]["Effect"] = "angelwing"
+	
+	-- 300气力包
+	tRecycle_ExchangeStrength_Reward[3200661] = {}
+	tRecycle_ExchangeStrength_Reward[3200661]["LogId"] = 12000444
+	tRecycle_ExchangeStrength_Reward[3200661]["DeleteItem"] = {}
+	tRecycle_ExchangeStrength_Reward[3200661]["DeleteItem"][1] = {}
+	tRecycle_ExchangeStrength_Reward[3200661]["DeleteItem"][1]["Id"] = 3200661
+	tRecycle_ExchangeStrength_Reward[3200661]["RewardStrengthValue"] = {}
+	tRecycle_ExchangeStrength_Reward[3200661]["RewardStrengthValue"]["Value"] = 300
+	tRecycle_ExchangeStrength_Reward[3200661]["RewardEffect"] = {}
+	tRecycle_ExchangeStrength_Reward[3200661]["RewardEffect"]["Effect"] = "angelwing"
+	
+--	-- 满10次
+--	-- tRecycle_ExchangeStrength_Reward[1] = {}
+--	-- tRecycle_ExchangeStrength_Reward[1]["Log"] = "0,0,0,0,12000444,2,3007269[720027],1[1]"
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardNoNeedTip"] = 1
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"] = {}				--物品属性
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"][1] = {}				--物品属性
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"][1]["Id"] = 3007269		--物品Id
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"][1]["Attr"] = "0 1"		--物品属性
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"][2] = {}				--物品属性
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"][2]["Id"] = 3600023		--物品Id
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardItem"][2]["Attr"] = "0 1"		--物品属性
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardEffect"] = {}
+--	-- tRecycle_ExchangeStrength_Reward[1]["RewardEffect"]["Effect"] = "angelwing"
+--	tRecycle_ExchangeStrength_Reward[1] = {}
+--	tRecycle_ExchangeStrength_Reward[1]["Log"] = "0,0,0,0,12000444,2,3200864,1"
+--	tRecycle_ExchangeStrength_Reward[1]["RewardNoNeedTip"] = 1
+--	tRecycle_ExchangeStrength_Reward[1]["RewardItem"] = {}				--物品属性
+--	tRecycle_ExchangeStrength_Reward[1]["RewardItem"][1] = {}				--物品属性
+--	tRecycle_ExchangeStrength_Reward[1]["RewardItem"][1]["Id"] = 3200864		--物品Id
+--	tRecycle_ExchangeStrength_Reward[1]["RewardItem"][1]["Attr"] = "0 1 0 1440 1"		--物品属性
+--	tRecycle_ExchangeStrength_Reward[1]["RewardEffect"] = {}
+--	tRecycle_ExchangeStrength_Reward[1]["RewardEffect"]["Effect"] = "angelwing"
+--	
+---- 奖励随机表
+---- 换气
+--local tRecycle_ExchangeStrength_Probabil = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1]["ItemChanceSum"] = 10000
+--	-- 100点气力
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RandomItemChanceType"] = 2
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["ItemChance"] = 6400
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardNoNeedTip"] = 1
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["LogId"] = 12000444
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["SpeLog"] = "0,0,%d,%d,12000444,2,3002027,1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardItem"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardItem"][1] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardItem"][1]["Id"] = 3002027
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardItem"][1]["Attr"] = "0 1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardEffect"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardEffect"]["Effect"] = "zf2-e128"
+--	-- 200点气力
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RandomItemChanceType"] = 2
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["ItemChance"] = 2500
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardNoNeedTip"] = 1
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["LogId"] = 12000444
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["SpeLog"] = "0,0,%d,%d,12000444,2,3200661,1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardItem"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardItem"][1] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardItem"][1]["Id"] = 3200661
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardItem"][1]["Attr"] = "0 1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardEffect"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][2]["RewardEffect"]["Effect"] = "zf2-e128"
+--	-- 300点气力值
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RandomItemChanceType"] = 2
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["ItemChance"] = 900
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardNoNeedTip"] = 1
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["LogId"] = 12000444
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["SpeLog"] = "0,0,%d,%d,12000444,2,3200660,1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardItem"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardItem"][1] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardItem"][1]["Id"] = 3200660
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardItem"][1]["Attr"] = "0 1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardEffect"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][3]["RewardEffect"]["Effect"] = "zf2-e128"
+--	-- 120经验包
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4] = {}
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RandomItemChanceType"] = 2
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["ItemChance"] = 2000
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardNoNeedTip"] = 1
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["LogId"] = 12000444
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["SpeLog"] = "0,0,%d,%d,12000444,2,3200648,1"
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"] = {}
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"][1] = {}
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"][1]["Id"] = 3200648
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"][1]["Attr"] = "0 1"
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardEffect"] = {}
+--	-- tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardEffect"]["Effect"] = "zf2-e128"
+--	
+--	-- 2%出完整八宝护气丹
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RandomItemChanceType"] = 2
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["ItemChance"] = 200
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardNoNeedTip"] = 1
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["LogId"] = 12000444
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["SpeLog"] = "0,0,%d,%d,12000444,2,3005360,1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"][1] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"][1]["Id"] = 3005360
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardItem"][1]["Attr"] = "0 1"
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardEffect"] = {}
+--	tRecycle_ExchangeStrength_Probabil["OpenGift"][1][4]["RewardEffect"]["Effect"] = "zf2-e128"
+--
+----------------------------------------逻辑部分-------------------------------------------
+---- 隔天清除
+--function Recycle_ExchangeStrength_ClearStc(nUserId)
+--	local nEvent = tRecycle_ExchangeStrength_Stc[1]["EventType"]
+--	local nType = tRecycle_ExchangeStrength_Stc[1]["DataType"]
+--	nUserId =nUserId or Get_UserId()
+--	
+--	if Task_StcInterval(nEvent,nType,1,4,nUserId) then
+--		Task_SetStatistic(nEvent,nType,0,1,nUserId)
+--		Task_SetStcTimestamp(nEvent,nType,0,nUserId)
+--	end
+--end
+--
+---- 活动时间和等级检测
+--function Recycle_ExchangeStrength_ChkTimeLevel(nNpcId)
+--	-- 活动后
+--	if not Sys_ChkFullTime(tRecycle_ExchangeStrength_Count["ActivityTime"]) then
+--		LinkNpcGossipFunc_New(nNpcId,"1-2")
+--		return false
+--	end
+--	
+--	if not User_JudgeLevelAndMetempsychosis(tRecycle_ExchangeStrength_Count["Level"],tRecycle_ExchangeStrength_Count["Metempsychosis"]) then
+--		LinkNpcGossipFunc_New(nNpcId,"1-3")
+--		return false
+--	end
+--	
+--	return true
+--end
+--
+--function Recycle_ExchangeStrength_Give(nNpcId)
+--	-- 各种条件判断
+--	if not Recycle_ExchangeStrength_ChkTimeLevel(nNpcId,nItemId) then
+--		return
+--	end
+--	
+--	local nUserId = Get_UserId()
+--	local nEvent = tRecycle_ExchangeStrength_Stc[1]["EventType"]
+--	local nType = tRecycle_ExchangeStrength_Stc[1]["DataType"]
+--	local nLimit = tRecycle_ExchangeStrength_Stc[1]["Limit"]
+--	Recycle_ExchangeStrength_ClearStc()
+--	if Task_ChkStcValue(nEvent,nType,">=",nLimit,nUserId) then
+--		LinkNpcGossipFunc_New(nNpcId,"2-5")
+--		return
+--	end
+--	
+--	LinkNpcGossipFunc_New(nNpcId,"2-1")
+--end
+--
+---- 换取
+--function Recycle_ExchangeStrength_GiveItem(nNpcId,nItemId)
+--	-- 各种条件判断
+--	if not Recycle_ExchangeStrength_ChkTimeLevel(nNpcId,nItemId) then
+--		return
+--	end
+--	
+--	-- 供满10
+--	local nUserId = Get_UserId()
+--	local nEvent = tRecycle_ExchangeStrength_Stc[1]["EventType"]
+--	local nType = tRecycle_ExchangeStrength_Stc[1]["DataType"]
+--	local nLimit = tRecycle_ExchangeStrength_Stc[1]["Limit"]
+--	Recycle_ExchangeStrength_ClearStc()
+--	if Task_ChkStcValue(nEvent,nType,">=",nLimit,nUserId) then
+--		LinkNpcGossipFunc_New(nNpcId,"2-5")
+--		return
+--	end
+--	
+--	-- 无供品
+--	local nItemNum = tRecycle_ExchangeStrength_ItemNum[nItemId]
+--	if not Item_ChkMulItem(nItemId,nItemId,nItemNum) then
+--		LinkNpcGossipFunc_New(nNpcId,"2-2")
+--		return
+--	end
+--	
+--	-- 背包满
+--	if not User_CheckLeftSpace(2) then
+--		LinkNpcGossipFunc_New(nNpcId,"2-3")
+--		return
+--	end
+--	
+--	-- 第10次额外奖励
+--	local bIsFull = false
+--	if Task_ChkStcValue(nEvent,nType,"==",nLimit-1,nUserId) then
+--		-- if not User_CheckLeftSpace(2) then
+--			-- LinkNpcGossipFunc_New(nNpcId,"2-4")
+--			-- return
+--		-- end
+--		bIsFull = true
+--	end
+--	
+--	-- 给奖励
+--	if Item_DelMulItem(nItemId,nItemId,nItemNum) then
+--		Task_AddStatistic(nEvent,nType,1,1,nUserId)
+--		Task_SetStcTimestamp(nEvent,nType,0,nUserId)
+--		
+--		-- local tReward  = RewardTemplate_Random(tRecycle_ExchangeStrength_Probabil["OpenGift"],1)
+--		local nflat,tReward = Probabil_RandomAward(tRecycle_ExchangeStrength_Probabil["OpenGift"],1)
+--		
+--		local nItemId = tReward[1]["tAward"][1]["RewardItem"][1]["Id"]
+--		local sLog = tReward[1]["tAward"][1]["SpeLog"]
+--		if nItemId == 3005360 then
+--			local nGlobalId = tRecycle_ExchangeStrength_Count["GlobalId"]
+--			local nLessTime = Get_SysDynaGlobalData0(nGlobalId)
+--			if nLessTime < tRecycle_ExchangeStrength_Count["Limit"] then
+--				-- 次数加1
+--				local nLessTime = nLessTime + 1
+--				Sys_SetSynaGlobalData0(nGlobalId,nLessTime)
+--				RewardTemplate_UseItem(tReward[1]["tAward"][1])
+--				-- 公告
+--				local sUserName = Get_UserName(nUserId)
+--				Sys_SystemBroadcast(string.format(tRecycle_ExchangeStrength_Text[nItemId]["ExtraReward"],sUserName))
+--			else
+--				nItemId = tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["RewardItem"][1]["Id"]
+--				sLog = tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1]["SpeLog"]
+--				RewardTemplate_UseItem(tRecycle_ExchangeStrength_Probabil["OpenGift"][1][1])
+--			end
+--		else
+--			RewardTemplate_UseItem(tReward[1]["tAward"][1])
+--		end
+--		local sItemName = tRecycle_ExchangeStrength_Text[nItemId]["ItemName"]
+--		local sText = tRecycle_ExchangeStrength_Text[nNpcId]["Reward"]
+--		Sys_MsgBox(string.format(sText,sItemName))
+--		Sys_SaveActionFestivalLog(tRecycle_ExchangeStrength_Log["ExchangeStrength"])
+--		Sys_SaveActionFestivalLog(string.format(sLog,nItemId,nItemNum))
+--		
+--		-- 额外奖励
+--		if bIsFull then
+--			RewardTemplate_UseItem(tRecycle_ExchangeStrength_Reward[1])
+--			local sText = tRecycle_ExchangeStrength_Text[nNpcId]["FullReward"]
+--			Sys_MsgBox(string.format(sText,sItemName))
+--			Sys_SaveActionFestivalLog(tRecycle_ExchangeStrength_Log["ExtraReward"])
+--		else
+--			LinkNpcGossipFunc_New(nNpcId,"2-1")
+--		end
+--	end
+--end
+--
+---- 物品使用
+--function Recycle_ExchangeStrength_UseItem(nItemId)
+--	RewardTemplate_UseItem(tRecycle_ExchangeStrength_Reward[nItemId])
+--	local nLev = Get_UserLevel(nUserId)
+--	if nLev >= G_User_MaxLev then
+--		User_TalkChannel2005(tRecycle_ExchangeStrength_Text[nItemId]["RewardCult"])
+--	else
+--		User_TalkChannel2005(tRecycle_ExchangeStrength_Text[nItemId]["RewardExp"])
+--	end
+--end
+--
+---- 清理动态掩码
+--function Recycle_ExchangeStrength_ClearGlobalData()
+--	local nGlobalId = tRecycle_ExchangeStrength_Count["GlobalId"]
+--	local sDataStr5 = Get_SysDynaGlobalDataStr5(nGlobalId)
+--	
+--	if Sys_ChkFullTime(tRecycle_ExchangeStrength_Count["ActivityTime"]) then
+--		if Sys_ChkDayTime(tRecycle_ExchangeStrength_Count["ClearTime"]) then
+--			if not (sDataStr5 == "1") then
+--				Sys_SetSynaGlobalDataStr5(nGlobalId,"1")
+--				Sys_SetSynaGlobalData0(nGlobalId,0)
+--			end
+--		else
+--			if sDataStr5 == "1" then
+--				Sys_SetSynaGlobalDataStr5(nGlobalId,"0")
+--			end
+--		end
+--	end
+--end
+--
+---- 使用东皇赐福圣令  3300155
+--function Recycle_ExchangeStrength_UseTool(nItemId)
+--	if Item_ChkItem(nItemId) then
+--		local nUserId = Get_UserId()
+--		local nEvent = tRecycle_ExchangeStrength_Stc[1]["EventType"]
+--		local nType = tRecycle_ExchangeStrength_Stc[1]["DataType"]
+--		local nLimit = tRecycle_ExchangeStrength_Stc[1]["Limit"]
+--		Recycle_ExchangeStrength_ClearStc()
+--		
+--		local nEvent1 = tRecycle_ExchangeStrength_Stc[2]["EventType"]
+--		local nType1 = tRecycle_ExchangeStrength_Stc[2]["DataType"]
+--		if Task_StcInterval(nEvent1,nType1,1,4,nUserId) then
+--			Task_SetStatistic(nEvent1,nType1,0,1,nUserId)
+--			Task_SetStcTimestamp(nEvent1,nType1,0,nUserId)
+--		end
+--		
+--		if Task_ChkStcValue(nEvent1,nType1,">=",1,nUserId) then
+--			User_TalkChannel2005(tRecycle_ExchangeStrength_Text[nItemId]["OneTime"])
+--			return
+--		end
+--		
+--		if Task_ChkStcValue(nEvent,nType,">=",nLimit,nUserId) then
+--			if Item_DelItem(nItemId) then				
+--				-- 重置祭拜次数
+--				Task_SetStatistic(nEvent,nType,0,1,nUserId)
+--				Task_SetStcTimestamp(nEvent,nType,0,nUserId)
+--				
+--				Task_SetStatistic(nEvent1,nType1,1,1,nUserId)
+--				Task_SetStcTimestamp(nEvent1,nType1,0,nUserId)
+--				
+--				User_TalkChannel2005(tRecycle_ExchangeStrength_Text[nItemId]["RegetTenTime"])
+--				Sys_SaveActionFestivalLog(tRecycle_ExchangeStrength_Log["UseTool"])
+--			end
+--		else
+--			Sys_MsgBox(tRecycle_ExchangeStrength_Text[nItemId]["Continue"])
+--			return
+--		end	
+--	end
+--end
+--
+----------------------------------------NPC模块-------------------------------------------
+---- 太一神坛
+--tNpcFace[4243] = 1118
+--tNpcGossip[19362] = tNpcGossip[19362] or DefaultNpc:new{}
+--tNpcGossip[19362]["OptionHidden"] = 1
+---- 活动前
+--tNpcGossip[19362]["Text1-1"] = {111,112,113,114}
+--tNpcGossip[19362]["Text111"] = tRecycle_ExchangeStrength_Text[19362]["Text111"]
+--tNpcGossip[19362]["Text112"] = tRecycle_ExchangeStrength_Text[19362]["Text112"]
+--tNpcGossip[19362]["Text113"] = tRecycle_ExchangeStrength_Text[19362]["Text113"]
+--tNpcGossip[19362]["Text114"] = tRecycle_ExchangeStrength_Text[19362]["Text114"]
+--tNpcGossip[19362]["tOption1-1"] = {1}
+--tNpcGossip[19362]["Option1"] = tRecycle_ExchangeStrength_Text[19362]["Option1"]
+--tNpcGossip[19362]["ChkFunc1-1"] = function()
+--	return Sys_ChkFullTime(tRecycle_ExchangeStrength_Count["BeforeActivityTime"])
+--end
+--
+---- 活动后
+--tNpcGossip[19362]["Text1-2"] = {121}
+--tNpcGossip[19362]["Text121"] = tRecycle_ExchangeStrength_Text[19362]["Text121"]
+--tNpcGossip[19362]["tOption1-2"] = {2}
+--tNpcGossip[19362]["Option2"] = tRecycle_ExchangeStrength_Text[19362]["Option2"]
+--tNpcGossip[19362]["ChkFunc1-2"] = function()
+--	return not Sys_ChkFullTime(tRecycle_ExchangeStrength_Count["ActivityTime"])
+--end
+--
+---- 活动中等级不足
+--tNpcGossip[19362]["Text1-3"] = {131,132,133,134,135}
+--tNpcGossip[19362]["Text131"] = tRecycle_ExchangeStrength_Text[19362]["Text131"]
+--tNpcGossip[19362]["Text132"] = tRecycle_ExchangeStrength_Text[19362]["Text132"]
+--tNpcGossip[19362]["Text133"] = tRecycle_ExchangeStrength_Text[19362]["Text133"]
+--tNpcGossip[19362]["Text134"] = tRecycle_ExchangeStrength_Text[19362]["Text134"]
+--tNpcGossip[19362]["Text135"] = tRecycle_ExchangeStrength_Text[19362]["Text135"]
+--tNpcGossip[19362]["tOption1-3"] = {3}
+--tNpcGossip[19362]["Option3"] = tRecycle_ExchangeStrength_Text[19362]["Option3"]
+--tNpcGossip[19362]["ChkFunc1-3"] = function()
+--	return not User_JudgeLevelAndMetempsychosis(tRecycle_ExchangeStrength_Count["Level"],tRecycle_ExchangeStrength_Count["Metempsychosis"])
+--end
+--
+---- 活动中
+--tNpcGossip[19362]["Text1-4"] = {141,145,142,143,144}
+--tNpcGossip[19362]["Text141"] = tRecycle_ExchangeStrength_Text[19362]["Text131"]
+--tNpcGossip[19362]["Text145"] = tRecycle_ExchangeStrength_Text[19362]["Text132"]
+--tNpcGossip[19362]["Text142"] = tRecycle_ExchangeStrength_Text[19362]["Text142"]
+--tNpcGossip[19362]["Text143"] = tRecycle_ExchangeStrength_Text[19362]["Text143"]
+--tNpcGossip[19362]["Text144"] = tRecycle_ExchangeStrength_Text[19362]["Text144"]
+--tNpcGossip[19362]["tOption1-4"] = {4,5}
+--tNpcGossip[19362]["ChkFunc1-4"] = function()
+--	local sOption = tRecycle_ExchangeStrength_Text[19362]["Option4"]
+--	local nEvent = tRecycle_ExchangeStrength_Stc[1]["EventType"]
+--	local nType = tRecycle_ExchangeStrength_Stc[1]["DataType"]
+--	local nUserId = Get_UserId()
+--	Recycle_ExchangeStrength_ClearStc()
+--	-- 次数
+--	local nTime = Get_UserStatisticValue(nEvent,nType,nUserId)
+--	tNpcGossip[19362]["Option4"] = string.format(sOption,nTime)
+--	
+--	return true
+--end
+---- 进献供品
+--tNpcGossip[19362]["Option4"] = tRecycle_ExchangeStrength_Text[19362]["Option4"]
+--tNpcGossip[19362]["OptionFunc4"] = "Recycle_ExchangeStrength_Give</N>19362"
+--
+---- 进献供品
+--tNpcGossip[19362]["Text2-1"] = {211,212}
+--tNpcGossip[19362]["Text211"] = tRecycle_ExchangeStrength_Text[19362]["Text211"]
+--tNpcGossip[19362]["Text212"] = tRecycle_ExchangeStrength_Text[19362]["Text212"]
+--tNpcGossip[19362]["ChkFunc2-1"] = function()
+--	local sOption = tRecycle_ExchangeStrength_Text[19362]["Text212"]
+--	local nEvent = tRecycle_ExchangeStrength_Stc[1]["EventType"]
+--	local nType = tRecycle_ExchangeStrength_Stc[1]["DataType"]
+--	local nUserId = Get_UserId()
+--	Recycle_ExchangeStrength_ClearStc()
+--	-- 次数
+--	local nTime = Get_UserStatisticValue(nEvent,nType,nUserId)
+--	tNpcGossip[19362]["Text212"] = string.format(sOption,nTime)
+--	
+--	return true
+--end
+--tNpcGossip[19362]["tOption2-1"] = {7,8,6,11,10,9,17,12}
+--tNpcGossip[19362]["Option6"] = tRecycle_ExchangeStrength_Text[19362]["Option6"]
+--tNpcGossip[19362]["OptionFunc6"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>3002030"
+--
+--tNpcGossip[19362]["Option7"] = tRecycle_ExchangeStrength_Text[19362]["Option7"]
+--tNpcGossip[19362]["OptionFunc7"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>3003125"
+--
+--tNpcGossip[19362]["Option8"] = tRecycle_ExchangeStrength_Text[19362]["Option8"]
+--tNpcGossip[19362]["OptionFunc8"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>3003124"
+--
+--tNpcGossip[19362]["Option9"] = tRecycle_ExchangeStrength_Text[19362]["Option9"]
+--tNpcGossip[19362]["OptionFunc9"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>3003126"
+--
+--tNpcGossip[19362]["Option10"] = tRecycle_ExchangeStrength_Text[19362]["Option10"]
+--tNpcGossip[19362]["OptionFunc10"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>3002926"
+--
+--tNpcGossip[19362]["Option11"] = tRecycle_ExchangeStrength_Text[19362]["Option11"]
+--tNpcGossip[19362]["OptionFunc11"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>720027"
+--tNpcGossip[19362]["Option12"] = tRecycle_ExchangeStrength_Text[19362]["Option12"]
+--
+---- 新增选项
+--tNpcGossip[19362]["Option17"] = tRecycle_ExchangeStrength_Text[19362]["Option17"]
+--tNpcGossip[19362]["OptionFunc17"] = "Recycle_ExchangeStrength_GiveItem</N>19362</N>1100003"
+--
+---- 无供品
+--tNpcGossip[19362]["Text2-2"] = {221}
+--tNpcGossip[19362]["Text221"] = tRecycle_ExchangeStrength_Text[19362]["Text221"]
+--tNpcGossip[19362]["tOption2-2"] = {13}
+--tNpcGossip[19362]["Option13"] = tRecycle_ExchangeStrength_Text[19362]["Option13"]
+--
+---- 背包满
+--tNpcGossip[19362]["Text2-3"] = {231}
+--tNpcGossip[19362]["Text231"] = tRecycle_ExchangeStrength_Text[19362]["Text231"]
+--tNpcGossip[19362]["tOption2-3"] = {14}
+--tNpcGossip[19362]["Option14"] = tRecycle_ExchangeStrength_Text[19362]["Option14"]
+--
+---- 当日上供满20次、背包空间不足
+--tNpcGossip[19362]["Text2-4"] = {241}
+--tNpcGossip[19362]["Text241"] = tRecycle_ExchangeStrength_Text[19362]["Text241"]
+--tNpcGossip[19362]["tOption2-4"] = {15}
+--tNpcGossip[19362]["Option15"] = tRecycle_ExchangeStrength_Text[19362]["Option15"]
+--
+---- 上供次数已满
+--tNpcGossip[19362]["Text2-5"] = {251}
+--tNpcGossip[19362]["Text251"] = tRecycle_ExchangeStrength_Text[19362]["Text251"]
+--tNpcGossip[19362]["tOption2-5"] = {16}
+--tNpcGossip[19362]["Option16"] = tRecycle_ExchangeStrength_Text[19362]["Option16"]
+--
+----------------------------------------物品模块-------------------------------------------
+---- 天赐经验包
+--tItem[3200648] = tItem[3200648] or {}
+--tItem[3200648]["Function"] = function(nItemId,sItemName)
+--	Recycle_ExchangeStrength_UseItem(nItemId)
+--end
+
+-- 好运气力包
+tItem[3200660] = tItem[3200660] or {}
+tItem[3200660]["Function"] = function(nItemId,sItemName)
+	RewardTemplate_UseItem(tRecycle_ExchangeStrength_Reward[nItemId])
+end
+
+-- 300气力包
+tItem[3200661] = tItem[3200661] or {}
+tItem[3200661]["Function"] = function(nItemId,sItemName)
+	RewardTemplate_UseItem(tRecycle_ExchangeStrength_Reward[nItemId])
+end
+
+---- 东皇赐福圣令  3300155
+--tItem[3300155] = tItem[3300155] or {}
+--tItem[3300155]["Function"] = function(nItemId,sItemName)
+--	Recycle_ExchangeStrength_UseTool(nItemId)
+--end
+--
+---- 背包信
+--tItemFace[3200647] = 1119
+
+------------------------------------------动态掩码
+--tOntimerMin_HM	小时/分钟（每天的00点00分到00点02分执行）
+--'00:00-00:02'
+-- local tRecycle_ExchangeStrength_OnTime = {}
+	-- tRecycle_ExchangeStrength_OnTime[1] = {}
+	-- tRecycle_ExchangeStrength_OnTime[1]["ActivityTime"] = tRecycle_ExchangeStrength_Count["ActivityTime"]
+	-- tRecycle_ExchangeStrength_OnTime[1]["Type"] = 2
+	-- tRecycle_ExchangeStrength_OnTime[1]["TimeType"] = 4
+	-- tRecycle_ExchangeStrength_OnTime[1]["Multiple"] = {}
+	-- tRecycle_ExchangeStrength_OnTime[1]["Multiple"][1]  = "00:00 00:00"
+	-- tRecycle_ExchangeStrength_OnTime[1]["Multiple"][2]  = "00:01 00:01"
+	-- tRecycle_ExchangeStrength_OnTime[1]["Multiple"][3]  = "00:02 00:02"
+	-- tRecycle_ExchangeStrength_OnTime[1]["Multiple"][4]  = "00:03 00:03"
+	-- tRecycle_ExchangeStrength_OnTime[1]["Multiple"][5]  = "00:04 00:04"
+	-- tRecycle_ExchangeStrength_OnTime[1]["Func"] = Recycle_ExchangeStrength_ClearGlobalData
+-- table.insert(tSystemTime_InitialData,tRecycle_ExchangeStrength_OnTime[1])

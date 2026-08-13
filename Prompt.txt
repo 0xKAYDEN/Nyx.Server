@@ -1,0 +1,65 @@
+I have a Conquer Online private server codebase (C#) and a new attack-handling
+library (design discussed separately — "Nyx.AttackEngine": validation → target
+resolution → damage calc → post-effects pipeline, keyed off the cq_magictype
+table via (type, level), with FrozenDictionary caching and a custom-handler
+escape hatch for non-generic skills).
+
+Your job right now is RECONNAISSANCE, not implementation. Scan this repository
+and report back before we touch any code. Specifically:
+
+## 1. Project structure
+- List the solution's projects/modules and one-line purpose for each.
+- Identify the entry point (Program.cs / server bootstrap) and how it wires
+  up services at startup (DI container? manual instantiation? static
+  singletons?).
+
+## 2. Existing combat/skill code
+- Find every place that currently handles an attack, skill cast, or damage
+  calculation — search for terms like "magictype", "MagicType", "Attack",
+  "Damage", "Skill", "Cast", "PVP", "PVE", "MVP", "PVM", "crime", "combo".
+- For each hit, note: file path, the class/method involved, and whether it
+  reads from cq_magictype (or an equivalent in-memory model of it) directly
+  or through an abstraction.
+- Flag any existing damage formula so I can compare it against what we
+  designed and catch regressions before replacing it.
+
+## 3. Database access patterns
+- How does the project currently connect to MySQL/Postgres? ORM (Dapper,
+  EF Core, raw ADO.NET)? Where is the connection string / DbConnection
+  factory configured?
+- Is there already a repository/DAL layer for other tables (items, players,
+  monsters) I should match the style of?
+- Confirm: are there two separate connection configs for MySQL vs Postgres,
+  or one active at a time via config flag?
+
+## 4. Player/entity model
+- Find the class representing a connected player (likely "Client",
+  "Player", "Character", or similar) and the class for monsters/NPCs.
+- List the fields/properties on these that an attack pipeline would need:
+  current HP/MP/EP, attack/defense stats, level, proficiency, equipped
+  weapon type, current map/position, PK points or similar crime-tracking
+  state.
+- Note how the codebase currently distinguishes PVP vs PVE vs MVP vs PVM
+  combat, if at all (e.g. is there already a "monster rank" or "boss" flag
+  I should treat as MVP?).
+
+## 5. Networking / packet layer
+- Find where an incoming "attack" or "use skill" client packet is parsed
+  and dispatched. What data does that packet already give us (attacker id,
+  target id, skill id, skill level, direction/position)?
+- Find where outgoing damage/combat-result packets are built, so I know
+  what AttackResult needs to map onto for the client to render it correctly.
+
+## 6. Build/deploy setup
+- What .NET version/SDK does this target? Any existing NuGet packages for
+  Dapper/MySqlConnector/Npgsql already referenced?
+- How is the server currently built and run (solution file, Docker, systemd
+  service, plain exe)? I need this to know how a new class library gets
+  referenced and deployed alongside it.
+
+## Output format
+Give me a structured report grouped by the six sections above. Use file
+paths with line numbers for anything I'll need to open. Flag anything
+ambiguous or missing (e.g. "no existing crime/PK tracking found — will need
+to add") rather than guessing. Don't modify any files yet — this is a
+scan-and-report pass so we can plan the integration correctly.

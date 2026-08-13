@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(graphifyy --help)",
+      "Bash(graphify --help)",
+      "Bash(graphify *)",
+      "Bash(dotnet build *)",
+      "Bash(grep -iE \"\\\\.\\(cs|csproj\\)$\")"
+    ]
+  }
+}

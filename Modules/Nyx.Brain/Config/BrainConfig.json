@@ -1,0 +1,21 @@
+{
+  "BaseDropRate": 1.0,
+  "BaseExpRate": 1.0,
+  "BaseMoneyRate": 1.0,
+  "BaseMonsterCount": 100,
+  "BaseCpsDropRate": 1.0,
+  "MinDropRate": 0.5,
+  "MaxDropRate": 5.0,
+  "MinExpRate": 0.5,
+  "MaxExpRate": 5.0,
+  "MinMoneyRate": 0.5,
+  "MaxMoneyRate": 5.0,
+  "MinMonsterCount": 50,
+  "MaxMonsterCount": 300,
+  "MinCpsDropRate": 0.5,
+  "MaxCpsDropRate": 5.0,
+  "TargetAverageLevel": 50,
+  "TargetAverageMoney": 1000000,
+  "TargetAverageCps": 50000,
+  "TargetPlayerCount": 50
+}

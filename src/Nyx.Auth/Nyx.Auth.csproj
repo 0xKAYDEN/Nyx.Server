@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nyx.Network\Nyx.Network.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Enums\" />
+    <Folder Include="Core\Abstruction\" />
+    <Folder Include="Core\Interfaces\" />
+    <Folder Include="Network\Handling\" />
+    <Folder Include="Database\" />
+    <Folder Include="Security\Randomness\" />
+  </ItemGroup>
+
+</Project>

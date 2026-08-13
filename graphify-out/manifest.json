@@ -1,0 +1,4457 @@
+{
+  ".claude/settings.local.json": {
+    "mtime": 1785105924.4512563,
+    "ast_hash": "57ca53b6bf5f692f9385376a6b18e24a",
+    "semantic_hash": "57ca53b6bf5f692f9385376a6b18e24a"
+  },
+  ".vs/Nyx/v17/DocumentLayout.backup.json": {
+    "mtime": 1785112545.642732,
+    "ast_hash": "6ca2a846491885dda95b8ce377fb2c22",
+    "semantic_hash": "6ca2a846491885dda95b8ce377fb2c22"
+  },
+  ".vs/Nyx/v17/DocumentLayout.json": {
+    "mtime": 1785112545.7486873,
+    "ast_hash": "6ca2a846491885dda95b8ce377fb2c22",
+    "semantic_hash": "6ca2a846491885dda95b8ce377fb2c22"
+  },
+  "Modules/Nyx.AI/Analysis/BehaviorAnalyzer.cs": {
+    "mtime": 1782603691.756142,
+    "ast_hash": "b709abea87431be07cb32a7a20287962",
+    "semantic_hash": "b709abea87431be07cb32a7a20287962"
+  },
+  "Modules/Nyx.AI/DataCollection/Enums/EventType.cs": {
+    "mtime": 1782603691.8261454,
+    "ast_hash": "a4b4e9a1279dd5737ff239325dc52ec5",
+    "semantic_hash": "a4b4e9a1279dd5737ff239325dc52ec5"
+  },
+  "Modules/Nyx.AI/DataCollection/GameEvents.cs": {
+    "mtime": 1782603691.8441403,
+    "ast_hash": "40cb1010a70f6dc5d9eb06455e5f0243",
+    "semantic_hash": "40cb1010a70f6dc5d9eb06455e5f0243"
+  },
+  "Modules/Nyx.AI/Kernal/GameEventLogger.cs": {
+    "mtime": 1782603691.8611395,
+    "ast_hash": "f9905179664c95d03f58c5bfc4569635",
+    "semantic_hash": "f9905179664c95d03f58c5bfc4569635"
+  },
+  "Modules/Nyx.AI/Nyx.AI.csproj": {
+    "mtime": 1761571677.807945,
+    "ast_hash": "402605c8443db17816bffc0bd179935a",
+    "semantic_hash": "402605c8443db17816bffc0bd179935a"
+  },
+  "Modules/Nyx.AI/bin/Debug/net9.0/Nyx.AI.deps.json": {
+    "mtime": 1785084051.2222674,
+    "ast_hash": "f5f3eb2a7ca7468bee60c9391ae8219c",
+    "semantic_hash": "f5f3eb2a7ca7468bee60c9391ae8219c"
+  },
+  "Modules/Nyx.AI/bin/Release/net9.0/Nyx.AI.deps.json": {
+    "mtime": 1782652955.4598217,
+    "ast_hash": "f5f3eb2a7ca7468bee60c9391ae8219c",
+    "semantic_hash": "f5f3eb2a7ca7468bee60c9391ae8219c"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.8148527,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0-windows/Nyx.AI.AssemblyInfo.cs": {
+    "mtime": 1776864729.8180716,
+    "ast_hash": "3adff22bfb54454809131a26ebd1b614",
+    "semantic_hash": "3adff22bfb54454809131a26ebd1b614"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0-windows/Nyx.AI.GlobalUsings.g.cs": {
+    "mtime": 1776864729.820066,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.8041987,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0/Nyx.AI.AssemblyInfo.cs": {
+    "mtime": 1785084049.356266,
+    "ast_hash": "c8874624a4d056ac528e0303525af280",
+    "semantic_hash": "c8874624a4d056ac528e0303525af280"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0/Nyx.AI.GlobalUsings.g.cs": {
+    "mtime": 1776864729.8098693,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.AI/obj/Nyx.AI.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1243255,
+    "ast_hash": "4e92ebbf3e00c0f5afa96908be571428",
+    "semantic_hash": "4e92ebbf3e00c0f5afa96908be571428"
+  },
+  "Modules/Nyx.AI/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.823059,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.AI/obj/Release/net9.0/Nyx.AI.AssemblyInfo.cs": {
+    "mtime": 1781359542.4582915,
+    "ast_hash": "4b5ebd4c1f8c93df4ec916248f3c47d2",
+    "semantic_hash": "4b5ebd4c1f8c93df4ec916248f3c47d2"
+  },
+  "Modules/Nyx.AI/obj/Release/net9.0/Nyx.AI.GlobalUsings.g.cs": {
+    "mtime": 1776864729.827555,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.AI/obj/project.assets.json": {
+    "mtime": 1781282315.8284984,
+    "ast_hash": "34e4dd37952c1c7da10a90956cd51de3",
+    "semantic_hash": "34e4dd37952c1c7da10a90956cd51de3"
+  },
+  "Modules/Nyx.Analysis/Data/ProcessData.cs": {
+    "mtime": 1782603691.883142,
+    "ast_hash": "853feaa90ea014081e08d0f6b75fd014",
+    "semantic_hash": "853feaa90ea014081e08d0f6b75fd014"
+  },
+  "Modules/Nyx.Analysis/Nyx.Analysis.csproj": {
+    "mtime": 1765723096.8791533,
+    "ast_hash": "4eb22bbf058cb610ff48d8299b153af9",
+    "semantic_hash": "4eb22bbf058cb610ff48d8299b153af9"
+  },
+  "Modules/Nyx.Analysis/Program.cs": {
+    "mtime": 1782603691.9161396,
+    "ast_hash": "31b004545565591807cf913a4ed6dcbf",
+    "semantic_hash": "31b004545565591807cf913a4ed6dcbf"
+  },
+  "Modules/Nyx.Analysis/bin/Debug/net9.0/Nyx.Analysis.deps.json": {
+    "mtime": 1785084050.7072668,
+    "ast_hash": "69803e7084bb6db5c4792f84ba0a4674",
+    "semantic_hash": "69803e7084bb6db5c4792f84ba0a4674"
+  },
+  "Modules/Nyx.Analysis/bin/Debug/net9.0/Nyx.Analysis.runtimeconfig.json": {
+    "mtime": 1785084050.7942686,
+    "ast_hash": "736f910c5e3628eb081902af0baac09d",
+    "semantic_hash": "736f910c5e3628eb081902af0baac09d"
+  },
+  "Modules/Nyx.Analysis/bin/Release/net9.0/Nyx.Analysis.deps.json": {
+    "mtime": 1781628813.9201422,
+    "ast_hash": "69803e7084bb6db5c4792f84ba0a4674",
+    "semantic_hash": "69803e7084bb6db5c4792f84ba0a4674"
+  },
+  "Modules/Nyx.Analysis/bin/Release/net9.0/Nyx.Analysis.runtimeconfig.json": {
+    "mtime": 1781617798.3086867,
+    "ast_hash": "a7bff45102af2bb94842c65f18db1d7a",
+    "semantic_hash": "a7bff45102af2bb94842c65f18db1d7a"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.8589797,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0-windows/Nyx.Analysis.AssemblyInfo.cs": {
+    "mtime": 1776864729.860977,
+    "ast_hash": "f48c89b2706cf3c0acf9ed8deb341cc0",
+    "semantic_hash": "f48c89b2706cf3c0acf9ed8deb341cc0"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0-windows/Nyx.Analysis.GlobalUsings.g.cs": {
+    "mtime": 1776864729.8629694,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.8440204,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0/Nyx.Analysis.AssemblyInfo.cs": {
+    "mtime": 1785084049.1512675,
+    "ast_hash": "c98e3b9954058c3ee3c64873a7bb0391",
+    "semantic_hash": "c98e3b9954058c3ee3c64873a7bb0391"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0/Nyx.Analysis.GlobalUsings.g.cs": {
+    "mtime": 1776864729.8539932,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Analysis/obj/Nyx.Analysis.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1013253,
+    "ast_hash": "d7c531d4be398782e5130a6fd17e951e",
+    "semantic_hash": "d7c531d4be398782e5130a6fd17e951e"
+  },
+  "Modules/Nyx.Analysis/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.8674634,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Analysis/obj/Release/net9.0/Nyx.Analysis.AssemblyInfo.cs": {
+    "mtime": 1781359541.6089337,
+    "ast_hash": "576ffa709826ef6c4243c296138c0dc1",
+    "semantic_hash": "576ffa709826ef6c4243c296138c0dc1"
+  },
+  "Modules/Nyx.Analysis/obj/Release/net9.0/Nyx.Analysis.GlobalUsings.g.cs": {
+    "mtime": 1776864729.87245,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Analysis/obj/project.assets.json": {
+    "mtime": 1781282318.51587,
+    "ast_hash": "b22feeddb8fac3d39e4a5c763a6683e4",
+    "semantic_hash": "b22feeddb8fac3d39e4a5c763a6683e4"
+  },
+  "Modules/Nyx.Asphodel/Database/MonstersDatabase.cs": {
+    "mtime": 1782603691.9371386,
+    "ast_hash": "aab7449d645e681f1b34e61415caf836",
+    "semantic_hash": "aab7449d645e681f1b34e61415caf836"
+  },
+  "Modules/Nyx.Asphodel/Database/QuestRecord.cs": {
+    "mtime": 1782603691.9571397,
+    "ast_hash": "dc555f4e3cc93f5735cee2dd2807b9f1",
+    "semantic_hash": "dc555f4e3cc93f5735cee2dd2807b9f1"
+  },
+  "Modules/Nyx.Asphodel/Database/UserQuest.cs": {
+    "mtime": 1782603691.9741395,
+    "ast_hash": "39cb29707527c21d99012b7b591715da",
+    "semantic_hash": "39cb29707527c21d99012b7b591715da"
+  },
+  "Modules/Nyx.Asphodel/Kernal/Scripts/LuaDynamicQuests.cs": {
+    "mtime": 1782603691.9921398,
+    "ast_hash": "d022e7a9468f329455284ace3d48c706",
+    "semantic_hash": "d022e7a9468f329455284ace3d48c706"
+  },
+  "Modules/Nyx.Asphodel/Nyx.Asphodel.csproj": {
+    "mtime": 1766108135.817019,
+    "ast_hash": "c2540e6ea06ebe8c3417abe025dee19e",
+    "semantic_hash": "c2540e6ea06ebe8c3417abe025dee19e"
+  },
+  "Modules/Nyx.Asphodel/Quests/Core/BountyHunting.cs": {
+    "mtime": 1782603692.1731398,
+    "ast_hash": "bb41d4e7bf07979cb67f49d60fafaf26",
+    "semantic_hash": "bb41d4e7bf07979cb67f49d60fafaf26"
+  },
+  "Modules/Nyx.Asphodel/Quests/Core/MaterialCollection.cs": {
+    "mtime": 1782603692.1921394,
+    "ast_hash": "8e2acf0fe90b27fee0183edee6eabad5",
+    "semantic_hash": "8e2acf0fe90b27fee0183edee6eabad5"
+  },
+  "Modules/Nyx.Asphodel/Quests/Core/MonsterHunting.cs": {
+    "mtime": 1782603692.2111392,
+    "ast_hash": "36641e3cf656fe356d3a405d05f921e4",
+    "semantic_hash": "36641e3cf656fe356d3a405d05f921e4"
+  },
+  "Modules/Nyx.Asphodel/Quests/Helpers/AutoGenerateQuests.cs": {
+    "mtime": 1782603692.2301383,
+    "ast_hash": "57699d7c0e40120b98f79b23e53a7bba",
+    "semantic_hash": "57699d7c0e40120b98f79b23e53a7bba"
+  },
+  "Modules/Nyx.Asphodel/Quests/QuestConfigurations.cs": {
+    "mtime": 1782603843.3861597,
+    "ast_hash": "bf6f28a5fbce6a98c4e9615bea669a9e",
+    "semantic_hash": "bf6f28a5fbce6a98c4e9615bea669a9e"
+  },
+  "Modules/Nyx.Asphodel/bin/Debug/net9.0/Nyx.Asphodel.deps.json": {
+    "mtime": 1785084050.699269,
+    "ast_hash": "9ec61fe5a964d913faab48b74d9174b2",
+    "semantic_hash": "9ec61fe5a964d913faab48b74d9174b2"
+  },
+  "Modules/Nyx.Asphodel/bin/Release/net9.0/Nyx.Asphodel.deps.json": {
+    "mtime": 1781628814.7051437,
+    "ast_hash": "9ec61fe5a964d913faab48b74d9174b2",
+    "semantic_hash": "9ec61fe5a964d913faab48b74d9174b2"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.9126337,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0-windows/Nyx.Asphodel.AssemblyInfo.cs": {
+    "mtime": 1776864729.916145,
+    "ast_hash": "518772978d1f64152fdc34c0158bed17",
+    "semantic_hash": "518772978d1f64152fdc34c0158bed17"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0-windows/Nyx.Asphodel.GlobalUsings.g.cs": {
+    "mtime": 1776864729.9191353,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.9016638,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0/Nyx.Asphodel.AssemblyInfo.cs": {
+    "mtime": 1785084049.162268,
+    "ast_hash": "aa47913737782b8a7003907d7dd13ca7",
+    "semantic_hash": "aa47913737782b8a7003907d7dd13ca7"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0/Nyx.Asphodel.GlobalUsings.g.cs": {
+    "mtime": 1776864729.909644,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Asphodel/obj/Nyx.Asphodel.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1343277,
+    "ast_hash": "9655dc2547688f52373ac07dd563152f",
+    "semantic_hash": "9655dc2547688f52373ac07dd563152f"
+  },
+  "Modules/Nyx.Asphodel/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.923973,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Asphodel/obj/Release/net9.0/Nyx.Asphodel.AssemblyInfo.cs": {
+    "mtime": 1781359541.844474,
+    "ast_hash": "1673426fe63a8fdb0dd3423505f2b39c",
+    "semantic_hash": "1673426fe63a8fdb0dd3423505f2b39c"
+  },
+  "Modules/Nyx.Asphodel/obj/Release/net9.0/Nyx.Asphodel.GlobalUsings.g.cs": {
+    "mtime": 1776864729.9289596,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Asphodel/obj/project.assets.json": {
+    "mtime": 1781282318.5553336,
+    "ast_hash": "ffcadf24179ec5ee2c180ce289e41fa8",
+    "semantic_hash": "ffcadf24179ec5ee2c180ce289e41fa8"
+  },
+  "Modules/Nyx.Brain/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "Modules/Nyx.Brain/ExampleUsage.cs": {
+    "mtime": 1782603692.4521976,
+    "ast_hash": "1e706a5ee8f18aaf0912c9e58ead7320",
+    "semantic_hash": "1e706a5ee8f18aaf0912c9e58ead7320"
+  },
+  "Modules/Nyx.Brain/Main.cs": {
+    "mtime": 1782603692.488194,
+    "ast_hash": "d68d7e94d40011fa9e7c6c63607e64b4",
+    "semantic_hash": "d68d7e94d40011fa9e7c6c63607e64b4"
+  },
+  "Modules/Nyx.Brain/Models/GameEnvironment.cs": {
+    "mtime": 1782603692.50822,
+    "ast_hash": "3ad3fe283bb3c1007a8c89a42f5f539f",
+    "semantic_hash": "3ad3fe283bb3c1007a8c89a42f5f539f"
+  },
+  "Modules/Nyx.Brain/Models/GameRates.cs": {
+    "mtime": 1782603692.5271924,
+    "ast_hash": "1eb64c86b57b8088ca9ae157d6b88870",
+    "semantic_hash": "1eb64c86b57b8088ca9ae157d6b88870"
+  },
+  "Modules/Nyx.Brain/Models/Player.cs": {
+    "mtime": 1782603692.5521972,
+    "ast_hash": "a22ec5f3a7ec4210c94f0b88abbef37a",
+    "semantic_hash": "a22ec5f3a7ec4210c94f0b88abbef37a"
+  },
+  "Modules/Nyx.Brain/Models/RateConfiguration.cs": {
+    "mtime": 1782603692.570193,
+    "ast_hash": "8c605c76075e93d1ae515a42eef933d6",
+    "semantic_hash": "8c605c76075e93d1ae515a42eef933d6"
+  },
+  "Modules/Nyx.Brain/Nyx.Brain.csproj": {
+    "mtime": 1781613753.603926,
+    "ast_hash": "b8d41b92626c9f0b7aefadf8af658d93",
+    "semantic_hash": "b8d41b92626c9f0b7aefadf8af658d93"
+  },
+  "Modules/Nyx.Brain/NyxBrain.cs": {
+    "mtime": 1782603692.971305,
+    "ast_hash": "eb556db805fa9b94f38fbedae5d25bad",
+    "semantic_hash": "eb556db805fa9b94f38fbedae5d25bad"
+  },
+  "Modules/Nyx.Brain/Services/CalculationService.cs": {
+    "mtime": 1782603692.9943032,
+    "ast_hash": "e6b184088b161aeb578c34c8c20dcd8f",
+    "semantic_hash": "e6b184088b161aeb578c34c8c20dcd8f"
+  },
+  "Modules/Nyx.Brain/Services/ConfigurationService.cs": {
+    "mtime": 1782603693.2503705,
+    "ast_hash": "961b3bccd80bf27da6e7c7827ea4e8bf",
+    "semantic_hash": "961b3bccd80bf27da6e7c7827ea4e8bf"
+  },
+  "Modules/Nyx.Brain/Services/GameMetricsCollector.cs": {
+    "mtime": 1782603693.3005898,
+    "ast_hash": "d4a72db9ca5498c7d80ec1a34cd1b046",
+    "semantic_hash": "d4a72db9ca5498c7d80ec1a34cd1b046"
+  },
+  "Modules/Nyx.Brain/Services/LevelExpLoader.cs": {
+    "mtime": 1782603693.3295896,
+    "ast_hash": "8b0f0d7e9ad83dd111cf446d1ccfa0ef",
+    "semantic_hash": "8b0f0d7e9ad83dd111cf446d1ccfa0ef"
+  },
+  "Modules/Nyx.Brain/Services/RateUpdateBackgroundService.cs": {
+    "mtime": 1782603693.3485892,
+    "ast_hash": "2ad6e5f03eeee8a9fd1b5685e1365c01",
+    "semantic_hash": "2ad6e5f03eeee8a9fd1b5685e1365c01"
+  },
+  "Modules/Nyx.Brain/bin/Debug/net9.0/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "Modules/Nyx.Brain/bin/Debug/net9.0/Nyx.Brain.deps.json": {
+    "mtime": 1785084050.6752696,
+    "ast_hash": "a4f1b51a12b3755f1a2866a041f0b8de",
+    "semantic_hash": "a4f1b51a12b3755f1a2866a041f0b8de"
+  },
+  "Modules/Nyx.Brain/bin/Release/net9.0/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "Modules/Nyx.Brain/bin/Release/net9.0/Nyx.Brain.deps.json": {
+    "mtime": 1782652955.5108192,
+    "ast_hash": "a4f1b51a12b3755f1a2866a041f0b8de",
+    "semantic_hash": "a4f1b51a12b3755f1a2866a041f0b8de"
+  },
+  "Modules/Nyx.Brain/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781611382.0922978,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Brain/obj/Debug/net9.0/Nyx.Brain.AssemblyInfo.cs": {
+    "mtime": 1785084049.5562663,
+    "ast_hash": "e96938e374286d5e4fca12f7247047a2",
+    "semantic_hash": "e96938e374286d5e4fca12f7247047a2"
+  },
+  "Modules/Nyx.Brain/obj/Debug/net9.0/Nyx.Brain.GlobalUsings.g.cs": {
+    "mtime": 1781611382.0512967,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Brain/obj/Nyx.Brain.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.0893252,
+    "ast_hash": "ebd6ebdc152390cf0ebc43c7d760dec7",
+    "semantic_hash": "ebd6ebdc152390cf0ebc43c7d760dec7"
+  },
+  "Modules/Nyx.Brain/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781617793.1475189,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Brain/obj/Release/net9.0/Nyx.Brain.AssemblyInfo.cs": {
+    "mtime": 1781617793.232805,
+    "ast_hash": "ccab8de1334f035998719d5fbbf7b8f2",
+    "semantic_hash": "ccab8de1334f035998719d5fbbf7b8f2"
+  },
+  "Modules/Nyx.Brain/obj/Release/net9.0/Nyx.Brain.GlobalUsings.g.cs": {
+    "mtime": 1781617792.928167,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Brain/obj/project.assets.json": {
+    "mtime": 1781611382.2972977,
+    "ast_hash": "a47e4ed513091a36f3789c13a8aa4b05",
+    "semantic_hash": "a47e4ed513091a36f3789c13a8aa4b05"
+  },
+  "Modules/Nyx.CharacterAscension/Kernal/Enums/CharacterClass.cs": {
+    "mtime": 1782603693.3685899,
+    "ast_hash": "8acfc702630d84950eb721937b090527",
+    "semantic_hash": "8acfc702630d84950eb721937b090527"
+  },
+  "Modules/Nyx.CharacterAscension/Nyx.CharacterAscension.csproj": {
+    "mtime": 1761695365.9027011,
+    "ast_hash": "ef246d6306766541b5c8a9ea0dbff6f2",
+    "semantic_hash": "ef246d6306766541b5c8a9ea0dbff6f2"
+  },
+  "Modules/Nyx.CharacterAscension/bin/Debug/net9.0/Nyx.CharacterAscension.deps.json": {
+    "mtime": 1785084050.26227,
+    "ast_hash": "dd7283f3850acdfcb72f5784d9b3f2d1",
+    "semantic_hash": "dd7283f3850acdfcb72f5784d9b3f2d1"
+  },
+  "Modules/Nyx.CharacterAscension/bin/Release/net9.0/Nyx.CharacterAscension.deps.json": {
+    "mtime": 1781628813.5561402,
+    "ast_hash": "dd7283f3850acdfcb72f5784d9b3f2d1",
+    "semantic_hash": "dd7283f3850acdfcb72f5784d9b3f2d1"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.979283,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0-windows/Nyx.CharacterAscension.AssemblyInfo.cs": {
+    "mtime": 1776864729.982272,
+    "ast_hash": "ce42fb972247b29944f1e2a3f371f194",
+    "semantic_hash": "ce42fb972247b29944f1e2a3f371f194"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0-windows/Nyx.CharacterAscension.GlobalUsings.g.cs": {
+    "mtime": 1776864729.9842653,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.9610384,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0/Nyx.CharacterAscension.AssemblyInfo.cs": {
+    "mtime": 1785084049.082267,
+    "ast_hash": "a239668961a490b5f5ddcea9ed973942",
+    "semantic_hash": "a239668961a490b5f5ddcea9ed973942"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0/Nyx.CharacterAscension.GlobalUsings.g.cs": {
+    "mtime": 1776864729.970021,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Nyx.CharacterAscension.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.0853257,
+    "ast_hash": "ec09063fed60c8d8cca9be10b58fc8f1",
+    "semantic_hash": "ec09063fed60c8d8cca9be10b58fc8f1"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.9882557,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Release/net9.0/Nyx.CharacterAscension.AssemblyInfo.cs": {
+    "mtime": 1781359541.551119,
+    "ast_hash": "be70d469858a0a6e9dc8cd2ce89fb0d5",
+    "semantic_hash": "be70d469858a0a6e9dc8cd2ce89fb0d5"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Release/net9.0/Nyx.CharacterAscension.GlobalUsings.g.cs": {
+    "mtime": 1776864729.9982293,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.CharacterAscension/obj/project.assets.json": {
+    "mtime": 1781282324.7725034,
+    "ast_hash": "7dc2edf039e6174763ab124ec0fe8041",
+    "semantic_hash": "7dc2edf039e6174763ab124ec0fe8041"
+  },
+  "Modules/Nyx.HexChess/Database/Entities/DbHexChess.cs": {
+    "mtime": 1782603693.3895886,
+    "ast_hash": "438fddc7fef1ea22f7fb6f63eff2d7c3",
+    "semantic_hash": "438fddc7fef1ea22f7fb6f63eff2d7c3"
+  },
+  "Modules/Nyx.HexChess/Nyx.HexChess.csproj": {
+    "mtime": 1759963857.7216933,
+    "ast_hash": "f2c9dc0e199d7a20a97e88cabb6528bd",
+    "semantic_hash": "f2c9dc0e199d7a20a97e88cabb6528bd"
+  },
+  "Modules/Nyx.HexChess/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.0910616,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.HexChess/obj/Debug/net9.0-windows/Nyx.HexChess.AssemblyInfo.cs": {
+    "mtime": 1785084049.082267,
+    "ast_hash": "299748c68816f866ef421ed6d41b1a77",
+    "semantic_hash": "299748c68816f866ef421ed6d41b1a77"
+  },
+  "Modules/Nyx.HexChess/obj/Debug/net9.0-windows/Nyx.HexChess.GlobalUsings.g.cs": {
+    "mtime": 1776864730.0961506,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.HexChess/obj/Nyx.HexChess.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.0853257,
+    "ast_hash": "713db13e878fc23e21820760913ef4ff",
+    "semantic_hash": "713db13e878fc23e21820760913ef4ff"
+  },
+  "Modules/Nyx.HexChess/obj/Release/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.102129,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.HexChess/obj/Release/net9.0-windows/Nyx.HexChess.AssemblyInfo.cs": {
+    "mtime": 1781359541.5878842,
+    "ast_hash": "a5c8e8f33a1678aa194c61beaad0b3ca",
+    "semantic_hash": "a5c8e8f33a1678aa194c61beaad0b3ca"
+  },
+  "Modules/Nyx.HexChess/obj/Release/net9.0-windows/Nyx.HexChess.GlobalUsings.g.cs": {
+    "mtime": 1776864730.1165662,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.HexChess/obj/project.assets.json": {
+    "mtime": 1781282330.8168879,
+    "ast_hash": "54c5cdd78e03fed79112ef763725abaa",
+    "semantic_hash": "54c5cdd78e03fed79112ef763725abaa"
+  },
+  "Modules/Nyx.Inventory/Contracts/IInventoryOwner.cs": {
+    "mtime": 1782603693.4115894,
+    "ast_hash": "dd8d4cba36261fa8965766d77eb860f1",
+    "semantic_hash": "dd8d4cba36261fa8965766d77eb860f1"
+  },
+  "Modules/Nyx.Inventory/Core/BaseInventory.cs": {
+    "mtime": 1782603693.4285903,
+    "ast_hash": "4ed89a7f80dc2efc5bb968cd8d387b7d",
+    "semantic_hash": "4ed89a7f80dc2efc5bb968cd8d387b7d"
+  },
+  "Modules/Nyx.Inventory/Core/InventoryItem.cs": {
+    "mtime": 1782603693.4465895,
+    "ast_hash": "68ec4e3372a8f03679d2ef8d661386cf",
+    "semantic_hash": "68ec4e3372a8f03679d2ef8d661386cf"
+  },
+  "Modules/Nyx.Inventory/Core/InventoryTransaction.cs": {
+    "mtime": 1782603693.464589,
+    "ast_hash": "4f65b123d0abe5dbc3477458658de1b1",
+    "semantic_hash": "4f65b123d0abe5dbc3477458658de1b1"
+  },
+  "Modules/Nyx.Inventory/Enums/Events.cs": {
+    "mtime": 1782603693.49359,
+    "ast_hash": "194cc827c56212349e1be78d07b8b6e5",
+    "semantic_hash": "194cc827c56212349e1be78d07b8b6e5"
+  },
+  "Modules/Nyx.Inventory/Inventory.cs": {
+    "mtime": 1782603693.5105894,
+    "ast_hash": "93391531466a4383df3a7db056a03cd8",
+    "semantic_hash": "93391531466a4383df3a7db056a03cd8"
+  },
+  "Modules/Nyx.Inventory/Nyx.Inventory.csproj": {
+    "mtime": 1781608967.465722,
+    "ast_hash": "cb0b6518d7d95ce561555ca4a4666da6",
+    "semantic_hash": "cb0b6518d7d95ce561555ca4a4666da6"
+  },
+  "Modules/Nyx.Inventory/Trackers/ItemsEventsTracker.cs": {
+    "mtime": 1782603693.543589,
+    "ast_hash": "cb62801eab435b12ba4d61f134a0c9d8",
+    "semantic_hash": "cb62801eab435b12ba4d61f134a0c9d8"
+  },
+  "Modules/Nyx.Inventory/bin/Debug/net9.0/Nyx.Inventory.deps.json": {
+    "mtime": 1785084053.5112696,
+    "ast_hash": "67d70ea7e71362983795519b5c47804e",
+    "semantic_hash": "67d70ea7e71362983795519b5c47804e"
+  },
+  "Modules/Nyx.Inventory/bin/Release/net9.0/Nyx.Inventory.deps.json": {
+    "mtime": 1782652956.2578247,
+    "ast_hash": "67d70ea7e71362983795519b5c47804e",
+    "semantic_hash": "67d70ea7e71362983795519b5c47804e"
+  },
+  "Modules/Nyx.Inventory/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781446321.0123532,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Inventory/obj/Debug/net9.0/Nyx.Inventory.AssemblyInfo.cs": {
+    "mtime": 1785084053.1872659,
+    "ast_hash": "8caba845f82f665cbeba5ddd6ff125e9",
+    "semantic_hash": "8caba845f82f665cbeba5ddd6ff125e9"
+  },
+  "Modules/Nyx.Inventory/obj/Debug/net9.0/Nyx.Inventory.GlobalUsings.g.cs": {
+    "mtime": 1781446320.941352,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Inventory/obj/Nyx.Inventory.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.121326,
+    "ast_hash": "ed576c13a814af5c7d838ffe6d09d8eb",
+    "semantic_hash": "ed576c13a814af5c7d838ffe6d09d8eb"
+  },
+  "Modules/Nyx.Inventory/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781617798.8145764,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Inventory/obj/Release/net9.0/Nyx.Inventory.AssemblyInfo.cs": {
+    "mtime": 1781617798.8316891,
+    "ast_hash": "cc3d3ce0776d287a055d6bf9208d4b7f",
+    "semantic_hash": "cc3d3ce0776d287a055d6bf9208d4b7f"
+  },
+  "Modules/Nyx.Inventory/obj/Release/net9.0/Nyx.Inventory.GlobalUsings.g.cs": {
+    "mtime": 1781617792.8416054,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Inventory/obj/project.assets.json": {
+    "mtime": 1781628966.1183262,
+    "ast_hash": "75342870719f12f0a97f04dd633ea8d3",
+    "semantic_hash": "75342870719f12f0a97f04dd633ea8d3"
+  },
+  "Modules/Nyx.Spellcasting/Database/SpellInfo.cs": {
+    "mtime": 1785108315.4282718,
+    "ast_hash": "9e4e62f22ea82b859aa2ab7d0c2c209d",
+    "semantic_hash": "9e4e62f22ea82b859aa2ab7d0c2c209d"
+  },
+  "Modules/Nyx.Spellcasting/Enums/SpellSort.cs": {
+    "mtime": 1782603693.5915914,
+    "ast_hash": "62f5e60a0fda685196c3db1ba690996f",
+    "semantic_hash": "62f5e60a0fda685196c3db1ba690996f"
+  },
+  "Modules/Nyx.Spellcasting/Enums/SpellTarget.cs": {
+    "mtime": 1782603693.6085894,
+    "ast_hash": "b3baab0b52a5327a01ec098af0500754",
+    "semantic_hash": "b3baab0b52a5327a01ec098af0500754"
+  },
+  "Modules/Nyx.Spellcasting/Main.cs": {
+    "mtime": 1782603693.62859,
+    "ast_hash": "3c492edd0e956920bc9ef93ac1449e4f",
+    "semantic_hash": "3c492edd0e956920bc9ef93ac1449e4f"
+  },
+  "Modules/Nyx.Spellcasting/Nyx.Spellcasting.csproj": {
+    "mtime": 1781871988.800753,
+    "ast_hash": "665b6ed926203c0e7da518e78ee2f1e6",
+    "semantic_hash": "665b6ed926203c0e7da518e78ee2f1e6"
+  },
+  "Modules/Nyx.Spellcasting/bin/Debug/net9.0/Nyx.Spellcasting.deps.json": {
+    "mtime": 1785084051.6342773,
+    "ast_hash": "36b6ac7b3fbe4efb4ec2e3a191e0d39d",
+    "semantic_hash": "36b6ac7b3fbe4efb4ec2e3a191e0d39d"
+  },
+  "Modules/Nyx.Spellcasting/bin/Release/net9.0/Nyx.Spellcasting.deps.json": {
+    "mtime": 1781628813.2650936,
+    "ast_hash": "36b6ac7b3fbe4efb4ec2e3a191e0d39d",
+    "semantic_hash": "36b6ac7b3fbe4efb4ec2e3a191e0d39d"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.2644937,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0-windows/Nyx.Spellcasting.AssemblyInfo.cs": {
+    "mtime": 1776864730.2694826,
+    "ast_hash": "88749c5da85d16842851b47fe9ca398e",
+    "semantic_hash": "88749c5da85d16842851b47fe9ca398e"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0-windows/Nyx.Spellcasting.GlobalUsings.g.cs": {
+    "mtime": 1776864730.2724752,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.2565157,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0/Nyx.Spellcasting.AssemblyInfo.cs": {
+    "mtime": 1785084049.143267,
+    "ast_hash": "bcfc85ddb6bbd5fddd9a0f7749cb6efd",
+    "semantic_hash": "bcfc85ddb6bbd5fddd9a0f7749cb6efd"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0/Nyx.Spellcasting.GlobalUsings.g.cs": {
+    "mtime": 1776864730.2605054,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Spellcasting/obj/Nyx.Spellcasting.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1203265,
+    "ast_hash": "0f29696c8c197b865d74c9be97b15cf0",
+    "semantic_hash": "0f29696c8c197b865d74c9be97b15cf0"
+  },
+  "Modules/Nyx.Spellcasting/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.2773902,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Spellcasting/obj/Release/net9.0/Nyx.Spellcasting.AssemblyInfo.cs": {
+    "mtime": 1781359541.9476693,
+    "ast_hash": "2c3b84210ce4ae92e8b879d03158a906",
+    "semantic_hash": "2c3b84210ce4ae92e8b879d03158a906"
+  },
+  "Modules/Nyx.Spellcasting/obj/Release/net9.0/Nyx.Spellcasting.GlobalUsings.g.cs": {
+    "mtime": 1776864730.2833712,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Spellcasting/obj/project.assets.json": {
+    "mtime": 1781282339.529762,
+    "ast_hash": "1ccd48fe7650a0a15ad00503172ecef4",
+    "semantic_hash": "1ccd48fe7650a0a15ad00503172ecef4"
+  },
+  "Modules/Nyx.Validation/Nyx.Validation.csproj": {
+    "mtime": 1781446218.6172676,
+    "ast_hash": "a179c1fd32442fdc3ca095a8084e072a",
+    "semantic_hash": "a179c1fd32442fdc3ca095a8084e072a"
+  },
+  "Modules/Nyx.Validation/bin/Debug/net9.0/Nyx.Validation.deps.json": {
+    "mtime": 1785084051.4872668,
+    "ast_hash": "74f27516e3dde897faa682a081da6fbd",
+    "semantic_hash": "74f27516e3dde897faa682a081da6fbd"
+  },
+  "Modules/Nyx.Validation/bin/Release/net9.0/Nyx.Validation.deps.json": {
+    "mtime": 1781628813.1350935,
+    "ast_hash": "74f27516e3dde897faa682a081da6fbd",
+    "semantic_hash": "74f27516e3dde897faa682a081da6fbd"
+  },
+  "Modules/Nyx.Validation/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781446220.197272,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Validation/obj/Debug/net9.0/Nyx.Validation.AssemblyInfo.cs": {
+    "mtime": 1785084049.4762688,
+    "ast_hash": "07b01d7a134c9bad66bd42d3aac3abe7",
+    "semantic_hash": "07b01d7a134c9bad66bd42d3aac3abe7"
+  },
+  "Modules/Nyx.Validation/obj/Debug/net9.0/Nyx.Validation.GlobalUsings.g.cs": {
+    "mtime": 1781446220.1392696,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Validation/obj/Nyx.Validation.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.092325,
+    "ast_hash": "a6fd09430a31d96f02ae49913f66f1d8",
+    "semantic_hash": "a6fd09430a31d96f02ae49913f66f1d8"
+  },
+  "Modules/Nyx.Validation/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781617792.966692,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.Validation/obj/Release/net9.0/Nyx.Validation.AssemblyInfo.cs": {
+    "mtime": 1781617793.0498118,
+    "ast_hash": "9053e2afd6b46ac41bd55d2db54670e4",
+    "semantic_hash": "9053e2afd6b46ac41bd55d2db54670e4"
+  },
+  "Modules/Nyx.Validation/obj/Release/net9.0/Nyx.Validation.GlobalUsings.g.cs": {
+    "mtime": 1781617792.765883,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.Validation/obj/project.assets.json": {
+    "mtime": 1781446220.28027,
+    "ast_hash": "e4135dacc3fff593317d841cc028eeb3",
+    "semantic_hash": "e4135dacc3fff593317d841cc028eeb3"
+  },
+  "Modules/Server/net9.0-windows/Nyx.HexChess.deps.json": {
+    "mtime": 1785084050.1172678,
+    "ast_hash": "7ab9ac90a6a7bff3afae251180d35038",
+    "semantic_hash": "7ab9ac90a6a7bff3afae251180d35038"
+  },
+  "Nyx.AI/obj/Nyx.AI.csproj.nuget.dgspec.json": {
+    "mtime": 1781282350.3124084,
+    "ast_hash": "8a41f4a3f9fba3c4da4609f7775f0dcc",
+    "semantic_hash": "8a41f4a3f9fba3c4da4609f7775f0dcc"
+  },
+  "Nyx.AI/obj/project.assets.json": {
+    "mtime": 1781282350.3104079,
+    "ast_hash": "d9ce9d94d294826db05c8b073b8c0df2",
+    "semantic_hash": "d9ce9d94d294826db05c8b073b8c0df2"
+  },
+  "Nyx.Network/obj/Nyx.Network.csproj.nuget.dgspec.json": {
+    "mtime": 1781282350.3124084,
+    "ast_hash": "1b17c161730c2575b9d43e8216575506",
+    "semantic_hash": "1b17c161730c2575b9d43e8216575506"
+  },
+  "Nyx.Network/obj/project.assets.json": {
+    "mtime": 1781282350.3104079,
+    "ast_hash": "be0cece7de566f8203ead97e5cdc49b0",
+    "semantic_hash": "be0cece7de566f8203ead97e5cdc49b0"
+  },
+  "Nyx.Shared/obj/Nyx.Shared.csproj.nuget.dgspec.json": {
+    "mtime": 1781282350.2514112,
+    "ast_hash": "b98488b5012512b466288cdb685795a4",
+    "semantic_hash": "b98488b5012512b466288cdb685795a4"
+  },
+  "Nyx.Shared/obj/project.assets.json": {
+    "mtime": 1781282350.249407,
+    "ast_hash": "70b8922f0c4e51f623a1f870d114967d",
+    "semantic_hash": "70b8922f0c4e51f623a1f870d114967d"
+  },
+  "Nyx.sln": {
+    "mtime": 1785112545.744688,
+    "ast_hash": "65c95f4f567014ea7aca69398d418ceb",
+    "semantic_hash": "65c95f4f567014ea7aca69398d418ceb"
+  },
+  "Nyx/obj/Nyx.Server.csproj.nuget.dgspec.json": {
+    "mtime": 1781282350.7274065,
+    "ast_hash": "7443b934b72465df41fe62ba5344ff22",
+    "semantic_hash": "7443b934b72465df41fe62ba5344ff22"
+  },
+  "Nyx/obj/project.assets.json": {
+    "mtime": 1781282350.725406,
+    "ast_hash": "43b65cd6513c713688cc7f6fcfadf184",
+    "semantic_hash": "43b65cd6513c713688cc7f6fcfadf184"
+  },
+  "SQL/PostgresSql.sql": {
+    "mtime": 1784851788.7061033,
+    "ast_hash": "af8245bb66505b9c005d23b113d57c98",
+    "semantic_hash": "af8245bb66505b9c005d23b113d57c98"
+  },
+  "SQL/db_6370.sql": {
+    "mtime": 1776873556.419242,
+    "ast_hash": "8528fb0ff15d4f053d3a65f52a0b1213",
+    "semantic_hash": "8528fb0ff15d4f053d3a65f52a0b1213"
+  },
+  "SQL/entities.sql": {
+    "mtime": 1783091090.3493195,
+    "ast_hash": "bb45032005c263010b21465d19b94ee2",
+    "semantic_hash": "bb45032005c263010b21465d19b94ee2"
+  },
+  "fix_defaults.py": {
+    "mtime": 1782769572.1427715,
+    "ast_hash": "154b836c562f0f2c041450acd4d70a98",
+    "semantic_hash": "154b836c562f0f2c041450acd4d70a98"
+  },
+  "migrate_db.py": {
+    "mtime": 1782746664.602624,
+    "ast_hash": "fb3e51be01849620f6cbab05afc2abfb",
+    "semantic_hash": "fb3e51be01849620f6cbab05afc2abfb"
+  },
+  "ref/EntityTable.cs": {
+    "mtime": 1776864725.906542,
+    "ast_hash": "d0e5ac1773ed6e90c003f9e51f5417ec",
+    "semantic_hash": "d0e5ac1773ed6e90c003f9e51f5417ec"
+  },
+  "ref/EntityVariableTable.cs": {
+    "mtime": 1776864725.9100397,
+    "ast_hash": "7618ab039b5a3a0f85899dee0e3f1d19",
+    "semantic_hash": "7618ab039b5a3a0f85899dee0e3f1d19"
+  },
+  "scripts/migrate_mysql_to_postgres.py": {
+    "mtime": 1782685186.5722463,
+    "ast_hash": "de30e1404b360f76b040f1afe4c700fc",
+    "semantic_hash": "de30e1404b360f76b040f1afe4c700fc"
+  },
+  "src/Nyx.Auth/Nyx.Auth.csproj": {
+    "mtime": 1784826153.2625186,
+    "ast_hash": "43ddbba2048fa56b03f25acb2bbac626",
+    "semantic_hash": "43ddbba2048fa56b03f25acb2bbac626"
+  },
+  "src/Nyx.Auth/Program.cs": {
+    "mtime": 1784826152.4965177,
+    "ast_hash": "13bef349ed3f709b93437f708d638e87",
+    "semantic_hash": "13bef349ed3f709b93437f708d638e87"
+  },
+  "src/Nyx.Auth/bin/Debug/net9.0/Nyx.Auth.deps.json": {
+    "mtime": 1785084053.0772655,
+    "ast_hash": "3b5bab62e7940bb58539426e0d662f07",
+    "semantic_hash": "3b5bab62e7940bb58539426e0d662f07"
+  },
+  "src/Nyx.Auth/bin/Debug/net9.0/Nyx.Auth.runtimeconfig.json": {
+    "mtime": 1785084053.123269,
+    "ast_hash": "7d9ea133a3764c8283af61cd795680a8",
+    "semantic_hash": "7d9ea133a3764c8283af61cd795680a8"
+  },
+  "src/Nyx.Auth/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1784820426.1216345,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Auth/obj/Debug/net9.0/Nyx.Auth.AssemblyInfo.cs": {
+    "mtime": 1785084052.9002676,
+    "ast_hash": "75836bc17d9297e1226321507b37842d",
+    "semantic_hash": "75836bc17d9297e1226321507b37842d"
+  },
+  "src/Nyx.Auth/obj/Debug/net9.0/Nyx.Auth.GlobalUsings.g.cs": {
+    "mtime": 1784820426.0826318,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Auth/obj/Nyx.Auth.csproj.nuget.dgspec.json": {
+    "mtime": 1784820433.1430233,
+    "ast_hash": "a6d6b346c24051d1744f84d0e6ff6ee4",
+    "semantic_hash": "a6d6b346c24051d1744f84d0e6ff6ee4"
+  },
+  "src/Nyx.Auth/obj/project.assets.json": {
+    "mtime": 1784820433.1400268,
+    "ast_hash": "68ac941ed09ac7a619b7c7cd1c2cb48f",
+    "semantic_hash": "68ac941ed09ac7a619b7c7cd1c2cb48f"
+  },
+  "src/Nyx.Calculations/Nyx.Calculations.csproj": {
+    "mtime": 1785077129.4116163,
+    "ast_hash": "7dbb08d0b77fe6a30d4d863042b479cd",
+    "semantic_hash": "7dbb08d0b77fe6a30d4d863042b479cd"
+  },
+  "src/Nyx.Calculations/Validations/SpellUseValidate.cs": {
+    "mtime": 1785077129.3876457,
+    "ast_hash": "2f190b0848a5e0a37db1e0de89cff84b",
+    "semantic_hash": "2f190b0848a5e0a37db1e0de89cff84b"
+  },
+  "src/Nyx.Calculations/Validations/ValidationType.cs": {
+    "mtime": 1785076331.3204856,
+    "ast_hash": "4c34b6f7a283acc25dcde88af1d2fc4d",
+    "semantic_hash": "4c34b6f7a283acc25dcde88af1d2fc4d"
+  },
+  "src/Nyx.Calculations/bin/Debug/net9.0/Nyx.Calculations.deps.json": {
+    "mtime": 1785084051.5902674,
+    "ast_hash": "9998d099e5c03d42e6c3c1b788b7680e",
+    "semantic_hash": "9998d099e5c03d42e6c3c1b788b7680e"
+  },
+  "src/Nyx.Calculations/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1785075810.2342677,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Calculations/obj/Debug/net9.0/Nyx.Calculations.AssemblyInfo.cs": {
+    "mtime": 1785084050.6722696,
+    "ast_hash": "f367b2d1258533ca3f87e462b4673fc6",
+    "semantic_hash": "f367b2d1258533ca3f87e462b4673fc6"
+  },
+  "src/Nyx.Calculations/obj/Debug/net9.0/Nyx.Calculations.GlobalUsings.g.cs": {
+    "mtime": 1785075810.1752667,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Calculations/obj/Nyx.Calculations.csproj.nuget.dgspec.json": {
+    "mtime": 1785075810.5962687,
+    "ast_hash": "6adc1b24b51dd5b5bdb7d7d38d7e9025",
+    "semantic_hash": "6adc1b24b51dd5b5bdb7d7d38d7e9025"
+  },
+  "src/Nyx.Calculations/obj/project.assets.json": {
+    "mtime": 1785075810.5932682,
+    "ast_hash": "6a3f2ab443e35e26d207ae5c0c1b0348",
+    "semantic_hash": "6a3f2ab443e35e26d207ae5c0c1b0348"
+  },
+  "src/Nyx.Database/Entities/NewbieConfigurations.cs": {
+    "mtime": 1782603827.460774,
+    "ast_hash": "b09c9daef9d0963331bae9c9b543e6ae",
+    "semantic_hash": "b09c9daef9d0963331bae9c9b543e6ae"
+  },
+  "src/Nyx.Database/Nyx.Database.csproj": {
+    "mtime": 1781608967.4917233,
+    "ast_hash": "1e9dbd84dbd023c97fa047e40280b845",
+    "semantic_hash": "1e9dbd84dbd023c97fa047e40280b845"
+  },
+  "src/Nyx.Database/Repositories/NewbieRepository.cs": {
+    "mtime": 1782603827.475775,
+    "ast_hash": "1ef09582607c2d228c6ff6a5fa4a658b",
+    "semantic_hash": "1ef09582607c2d228c6ff6a5fa4a658b"
+  },
+  "src/Nyx.Database/bin/Debug/net9.0/Nyx.Database.deps.json": {
+    "mtime": 1785084050.3822691,
+    "ast_hash": "f28ccda96089ddd4e12a549129968af5",
+    "semantic_hash": "f28ccda96089ddd4e12a549129968af5"
+  },
+  "src/Nyx.Database/bin/Release/net9.0/Nyx.Database.deps.json": {
+    "mtime": 1782652955.3348176,
+    "ast_hash": "f28ccda96089ddd4e12a549129968af5",
+    "semantic_hash": "f28ccda96089ddd4e12a549129968af5"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.0311673,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0-windows/Nyx.Database.AssemblyInfo.cs": {
+    "mtime": 1776864730.0331578,
+    "ast_hash": "d17b3147e2439cc74bfa14afcd758f5a",
+    "semantic_hash": "d17b3147e2439cc74bfa14afcd758f5a"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0-windows/Nyx.Database.GlobalUsings.g.cs": {
+    "mtime": 1776864730.0351784,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.0196886,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0/Nyx.Database.AssemblyInfo.cs": {
+    "mtime": 1785084049.187268,
+    "ast_hash": "40fcaa6cd16dbe4756ed9c2b9f0b16ff",
+    "semantic_hash": "40fcaa6cd16dbe4756ed9c2b9f0b16ff"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0/Nyx.Database.GlobalUsings.g.cs": {
+    "mtime": 1776864730.0276642,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Database/obj/Nyx.Database.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.0863254,
+    "ast_hash": "612215683cf71aad88b8bee23e198203",
+    "semantic_hash": "612215683cf71aad88b8bee23e198203"
+  },
+  "src/Nyx.Database/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.0416534,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Database/obj/Release/net9.0/Nyx.Database.AssemblyInfo.cs": {
+    "mtime": 1781359541.7827406,
+    "ast_hash": "10d5fa0b1efc564b2f199b8d933e458e",
+    "semantic_hash": "10d5fa0b1efc564b2f199b8d933e458e"
+  },
+  "src/Nyx.Database/obj/Release/net9.0/Nyx.Database.GlobalUsings.g.cs": {
+    "mtime": 1776864730.054131,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Database/obj/project.assets.json": {
+    "mtime": 1781282357.2490506,
+    "ast_hash": "b1145b4fb2fea550985467d481a93fb3",
+    "semantic_hash": "b1145b4fb2fea550985467d481a93fb3"
+  },
+  "src/Nyx.Domain/MsgNpc/NpcAttribute.cs": {
+    "mtime": 1782603730.5486238,
+    "ast_hash": "ecffd9d16861a6f183b501f1db9d9f89",
+    "semantic_hash": "ecffd9d16861a6f183b501f1db9d9f89"
+  },
+  "src/Nyx.Domain/MsgNpc/NpcHandler.cs": {
+    "mtime": 1782603730.5676248,
+    "ast_hash": "58e52f71230fc7683300be03fdf8bcf1",
+    "semantic_hash": "58e52f71230fc7683300be03fdf8bcf1"
+  },
+  "src/Nyx.Domain/MsgNpc/NpcID.cs": {
+    "mtime": 1782603730.5926242,
+    "ast_hash": "6c082ca9a9ad1e795efb1e140266d996",
+    "semantic_hash": "6c082ca9a9ad1e795efb1e140266d996"
+  },
+  "src/Nyx.Domain/MsgUsers/MsgCommand.cs": {
+    "mtime": 1782603730.6176362,
+    "ast_hash": "696fc1dd7fbf9fea21d9452d3ceb9f05",
+    "semantic_hash": "696fc1dd7fbf9fea21d9452d3ceb9f05"
+  },
+  "src/Nyx.Domain/Nyx.Domain.csproj": {
+    "mtime": 1753572517.6405144,
+    "ast_hash": "e60546c704848a1034497e65a262e7ce",
+    "semantic_hash": "e60546c704848a1034497e65a262e7ce"
+  },
+  "src/Nyx.Domain/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781282363.6171784,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Domain/obj/Debug/net9.0-windows/Nyx.Domain.AssemblyInfo.cs": {
+    "mtime": 1785084089.5566409,
+    "ast_hash": "d1d7b50693ade640f2f103819cd41eac",
+    "semantic_hash": "d1d7b50693ade640f2f103819cd41eac"
+  },
+  "src/Nyx.Domain/obj/Debug/net9.0-windows/Nyx.Domain.GlobalUsings.g.cs": {
+    "mtime": 1781282362.3608074,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Domain/obj/Nyx.Domain.csproj.nuget.dgspec.json": {
+    "mtime": 1784856458.6706326,
+    "ast_hash": "00bd4651307ea705afb2569d21f7cad3",
+    "semantic_hash": "00bd4651307ea705afb2569d21f7cad3"
+  },
+  "src/Nyx.Domain/obj/Release/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781362302.7508483,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Domain/obj/Release/net9.0-windows/Nyx.Domain.AssemblyInfo.cs": {
+    "mtime": 1781362302.8012004,
+    "ast_hash": "416fe631fda9e8e189de8a80b03bbc74",
+    "semantic_hash": "416fe631fda9e8e189de8a80b03bbc74"
+  },
+  "src/Nyx.Domain/obj/Release/net9.0-windows/Nyx.Domain.GlobalUsings.g.cs": {
+    "mtime": 1781359541.4419577,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Domain/obj/project.assets.json": {
+    "mtime": 1784856458.6506312,
+    "ast_hash": "c1ba51f16d659a01299adb6547a7dd36",
+    "semantic_hash": "c1ba51f16d659a01299adb6547a7dd36"
+  },
+  "src/Nyx.Monsters/Core/Infrastructure.cs": {
+    "mtime": 1784855387.8738356,
+    "ast_hash": "d6bab79f81c75838533687cb934ca846",
+    "semantic_hash": "d6bab79f81c75838533687cb934ca846"
+  },
+  "src/Nyx.Monsters/Core/MonsterTemplate.cs": {
+    "mtime": 1784858534.2769449,
+    "ast_hash": "86f0b333ec73aec04a596e9c8026081c",
+    "semantic_hash": "86f0b333ec73aec04a596e9c8026081c"
+  },
+  "src/Nyx.Monsters/MonsterManager.DI.cs": {
+    "mtime": 1784855851.9307246,
+    "ast_hash": "1c8f7d4c697844d74df76cd8ef76eb68",
+    "semantic_hash": "1c8f7d4c697844d74df76cd8ef76eb68"
+  },
+  "src/Nyx.Monsters/MonsterManager.cs": {
+    "mtime": 1785083086.4602127,
+    "ast_hash": "22807942a225d7c7ca2e2e091062ce5b",
+    "semantic_hash": "22807942a225d7c7ca2e2e091062ce5b"
+  },
+  "src/Nyx.Monsters/Nyx.Monsters.csproj": {
+    "mtime": 1784855327.7274027,
+    "ast_hash": "73882ace7eb135d30151438c2304c6c9",
+    "semantic_hash": "73882ace7eb135d30151438c2304c6c9"
+  },
+  "src/Nyx.Monsters/Runtime/MapInstance.cs": {
+    "mtime": 1784855967.7391827,
+    "ast_hash": "13c6370ae80b705d6d1b51ed3c474086",
+    "semantic_hash": "13c6370ae80b705d6d1b51ed3c474086"
+  },
+  "src/Nyx.Monsters/Runtime/MonsterState.cs": {
+    "mtime": 1784855443.6223133,
+    "ast_hash": "32ced12965ad2cbeedfa653629803955",
+    "semantic_hash": "32ced12965ad2cbeedfa653629803955"
+  },
+  "src/Nyx.Monsters/Services/DefaultServices.cs": {
+    "mtime": 1784856077.9913766,
+    "ast_hash": "cc83e9336cdcf8546f63bc22b2b1e099",
+    "semantic_hash": "cc83e9336cdcf8546f63bc22b2b1e099"
+  },
+  "src/Nyx.Monsters/Services/Interfaces.cs": {
+    "mtime": 1784859010.3467958,
+    "ast_hash": "55ee52c50c43f618dadad607286d6f8f",
+    "semantic_hash": "55ee52c50c43f618dadad607286d6f8f"
+  },
+  "src/Nyx.Monsters/bin/Debug/net9.0/Nyx.Monsters.deps.json": {
+    "mtime": 1785084051.3842697,
+    "ast_hash": "621f9f77411d61560c3b4ee2a6642c52",
+    "semantic_hash": "621f9f77411d61560c3b4ee2a6642c52"
+  },
+  "src/Nyx.Monsters/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1784855374.8972015,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Monsters/obj/Debug/net9.0/Nyx.Monsters.AssemblyInfo.cs": {
+    "mtime": 1785084050.7622674,
+    "ast_hash": "3595c701442f89dbc2a809423268d317",
+    "semantic_hash": "3595c701442f89dbc2a809423268d317"
+  },
+  "src/Nyx.Monsters/obj/Debug/net9.0/Nyx.Monsters.GlobalUsings.g.cs": {
+    "mtime": 1784855374.839202,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Monsters/obj/Nyx.Monsters.csproj.nuget.dgspec.json": {
+    "mtime": 1784855377.848761,
+    "ast_hash": "eb3f1af3ebc532b7ae9a9977bf76334c",
+    "semantic_hash": "eb3f1af3ebc532b7ae9a9977bf76334c"
+  },
+  "src/Nyx.Monsters/obj/project.assets.json": {
+    "mtime": 1784855377.8367612,
+    "ast_hash": "3f33026269300240f68f6263f211a1a3",
+    "semantic_hash": "3f33026269300240f68f6263f211a1a3"
+  },
+  "src/Nyx.Network/AuthNetworkService.cs": {
+    "mtime": 1782603731.3626268,
+    "ast_hash": "38a287e6402f341efebd9583a94b0973",
+    "semantic_hash": "38a287e6402f341efebd9583a94b0973"
+  },
+  "src/Nyx.Network/Core/Packets/PacketDump.cs": {
+    "mtime": 1782603731.8676252,
+    "ast_hash": "fe03772d0c5b1488cebd4e74ce933166",
+    "semantic_hash": "fe03772d0c5b1488cebd4e74ce933166"
+  },
+  "src/Nyx.Network/Core/Packets/PacketErrorContext.cs": {
+    "mtime": 1782603731.8976254,
+    "ast_hash": "34fed39e87cb17ba711e7f2f7863294b",
+    "semantic_hash": "34fed39e87cb17ba711e7f2f7863294b"
+  },
+  "src/Nyx.Network/Core/Packets/PacketReader.cs": {
+    "mtime": 1782603731.9286256,
+    "ast_hash": "325b2db00c11db1099706a241ad15d4c",
+    "semantic_hash": "325b2db00c11db1099706a241ad15d4c"
+  },
+  "src/Nyx.Network/Core/Packets/PacketValidator.cs": {
+    "mtime": 1782603732.0306246,
+    "ast_hash": "9e3c2df76ab15ccec36e2aa3c1e13c3d",
+    "semantic_hash": "9e3c2df76ab15ccec36e2aa3c1e13c3d"
+  },
+  "src/Nyx.Network/Core/Packets/PacketWriter.cs": {
+    "mtime": 1782603732.0506232,
+    "ast_hash": "fdce518e1c9e1038870ebf3f3abd7839",
+    "semantic_hash": "fdce518e1c9e1038870ebf3f3abd7839"
+  },
+  "src/Nyx.Network/Cryptography/AuthCryptography.cs": {
+    "mtime": 1782603732.0706246,
+    "ast_hash": "fbac5e714b9861b1a61108c3e2f2b2ea",
+    "semantic_hash": "fbac5e714b9861b1a61108c3e2f2b2ea"
+  },
+  "src/Nyx.Network/Cryptography/GameCryptography.cs": {
+    "mtime": 1782603732.0976243,
+    "ast_hash": "9764f37962084a7159aa0e09f32528c0",
+    "semantic_hash": "9764f37962084a7159aa0e09f32528c0"
+  },
+  "src/Nyx.Network/Cryptography/ICipher.cs": {
+    "mtime": 1782603732.1196249,
+    "ast_hash": "07d56d13853353f069d525f3dfcec131",
+    "semantic_hash": "07d56d13853353f069d525f3dfcec131"
+  },
+  "src/Nyx.Network/Cryptography/RC5.cs": {
+    "mtime": 1782603732.152634,
+    "ast_hash": "256186b731aa48ca9467b57330437705",
+    "semantic_hash": "256186b731aa48ca9467b57330437705"
+  },
+  "src/Nyx.Network/Cryptography/SafeGameCryptography.cs": {
+    "mtime": 1782603732.219627,
+    "ast_hash": "33e26c81f9d328ed06ded19ffc5fe637",
+    "semantic_hash": "33e26c81f9d328ed06ded19ffc5fe637"
+  },
+  "src/Nyx.Network/GameNetworkService.cs": {
+    "mtime": 1782603732.2426243,
+    "ast_hash": "192419af76b23cebf1bffcbae6078f96",
+    "semantic_hash": "192419af76b23cebf1bffcbae6078f96"
+  },
+  "src/Nyx.Network/GameSession.cs": {
+    "mtime": 1783013134.270089,
+    "ast_hash": "09fafa533badf88f9b23627462b59331",
+    "semantic_hash": "09fafa533badf88f9b23627462b59331"
+  },
+  "src/Nyx.Network/NetworkService.cs": {
+    "mtime": 1784840445.263079,
+    "ast_hash": "e9ef2d7329aacee77daccb60795ed82d",
+    "semantic_hash": "e9ef2d7329aacee77daccb60795ed82d"
+  },
+  "src/Nyx.Network/Nyx.Network.csproj": {
+    "mtime": 1781345217.536811,
+    "ast_hash": "ea29699e19ac0776ba4ceed09c7ab887",
+    "semantic_hash": "ea29699e19ac0776ba4ceed09c7ab887"
+  },
+  "src/Nyx.Network/PacketChannel.cs": {
+    "mtime": 1782603732.4266264,
+    "ast_hash": "66928baa1dadf2cdf6f759b2fbbf1b1b",
+    "semantic_hash": "66928baa1dadf2cdf6f759b2fbbf1b1b"
+  },
+  "src/Nyx.Network/bin/Debug/net9.0/Nyx.Network.deps.json": {
+    "mtime": 1785084050.5512683,
+    "ast_hash": "7139b402ec02df6a08872f01478444d1",
+    "semantic_hash": "7139b402ec02df6a08872f01478444d1"
+  },
+  "src/Nyx.Network/bin/Release/net9.0/Nyx.Network.deps.json": {
+    "mtime": 1782651768.4318855,
+    "ast_hash": "7139b402ec02df6a08872f01478444d1",
+    "semantic_hash": "7139b402ec02df6a08872f01478444d1"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.1928544,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0-windows/Nyx.Network.AssemblyInfo.cs": {
+    "mtime": 1776864730.1948462,
+    "ast_hash": "ebb4107b82369ae2b04235daa8c8c3f9",
+    "semantic_hash": "ebb4107b82369ae2b04235daa8c8c3f9"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0-windows/Nyx.Network.GlobalUsings.g.cs": {
+    "mtime": 1776864730.1971016,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.1843545,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0/Nyx.Network.AssemblyInfo.cs": {
+    "mtime": 1785084049.199268,
+    "ast_hash": "6a3322d26053277c172d9eed6b89963f",
+    "semantic_hash": "6a3322d26053277c172d9eed6b89963f"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0/Nyx.Network.GlobalUsings.g.cs": {
+    "mtime": 1776864730.188344,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Network/obj/Nyx.Network.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1253264,
+    "ast_hash": "3cbef39addc2f7c942c48eba76e144ae",
+    "semantic_hash": "3cbef39addc2f7c942c48eba76e144ae"
+  },
+  "src/Nyx.Network/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.202098,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Network/obj/Release/net9.0/Nyx.Network.AssemblyInfo.cs": {
+    "mtime": 1781359541.5320692,
+    "ast_hash": "27be199d129885b8299f57cb0b385fce",
+    "semantic_hash": "27be199d129885b8299f57cb0b385fce"
+  },
+  "src/Nyx.Network/obj/Release/net9.0/Nyx.Network.GlobalUsings.g.cs": {
+    "mtime": 1776864730.2070863,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Network/obj/project.assets.json": {
+    "mtime": 1781282369.9029133,
+    "ast_hash": "5b85ce4c24596fc5278f05fc178fa7ff",
+    "semantic_hash": "5b85ce4c24596fc5278f05fc178fa7ff"
+  },
+  "src/Nyx.Shared/Nyx.Shared.csproj": {
+    "mtime": 1776446958.5875425,
+    "ast_hash": "a179c1fd32442fdc3ca095a8084e072a",
+    "semantic_hash": "a179c1fd32442fdc3ca095a8084e072a"
+  },
+  "src/Nyx.Shared/bin/Debug/net9.0/Nyx.Shared.deps.json": {
+    "mtime": 1785084049.958267,
+    "ast_hash": "b9ee1bc831d12413a12d3b9d0c157a11",
+    "semantic_hash": "b9ee1bc831d12413a12d3b9d0c157a11"
+  },
+  "src/Nyx.Shared/bin/Release/net9.0/Nyx.Shared.deps.json": {
+    "mtime": 1782652955.3338177,
+    "ast_hash": "b9ee1bc831d12413a12d3b9d0c157a11",
+    "semantic_hash": "b9ee1bc831d12413a12d3b9d0c157a11"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.2195594,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0-windows/Nyx.Shared.AssemblyInfo.cs": {
+    "mtime": 1776864730.2212977,
+    "ast_hash": "95b1cfc5e2b03507bba513f9041affd6",
+    "semantic_hash": "95b1cfc5e2b03507bba513f9041affd6"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0-windows/Nyx.Shared.GlobalUsings.g.cs": {
+    "mtime": 1776864730.2232935,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.2125793,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0/Nyx.Shared.AssemblyInfo.cs": {
+    "mtime": 1785084049.15427,
+    "ast_hash": "ec77e077930a8bc2f092a66207e4458e",
+    "semantic_hash": "ec77e077930a8bc2f092a66207e4458e"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0/Nyx.Shared.GlobalUsings.g.cs": {
+    "mtime": 1776864730.2165673,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Shared/obj/Nyx.Shared.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1003253,
+    "ast_hash": "c6cac782ac034f392de13df8f9d7112a",
+    "semantic_hash": "c6cac782ac034f392de13df8f9d7112a"
+  },
+  "src/Nyx.Shared/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864730.2267945,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Shared/obj/Release/net9.0/Nyx.Shared.AssemblyInfo.cs": {
+    "mtime": 1781359541.8851008,
+    "ast_hash": "f3ed8d84f01f6f7abeff577c4626b7b0",
+    "semantic_hash": "f3ed8d84f01f6f7abeff577c4626b7b0"
+  },
+  "src/Nyx.Shared/obj/Release/net9.0/Nyx.Shared.GlobalUsings.g.cs": {
+    "mtime": 1776864730.23431,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Shared/obj/project.assets.json": {
+    "mtime": 1781282375.0894413,
+    "ast_hash": "6fdbab7ffeda152b987c8d709b40f793",
+    "semantic_hash": "6fdbab7ffeda152b987c8d709b40f793"
+  },
+  "src/Nyx.Threading/Configuration/ContainerConfiguration.cs": {
+    "mtime": 1782663246.3832276,
+    "ast_hash": "a940131e55f87cdcfe3cf71e04b61f4a",
+    "semantic_hash": "a940131e55f87cdcfe3cf71e04b61f4a"
+  },
+  "src/Nyx.Threading/Contracts/IGameTask.cs": {
+    "mtime": 1782663505.4812367,
+    "ast_hash": "70ab11cce57771b61f909273010abbf9",
+    "semantic_hash": "70ab11cce57771b61f909273010abbf9"
+  },
+  "src/Nyx.Threading/Contracts/IRepository.cs": {
+    "mtime": 1782603733.254769,
+    "ast_hash": "354d44751c29bb17553385b94091f437",
+    "semantic_hash": "354d44751c29bb17553385b94091f437"
+  },
+  "src/Nyx.Threading/Contracts/IRepositoryTask.cs": {
+    "mtime": 1782603733.2937677,
+    "ast_hash": "6856ded6033f4d1580437b02388803b3",
+    "semantic_hash": "6856ded6033f4d1580437b02388803b3"
+  },
+  "src/Nyx.Threading/Contracts/IThreadContainer.cs": {
+    "mtime": 1782603733.3127706,
+    "ast_hash": "4b3d4132280f693d02b0b8836d4ef0ed",
+    "semantic_hash": "4b3d4132280f693d02b0b8836d4ef0ed"
+  },
+  "src/Nyx.Threading/Core/ContainerRegistry.cs": {
+    "mtime": 1782659352.518248,
+    "ast_hash": "c759c6ec3148e05c6ddc92bb9f46653d",
+    "semantic_hash": "c759c6ec3148e05c6ddc92bb9f46653d"
+  },
+  "src/Nyx.Threading/Core/Repository.cs": {
+    "mtime": 1782663622.7326567,
+    "ast_hash": "abc1c7e7de014091b70064eef68cb191",
+    "semantic_hash": "abc1c7e7de014091b70064eef68cb191"
+  },
+  "src/Nyx.Threading/Core/RepositoryTask.cs": {
+    "mtime": 1782603734.078769,
+    "ast_hash": "776ad3ea1ed488dd45763ee3ac04be3a",
+    "semantic_hash": "776ad3ea1ed488dd45763ee3ac04be3a"
+  },
+  "src/Nyx.Threading/Core/ShardedRepository.cs": {
+    "mtime": 1782663524.875865,
+    "ast_hash": "0e057e6244e893388eec15ae59a568e2",
+    "semantic_hash": "0e057e6244e893388eec15ae59a568e2"
+  },
+  "src/Nyx.Threading/Core/ThreadAffinityHelper.cs": {
+    "mtime": 1782603734.1097693,
+    "ast_hash": "aa47daa04773e6d557b40d625830e97b",
+    "semantic_hash": "aa47daa04773e6d557b40d625830e97b"
+  },
+  "src/Nyx.Threading/Core/ThreadContainer.cs": {
+    "mtime": 1782659296.9322655,
+    "ast_hash": "28e970918d322827c99dc9b4ab40d63c",
+    "semantic_hash": "28e970918d322827c99dc9b4ab40d63c"
+  },
+  "src/Nyx.Threading/Core/ThreadingController.cs": {
+    "mtime": 1782665869.1229658,
+    "ast_hash": "d1e45d2d252e4e57d2c968091dcc7f9a",
+    "semantic_hash": "d1e45d2d252e4e57d2c968091dcc7f9a"
+  },
+  "src/Nyx.Threading/Enums/RepositoryCategory.cs": {
+    "mtime": 1782603735.1527689,
+    "ast_hash": "75391f59ef3d0e8d682bcb36d3690da3",
+    "semantic_hash": "75391f59ef3d0e8d682bcb36d3690da3"
+  },
+  "src/Nyx.Threading/Network/NetworkContainerRegistry.cs": {
+    "mtime": 1782603735.169772,
+    "ast_hash": "a99a31dd710ab631889354ffcd62b227",
+    "semantic_hash": "a99a31dd710ab631889354ffcd62b227"
+  },
+  "src/Nyx.Threading/Network/NetworkRepository.cs": {
+    "mtime": 1782603735.1927743,
+    "ast_hash": "f39bc82bc293b25bb6f430a8a2c07e78",
+    "semantic_hash": "f39bc82bc293b25bb6f430a8a2c07e78"
+  },
+  "src/Nyx.Threading/Network/NetworkThreadContainer.cs": {
+    "mtime": 1782603735.292769,
+    "ast_hash": "5806fca0e0c66e41863015779a93cff0",
+    "semantic_hash": "5806fca0e0c66e41863015779a93cff0"
+  },
+  "src/Nyx.Threading/Network/SessionRepository.cs": {
+    "mtime": 1782603735.3087695,
+    "ast_hash": "d5c4f0db067e573222c4c5fb73e33573",
+    "semantic_hash": "d5c4f0db067e573222c4c5fb73e33573"
+  },
+  "src/Nyx.Threading/Nyx.Threading.csproj": {
+    "mtime": 1781357763.139313,
+    "ast_hash": "59127df75cbb956212786cf9119251be",
+    "semantic_hash": "59127df75cbb956212786cf9119251be"
+  },
+  "src/Nyx.Threading/bin/Debug/net9.0/Nyx.Threading.deps.json": {
+    "mtime": 1785084052.8612697,
+    "ast_hash": "04b026f760a7d787aecf0abc8ecb64dc",
+    "semantic_hash": "04b026f760a7d787aecf0abc8ecb64dc"
+  },
+  "src/Nyx.Threading/bin/Release/net9.0/Nyx.Threading.deps.json": {
+    "mtime": 1782652955.9778192,
+    "ast_hash": "04b026f760a7d787aecf0abc8ecb64dc",
+    "semantic_hash": "04b026f760a7d787aecf0abc8ecb64dc"
+  },
+  "src/Nyx.Threading/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1779569913.461622,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Threading/obj/Debug/net9.0/Nyx.Threading.AssemblyInfo.cs": {
+    "mtime": 1785084052.0632677,
+    "ast_hash": "58c66966149758ff0c6783cf1247fc9c",
+    "semantic_hash": "58c66966149758ff0c6783cf1247fc9c"
+  },
+  "src/Nyx.Threading/obj/Debug/net9.0/Nyx.Threading.GlobalUsings.g.cs": {
+    "mtime": 1779569913.3916185,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Threading/obj/Nyx.Threading.csproj.nuget.dgspec.json": {
+    "mtime": 1781628966.1263294,
+    "ast_hash": "e649d5771c3289f22e206f2782821528",
+    "semantic_hash": "e649d5771c3289f22e206f2782821528"
+  },
+  "src/Nyx.Threading/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781359544.4996386,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx.Threading/obj/Release/net9.0/Nyx.Threading.AssemblyInfo.cs": {
+    "mtime": 1781359544.6468954,
+    "ast_hash": "1e5b3a9e2571be5ac81ff6c3309449df",
+    "semantic_hash": "1e5b3a9e2571be5ac81ff6c3309449df"
+  },
+  "src/Nyx.Threading/obj/Release/net9.0/Nyx.Threading.GlobalUsings.g.cs": {
+    "mtime": 1781359541.1350863,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx.Threading/obj/project.assets.json": {
+    "mtime": 1781628966.123326,
+    "ast_hash": "8fe00f43ca9905ff9997164a734fd941",
+    "semantic_hash": "8fe00f43ca9905ff9997164a734fd941"
+  },
+  "src/Nyx/Bots/Behaviors/AutoHuntBehavior.cs": {
+    "mtime": 1782603694.0435917,
+    "ast_hash": "d42546b4c8b93cca46a0d55d10f38e45",
+    "semantic_hash": "d42546b4c8b93cca46a0d55d10f38e45"
+  },
+  "src/Nyx/Bots/Behaviors/IBotBehavior.cs": {
+    "mtime": 1782603694.2725925,
+    "ast_hash": "3a04d079ddc962beddd45dfeead6a6b9",
+    "semantic_hash": "3a04d079ddc962beddd45dfeead6a6b9"
+  },
+  "src/Nyx/Bots/Behaviors/IdleBehavior.cs": {
+    "mtime": 1782603694.293589,
+    "ast_hash": "288b0ffd0c0a08db4fe7e0e965475ffd",
+    "semantic_hash": "288b0ffd0c0a08db4fe7e0e965475ffd"
+  },
+  "src/Nyx/Bots/Behaviors/ManualHuntBehavior.cs": {
+    "mtime": 1782603694.3125932,
+    "ast_hash": "5605d6cf6bd5fd1f1d4197a5659e48fe",
+    "semantic_hash": "5605d6cf6bd5fd1f1d4197a5659e48fe"
+  },
+  "src/Nyx/Bots/Behaviors/MoveToLocationBehavior.cs": {
+    "mtime": 1782603694.3345795,
+    "ast_hash": "6d5d0207a79fe2368a175371c726e806",
+    "semantic_hash": "6d5d0207a79fe2368a175371c726e806"
+  },
+  "src/Nyx/Bots/BotClient.cs": {
+    "mtime": 1782603694.3615806,
+    "ast_hash": "54667554c5215860387a7204f86533a2",
+    "semantic_hash": "54667554c5215860387a7204f86533a2"
+  },
+  "src/Nyx/Bots/BotCommands.cs": {
+    "mtime": 1782603694.7705803,
+    "ast_hash": "2ec491a840c0609eebde4e89eae0a321",
+    "semantic_hash": "2ec491a840c0609eebde4e89eae0a321"
+  },
+  "src/Nyx/Bots/BotManager.cs": {
+    "mtime": 1782603694.9295812,
+    "ast_hash": "ade03bbc6356c4bceaef0233fcf5b6e6",
+    "semantic_hash": "ade03bbc6356c4bceaef0233fcf5b6e6"
+  },
+  "src/Nyx/Bots/Helpers/BotNameGenerator.cs": {
+    "mtime": 1782603694.9915864,
+    "ast_hash": "982d900ea9b5016bee35c2d84b2805a0",
+    "semantic_hash": "982d900ea9b5016bee35c2d84b2805a0"
+  },
+  "src/Nyx/Caching/RedisService.cs": {
+    "mtime": 1782603695.0126152,
+    "ast_hash": "87d99a705efd4139482d78cec98a33f4",
+    "semantic_hash": "87d99a705efd4139482d78cec98a33f4"
+  },
+  "src/Nyx/Client/AuthClient.cs": {
+    "mtime": 1782656564.5184028,
+    "ast_hash": "06b37a0f12cd4724faabb71feee3cc8c",
+    "semantic_hash": "06b37a0f12cd4724faabb71feee3cc8c"
+  },
+  "src/Nyx/Client/GameClient.cs": {
+    "mtime": 1785083475.6287332,
+    "ast_hash": "7a9554edfe93fa3ea1ce97fb4d0577fb",
+    "semantic_hash": "7a9554edfe93fa3ea1ce97fb4d0577fb"
+  },
+  "src/Nyx/Client/GameClientExtensions.cs": {
+    "mtime": 1782603695.1145802,
+    "ast_hash": "a0a7797cdb4c0b148064ffe21bd7ede6",
+    "semantic_hash": "a0a7797cdb4c0b148064ffe21bd7ede6"
+  },
+  "src/Nyx/Client/PacketRateLimiter.cs": {
+    "mtime": 1782606579.6674826,
+    "ast_hash": "48aa3b1bec76a29584009c28c8b65506",
+    "semantic_hash": "48aa3b1bec76a29584009c28c8b65506"
+  },
+  "src/Nyx/Database/AbstractDbContext.cs": {
+    "mtime": 1782603695.1525786,
+    "ast_hash": "eba3608b60494626067ddcbd0a58e69a",
+    "semantic_hash": "eba3608b60494626067ddcbd0a58e69a"
+  },
+  "src/Nyx/Database/AccountTable.cs": {
+    "mtime": 1784690931.562247,
+    "ast_hash": "130c0150d614641ba57b9a875de34425",
+    "semantic_hash": "130c0150d614641ba57b9a875de34425"
+  },
+  "src/Nyx/Database/ActivenessTable.cs": {
+    "mtime": 1784689041.276145,
+    "ast_hash": "7257480255096bf9878273eea0cea17e",
+    "semantic_hash": "7257480255096bf9878273eea0cea17e"
+  },
+  "src/Nyx/Database/AddingInformationTable.cs": {
+    "mtime": 1782603695.2075808,
+    "ast_hash": "2f58de7a3aec1ee2c0778538d9b3a54d",
+    "semantic_hash": "2f58de7a3aec1ee2c0778538d9b3a54d"
+  },
+  "src/Nyx/Database/ArenaTable.cs": {
+    "mtime": 1784695171.2881317,
+    "ast_hash": "c9c60e857c4dc0bcbc26be2a7b0564b4",
+    "semantic_hash": "c9c60e857c4dc0bcbc26be2a7b0564b4"
+  },
+  "src/Nyx/Database/Booth.cs": {
+    "mtime": 1782603695.2625797,
+    "ast_hash": "c0d549be184e326aa320e64b791bdccc",
+    "semantic_hash": "c0d549be184e326aa320e64b791bdccc"
+  },
+  "src/Nyx/Database/ChiRetreatTable.cs": {
+    "mtime": 1784690480.3723767,
+    "ast_hash": "72d64f33ec5fb2215c248ed942e9b795",
+    "semantic_hash": "72d64f33ec5fb2215c248ed942e9b795"
+  },
+  "src/Nyx/Database/ChiTable.cs": {
+    "mtime": 1784691836.7180328,
+    "ast_hash": "a91eb81b8b870cf95bfca223f66043d0",
+    "semantic_hash": "a91eb81b8b870cf95bfca223f66043d0"
+  },
+  "src/Nyx/Database/ClaimItemTable.cs": {
+    "mtime": 1782603695.7375805,
+    "ast_hash": "6ac8259e9f3fd22430eb1b866eb6a91a",
+    "semantic_hash": "6ac8259e9f3fd22430eb1b866eb6a91a"
+  },
+  "src/Nyx/Database/ConquerItemInformation.cs": {
+    "mtime": 1782603695.76258,
+    "ast_hash": "bdfba292f46aec5e95a564cb876956dd",
+    "semantic_hash": "bdfba292f46aec5e95a564cb876956dd"
+  },
+  "src/Nyx/Database/ConquerItemTable.cs": {
+    "mtime": 1784840878.5943193,
+    "ast_hash": "af57c9c9bae50550b66030af8b87d590",
+    "semantic_hash": "af57c9c9bae50550b66030af8b87d590"
+  },
+  "src/Nyx/Database/Context/ServerDbContext.cs": {
+    "mtime": 1782603696.1325796,
+    "ast_hash": "12237a4a6b37a629113dae0334b79449",
+    "semantic_hash": "12237a4a6b37a629113dae0334b79449"
+  },
+  "src/Nyx/Database/DMaps.cs": {
+    "mtime": 1782603696.8086293,
+    "ast_hash": "2a2ed6be3b1f5a74c6ef0d90e9c9bd12",
+    "semantic_hash": "2a2ed6be3b1f5a74c6ef0d90e9c9bd12"
+  },
+  "src/Nyx/Database/DailyQuestTable.cs": {
+    "mtime": 1784688787.5533571,
+    "ast_hash": "e85eff86ccf2d01f54a513a51e29426f",
+    "semantic_hash": "e85eff86ccf2d01f54a513a51e29426f"
+  },
+  "src/Nyx/Database/DataHolder.cs": {
+    "mtime": 1784698387.8451066,
+    "ast_hash": "5c9cd8e18614f7a1264594592d8e64f7",
+    "semantic_hash": "5c9cd8e18614f7a1264594592d8e64f7"
+  },
+  "src/Nyx/Database/DatabaseConfiguration.cs": {
+    "mtime": 1782685245.2200968,
+    "ast_hash": "1368dbd18bb44e8fd1df32b76b2109fa",
+    "semantic_hash": "1368dbd18bb44e8fd1df32b76b2109fa"
+  },
+  "src/Nyx/Database/DatabaseService.cs": {
+    "mtime": 1782685230.781638,
+    "ast_hash": "14a9d50107709ae235b0f46b8387ec19",
+    "semantic_hash": "14a9d50107709ae235b0f46b8387ec19"
+  },
+  "src/Nyx/Database/DetainedItemTable.cs": {
+    "mtime": 1782603696.64663,
+    "ast_hash": "0f1dcee94c748774e947f6f5d0422112",
+    "semantic_hash": "0f1dcee94c748774e947f6f5d0422112"
+  },
+  "src/Nyx/Database/Entities/DbAccounts.cs": {
+    "mtime": 1782603696.8496284,
+    "ast_hash": "e9e4ac30d3d24f7698d6a26cbd1a5305",
+    "semantic_hash": "e9e4ac30d3d24f7698d6a26cbd1a5305"
+  },
+  "src/Nyx/Database/Entities/DbHardwareBan.cs": {
+    "mtime": 1782603696.8706276,
+    "ast_hash": "9a768895f9e2f496a1e1697363dddc42",
+    "semantic_hash": "9a768895f9e2f496a1e1697363dddc42"
+  },
+  "src/Nyx/Database/Entities/DbNpc.cs": {
+    "mtime": 1782603696.889627,
+    "ast_hash": "f0a0e450c29fde205caa105caf1923d0",
+    "semantic_hash": "f0a0e450c29fde205caa105caf1923d0"
+  },
+  "src/Nyx/Database/Entities/DbSuspendedUsers.cs": {
+    "mtime": 1782603696.9096282,
+    "ast_hash": "632a419982ad40231748b400f3481e94",
+    "semantic_hash": "632a419982ad40231748b400f3481e94"
+  },
+  "src/Nyx/Database/Entities/PromotionData.cs": {
+    "mtime": 1782603696.926627,
+    "ast_hash": "90e188c6c6442dcd6cc44dde12e8f1d3",
+    "semantic_hash": "90e188c6c6442dcd6cc44dde12e8f1d3"
+  },
+  "src/Nyx/Database/EntityTable.cs": {
+    "mtime": 1784835812.7478209,
+    "ast_hash": "261cde9a1e9f24b5e2597b794be26dbe",
+    "semantic_hash": "261cde9a1e9f24b5e2597b794be26dbe"
+  },
+  "src/Nyx/Database/EntityVariableTable.cs": {
+    "mtime": 1784679320.9512916,
+    "ast_hash": "6c84dbdedee09be7127a56a2ec1476fc",
+    "semantic_hash": "6c84dbdedee09be7127a56a2ec1476fc"
+  },
+  "src/Nyx/Database/FloorItemTable.cs": {
+    "mtime": 1782603697.0136275,
+    "ast_hash": "6139d230fcb3754ea672dbe58327a671",
+    "semantic_hash": "6139d230fcb3754ea672dbe58327a671"
+  },
+  "src/Nyx/Database/FlowersTable.cs": {
+    "mtime": 1782603697.0376263,
+    "ast_hash": "952ebb5cb3ddce9d27313461967815e4",
+    "semantic_hash": "952ebb5cb3ddce9d27313461967815e4"
+  },
+  "src/Nyx/Database/GuildArsenalTable.cs": {
+    "mtime": 1782762562.2922528,
+    "ast_hash": "0225b2cb583a88b0b777c7ae26b36db9",
+    "semantic_hash": "0225b2cb583a88b0b777c7ae26b36db9"
+  },
+  "src/Nyx/Database/GuildTable.cs": {
+    "mtime": 1784840878.2503169,
+    "ast_hash": "489a9df693027daca3b868f9ab7305d4",
+    "semantic_hash": "489a9df693027daca3b868f9ab7305d4"
+  },
+  "src/Nyx/Database/HouseTable.cs": {
+    "mtime": 1782747797.0776024,
+    "ast_hash": "c738bdc98e0cba121cfe317854923cd3",
+    "semantic_hash": "c738bdc98e0cba121cfe317854923cd3"
+  },
+  "src/Nyx/Database/IPBan.cs": {
+    "mtime": 1782603697.813629,
+    "ast_hash": "ff1c21ba00360cf7ed576beec66d0052",
+    "semantic_hash": "ff1c21ba00360cf7ed576beec66d0052"
+  },
+  "src/Nyx/Database/InnerPowerTable.cs": {
+    "mtime": 1784695775.9616842,
+    "ast_hash": "93fd902f68837d1b1436e6519f704b1e",
+    "semantic_hash": "93fd902f68837d1b1436e6519f704b1e"
+  },
+  "src/Nyx/Database/ItemAddingTable.cs": {
+    "mtime": 1784687739.6390285,
+    "ast_hash": "ff09836d09e88a9a89a7bee51702b04b",
+    "semantic_hash": "ff09836d09e88a9a89a7bee51702b04b"
+  },
+  "src/Nyx/Database/JiangHuTable.cs": {
+    "mtime": 1782756690.8711104,
+    "ast_hash": "89cb400595b0f46f02aaa1fc1d823bcc",
+    "semantic_hash": "89cb400595b0f46f02aaa1fc1d823bcc"
+  },
+  "src/Nyx/Database/KingdomMissionTable.cs": {
+    "mtime": 1782747797.1616068,
+    "ast_hash": "9c5d62ced6380e19333dbeb7a784e4a8",
+    "semantic_hash": "9c5d62ced6380e19333dbeb7a784e4a8"
+  },
+  "src/Nyx/Database/KnownPersons.cs": {
+    "mtime": 1784687739.6310272,
+    "ast_hash": "6035e71731ba169d563dc8a5e86ac7bb",
+    "semantic_hash": "6035e71731ba169d563dc8a5e86ac7bb"
+  },
+  "src/Nyx/Database/LotteryTable.cs": {
+    "mtime": 1782603697.9856265,
+    "ast_hash": "d090e864e2a049f6f868e895f01b465e",
+    "semantic_hash": "d090e864e2a049f6f868e895f01b465e"
+  },
+  "src/Nyx/Database/MailboxTable.cs": {
+    "mtime": 1784694734.956239,
+    "ast_hash": "523c345229b811c7f63eb2cbb75a7810",
+    "semantic_hash": "523c345229b811c7f63eb2cbb75a7810"
+  },
+  "src/Nyx/Database/MapsTable.cs": {
+    "mtime": 1782748463.1476986,
+    "ast_hash": "84c2d70d4d6afdde288ce530bf80069c",
+    "semantic_hash": "84c2d70d4d6afdde288ce530bf80069c"
+  },
+  "src/Nyx/Database/MonsterTable.cs": {
+    "mtime": 1784862325.5923204,
+    "ast_hash": "b1f026862664f14695a438d3c2704768",
+    "semantic_hash": "b1f026862664f14695a438d3c2704768"
+  },
+  "src/Nyx/Database/Monsters/PostgresMonsterRepository.cs": {
+    "mtime": 1785081752.8421252,
+    "ast_hash": "7b1205bab960e561ee546c79f0450da2",
+    "semantic_hash": "7b1205bab960e561ee546c79f0450da2"
+  },
+  "src/Nyx/Database/MySql/MySqlCommand.cs": {
+    "mtime": 1782685351.6084974,
+    "ast_hash": "da27409a72713bf83797050c729353df",
+    "semantic_hash": "da27409a72713bf83797050c729353df"
+  },
+  "src/Nyx/Database/MySql/MySqlExtensions.cs": {
+    "mtime": 1782685326.617399,
+    "ast_hash": "a9178c927936b5d0db63e3f92ab73dbf",
+    "semantic_hash": "a9178c927936b5d0db63e3f92ab73dbf"
+  },
+  "src/Nyx/Database/MySql/MySqlReader.cs": {
+    "mtime": 1782685337.0204284,
+    "ast_hash": "d924a106a8d1315c84cdf58bb647c63e",
+    "semantic_hash": "d924a106a8d1315c84cdf58bb647c63e"
+  },
+  "src/Nyx/Database/NobilityTable.cs": {
+    "mtime": 1784841415.9457214,
+    "ast_hash": "d34e7358b125ae72a0fe5da264a4bc55",
+    "semantic_hash": "d34e7358b125ae72a0fe5da264a4bc55"
+  },
+  "src/Nyx/Database/PerfectionTable.cs": {
+    "mtime": 1782603698.812627,
+    "ast_hash": "3ea42f2fe9c0c51ce32fa3a2089abe61",
+    "semantic_hash": "3ea42f2fe9c0c51ce32fa3a2089abe61"
+  },
+  "src/Nyx/Database/PkExplorer.cs": {
+    "mtime": 1782603698.831627,
+    "ast_hash": "587c852769672fb081e7ae9bfc25ad56",
+    "semantic_hash": "587c852769672fb081e7ae9bfc25ad56"
+  },
+  "src/Nyx/Database/PostgreSQL/AccountRepository.cs": {
+    "mtime": 1783089038.4223309,
+    "ast_hash": "f456a8165b2c553da99236909048cfdb",
+    "semantic_hash": "f456a8165b2c553da99236909048cfdb"
+  },
+  "src/Nyx/Database/PostgreSQL/EntityRepository.cs": {
+    "mtime": 1784699597.9577632,
+    "ast_hash": "07c4e67ecdf4c6ede8a7dc53bcd388e8",
+    "semantic_hash": "07c4e67ecdf4c6ede8a7dc53bcd388e8"
+  },
+  "src/Nyx/Database/PostgreSQL/GuildRepository.cs": {
+    "mtime": 1782669973.097843,
+    "ast_hash": "5ad33d5d390d1cfeeba4513d11328221",
+    "semantic_hash": "5ad33d5d390d1cfeeba4513d11328221"
+  },
+  "src/Nyx/Database/PostgreSQL/ItemRepository.cs": {
+    "mtime": 1784829552.3941522,
+    "ast_hash": "83393cf117a6f44b20cc4161069f67bd",
+    "semantic_hash": "83393cf117a6f44b20cc4161069f67bd"
+  },
+  "src/Nyx/Database/PostgreSQL/PostgresConnectionFactory.cs": {
+    "mtime": 1782688898.4545667,
+    "ast_hash": "485617ee98ff27c50b64e22bbc15c4a7",
+    "semantic_hash": "485617ee98ff27c50b64e22bbc15c4a7"
+  },
+  "src/Nyx/Database/PostgreSQL/RepositoryBase.cs": {
+    "mtime": 1782669339.535635,
+    "ast_hash": "9791d032fe8fe506655f5ae606b9567e",
+    "semantic_hash": "9791d032fe8fe506655f5ae606b9567e"
+  },
+  "src/Nyx/Database/PostgreSQL/fix_ticks_columns.sql": {
+    "mtime": 1784684583.006609,
+    "ast_hash": "a80ca34beb420226d5231e002fe57c96",
+    "semantic_hash": "a80ca34beb420226d5231e002fe57c96"
+  },
+  "src/Nyx/Database/PostgreSQL/migration.sql": {
+    "mtime": 1782669525.9256742,
+    "ast_hash": "de09476bf466a3e3b4ab05b809bff33a",
+    "semantic_hash": "de09476bf466a3e3b4ab05b809bff33a"
+  },
+  "src/Nyx/Database/PostgreSQL/migration_full.sql": {
+    "mtime": 1782769687.2167754,
+    "ast_hash": "fd7174b1714958ed04c7e6b0a1384def",
+    "semantic_hash": "fd7174b1714958ed04c7e6b0a1384def"
+  },
+  "src/Nyx/Database/PostgreSQL/migration_generated.sql": {
+    "mtime": 1782746593.3066618,
+    "ast_hash": "258942f7dcb0717a654f3446ab4dd8c7",
+    "semantic_hash": "258942f7dcb0717a654f3446ab4dd8c7"
+  },
+  "src/Nyx/Database/QuizShowTable.cs": {
+    "mtime": 1782603698.8506265,
+    "ast_hash": "740dedc5182a5d68642dd5ab2b60109b",
+    "semantic_hash": "740dedc5182a5d68642dd5ab2b60109b"
+  },
+  "src/Nyx/Database/Read.cs": {
+    "mtime": 1782603698.8696277,
+    "ast_hash": "272f71405f650932117dc499b471404c",
+    "semantic_hash": "272f71405f650932117dc499b471404c"
+  },
+  "src/Nyx/Database/RefineryTable.cs": {
+    "mtime": 1782603698.8956273,
+    "ast_hash": "62c5c996ff208ae86fd7d3510d8247bd",
+    "semantic_hash": "62c5c996ff208ae86fd7d3510d8247bd"
+  },
+  "src/Nyx/Database/ReincarnationTable.cs": {
+    "mtime": 1782752186.7261083,
+    "ast_hash": "ff67db30dd7eab31d3cd9a5903643cc3",
+    "semantic_hash": "ff67db30dd7eab31d3cd9a5903643cc3"
+  },
+  "src/Nyx/Database/Repositories/AccountsRepository.cs": {
+    "mtime": 1782603699.5506265,
+    "ast_hash": "47019f6baaf0f7ffa92efbc91b7eb48c",
+    "semantic_hash": "47019f6baaf0f7ffa92efbc91b7eb48c"
+  },
+  "src/Nyx/Database/Repositories/HardwareBanRepository.cs": {
+    "mtime": 1782603699.603629,
+    "ast_hash": "c581d3af6a7bd763bf7e116bb8e4aff2",
+    "semantic_hash": "c581d3af6a7bd763bf7e116bb8e4aff2"
+  },
+  "src/Nyx/Database/Repositories/NpcRepository.cs": {
+    "mtime": 1782603699.6296287,
+    "ast_hash": "2f597710dbf7e2690ae527109e63cf41",
+    "semantic_hash": "2f597710dbf7e2690ae527109e63cf41"
+  },
+  "src/Nyx/Database/Repositories/PromotionsRepository.cs": {
+    "mtime": 1782603699.6486263,
+    "ast_hash": "b63369c97b9deff852d35e2f96f0f000",
+    "semantic_hash": "b63369c97b9deff852d35e2f96f0f000"
+  },
+  "src/Nyx/Database/Repositories/SuspendedUsersRepository.cs": {
+    "mtime": 1782603699.6706266,
+    "ast_hash": "7cdc5f674939453fd3d7ad9cdf44d742",
+    "semantic_hash": "7cdc5f674939453fd3d7ad9cdf44d742"
+  },
+  "src/Nyx/Database/Shops/ChampionShop.cs": {
+    "mtime": 1782603699.693627,
+    "ast_hash": "e9a3bf37f69c07babd752bc7ceeeca6e",
+    "semantic_hash": "e9a3bf37f69c07babd752bc7ceeeca6e"
+  },
+  "src/Nyx/Database/Shops/EShopFile.cs": {
+    "mtime": 1782603699.713627,
+    "ast_hash": "8899faeb5723803fb9319f3df624ab17",
+    "semantic_hash": "8899faeb5723803fb9319f3df624ab17"
+  },
+  "src/Nyx/Database/Shops/EShopV2File.cs": {
+    "mtime": 1782603699.7376287,
+    "ast_hash": "8e0a467a4ba740c8acd11a5f8ac8523e",
+    "semantic_hash": "8e0a467a4ba740c8acd11a5f8ac8523e"
+  },
+  "src/Nyx/Database/Shops/HonorShop.cs": {
+    "mtime": 1782603699.766629,
+    "ast_hash": "601a36c5e73768ab26ccc86a9df7ff57",
+    "semantic_hash": "601a36c5e73768ab26ccc86a9df7ff57"
+  },
+  "src/Nyx/Database/Shops/RacePointShop.cs": {
+    "mtime": 1782603699.7956276,
+    "ast_hash": "da316576547c94fea472d7784d129dcc",
+    "semantic_hash": "da316576547c94fea472d7784d129dcc"
+  },
+  "src/Nyx/Database/Shops/ShopFile.cs": {
+    "mtime": 1782603699.818627,
+    "ast_hash": "31825189cef5cb22a017238fe18ab21d",
+    "semantic_hash": "31825189cef5cb22a017238fe18ab21d"
+  },
+  "src/Nyx/Database/SignInTable.cs": {
+    "mtime": 1782603699.8406267,
+    "ast_hash": "5851af701b851ae999afea9d8234eabd",
+    "semantic_hash": "5851af701b851ae999afea9d8234eabd"
+  },
+  "src/Nyx/Database/SkillTable.cs": {
+    "mtime": 1784831079.8977926,
+    "ast_hash": "86a2bebc6a5ef9658521e3771a70a8f1",
+    "semantic_hash": "86a2bebc6a5ef9658521e3771a70a8f1"
+  },
+  "src/Nyx/Database/SoulProtection.cs": {
+    "mtime": 1782603699.8956268,
+    "ast_hash": "ef907f3f2c82eb1e4ba2e4afe3c67b9b",
+    "semantic_hash": "ef907f3f2c82eb1e4ba2e4afe3c67b9b"
+  },
+  "src/Nyx/Database/SpellTable.cs": {
+    "mtime": 1782603699.9156291,
+    "ast_hash": "2d7e34a9e8376d40022b42f489a4cb7b",
+    "semantic_hash": "2d7e34a9e8376d40022b42f489a4cb7b"
+  },
+  "src/Nyx/Database/StorageItem.cs": {
+    "mtime": 1782603699.9486265,
+    "ast_hash": "57efb04369e083e753cb1484f0068c49",
+    "semantic_hash": "57efb04369e083e753cb1484f0068c49"
+  },
+  "src/Nyx/Database/StorageTable.cs": {
+    "mtime": 1782603699.9786267,
+    "ast_hash": "381f2352704eb90994ffbcec8738b9c8",
+    "semantic_hash": "381f2352704eb90994ffbcec8738b9c8"
+  },
+  "src/Nyx/Database/SubClassTable.cs": {
+    "mtime": 1782687264.7001648,
+    "ast_hash": "ac2b09ce2d40e8ffba478cc6773898e8",
+    "semantic_hash": "ac2b09ce2d40e8ffba478cc6773898e8"
+  },
+  "src/Nyx/Database/TeamArenaTable.cs": {
+    "mtime": 1782685638.7912843,
+    "ast_hash": "4cd37a52d8168af69c1a0eda0da7e320",
+    "semantic_hash": "4cd37a52d8168af69c1a0eda0da7e320"
+  },
+  "src/Nyx/Database/UnionTable.cs": {
+    "mtime": 1782747797.2206044,
+    "ast_hash": "e9d185b5dcb009070ec8e9bb2cb6e45e",
+    "semantic_hash": "e9d185b5dcb009070ec8e9bb2cb6e45e"
+  },
+  "src/Nyx/Database/Write.cs": {
+    "mtime": 1782603700.7926276,
+    "ast_hash": "e4b671cc7a682436fc4f9b7907ff6b6c",
+    "semantic_hash": "e4b671cc7a682436fc4f9b7907ff6b6c"
+  },
+  "src/Nyx/EnterpriseServerConfigurations.cs": {
+    "mtime": 1784678117.5767193,
+    "ast_hash": "d30c8c9c9c17beb7df130777aa4da229",
+    "semantic_hash": "d30c8c9c9c17beb7df130777aa4da229"
+  },
+  "src/Nyx/Game/Attacking/Battle/MvP.cs": {
+    "mtime": 1782603701.439489,
+    "ast_hash": "834203f5138c9d29c94848958c240b7c",
+    "semantic_hash": "834203f5138c9d29c94848958c240b7c"
+  },
+  "src/Nyx/Game/Attacking/Battle/MyMath.cs": {
+    "mtime": 1782603701.5424888,
+    "ast_hash": "3b9c22e871603eac80de686de7cf799a",
+    "semantic_hash": "3b9c22e871603eac80de686de7cf799a"
+  },
+  "src/Nyx/Game/Attacking/Battle/PvE.cs": {
+    "mtime": 1782603701.566488,
+    "ast_hash": "f354250754b367e50f4aa6309e705252",
+    "semantic_hash": "f354250754b367e50f4aa6309e705252"
+  },
+  "src/Nyx/Game/Attacking/Battle/PvM.cs": {
+    "mtime": 1782603701.5894902,
+    "ast_hash": "e3447e7b38415d39ee4c3cc5703a48c7",
+    "semantic_hash": "e3447e7b38415d39ee4c3cc5703a48c7"
+  },
+  "src/Nyx/Game/Attacking/Battle/PvP.cs": {
+    "mtime": 1782603701.6284893,
+    "ast_hash": "8d579c43499c59c4d896c625f0c7dafe",
+    "semantic_hash": "8d579c43499c59c4d896c625f0c7dafe"
+  },
+  "src/Nyx/Game/Attacking/BlessEffect.cs": {
+    "mtime": 1782603701.664488,
+    "ast_hash": "497ab79b389797a1b913351b0662e3c4",
+    "semantic_hash": "497ab79b389797a1b913351b0662e3c4"
+  },
+  "src/Nyx/Game/Attacking/Calculate.cs": {
+    "mtime": 1782603701.6864882,
+    "ast_hash": "52831ea3ac5ce388eb2fc50b49bb16f6",
+    "semantic_hash": "52831ea3ac5ce388eb2fc50b49bb16f6"
+  },
+  "src/Nyx/Game/Attacking/DurabilityItems.cs": {
+    "mtime": 1782603701.753489,
+    "ast_hash": "8a9e8bab1be22b829d8f8ea41a807046",
+    "semantic_hash": "8a9e8bab1be22b829d8f8ea41a807046"
+  },
+  "src/Nyx/Game/Attacking/GemEffect.cs": {
+    "mtime": 1782603701.7854862,
+    "ast_hash": "01969487e15aee4d8ddea992d9e1c166",
+    "semantic_hash": "01969487e15aee4d8ddea992d9e1c166"
+  },
+  "src/Nyx/Game/Attacking/Handle.cs": {
+    "mtime": 1784861940.3872418,
+    "ast_hash": "7623c442f679ec5a7c0ac4969134ecba",
+    "semantic_hash": "7623c442f679ec5a7c0ac4969134ecba"
+  },
+  "src/Nyx/Game/Attacking/ISkillBehavior.cs": {
+    "mtime": 1782603701.9074917,
+    "ast_hash": "1266fd9a561c7914aacce465f5757ace",
+    "semantic_hash": "1266fd9a561c7914aacce465f5757ace"
+  },
+  "src/Nyx/Game/Attacking/InLineAlgorithm.cs": {
+    "mtime": 1782603701.8904886,
+    "ast_hash": "21931d5332dacec1ecfdaa9e94d82882",
+    "semantic_hash": "21931d5332dacec1ecfdaa9e94d82882"
+  },
+  "src/Nyx/Game/Attacking/RangeMove.cs": {
+    "mtime": 1782603701.9324884,
+    "ast_hash": "e776b35d9d9dea0dce334d4a87fb1bd2",
+    "semantic_hash": "e776b35d9d9dea0dce334d4a87fb1bd2"
+  },
+  "src/Nyx/Game/Attacking/Sector.cs": {
+    "mtime": 1782603701.9524882,
+    "ast_hash": "0b544744159105ed3520bb74fb3a9227",
+    "semantic_hash": "0b544744159105ed3520bb74fb3a9227"
+  },
+  "src/Nyx/Game/Attacking/SkillData.cs": {
+    "mtime": 1782603701.9714873,
+    "ast_hash": "b6f8705cd8738a086d2c3a2bf69506fc",
+    "semantic_hash": "b6f8705cd8738a086d2c3a2bf69506fc"
+  },
+  "src/Nyx/Game/Attacking/SkillType.cs": {
+    "mtime": 1782603702.1574898,
+    "ast_hash": "ad11fb2244e212e219ab54ff4997e063",
+    "semantic_hash": "ad11fb2244e212e219ab54ff4997e063"
+  },
+  "src/Nyx/Game/Attacking/Skills/BaseSkillHandler.cs": {
+    "mtime": 1782603701.988486,
+    "ast_hash": "7adff3e2a9ba57e03275234869318611",
+    "semantic_hash": "7adff3e2a9ba57e03275234869318611"
+  },
+  "src/Nyx/Game/Attacking/Skills/Handlers/ExampleAoEHandler.cs": {
+    "mtime": 1782603702.0064876,
+    "ast_hash": "2ef61a0482e5ca9b52443fa0e5d1a3a8",
+    "semantic_hash": "2ef61a0482e5ca9b52443fa0e5d1a3a8"
+  },
+  "src/Nyx/Game/Attacking/Skills/Handlers/ExampleFireballHandler.cs": {
+    "mtime": 1782603702.0285246,
+    "ast_hash": "47e828748c82a6e4118a33e997d1434d",
+    "semantic_hash": "47e828748c82a6e4118a33e997d1434d"
+  },
+  "src/Nyx/Game/Attacking/Skills/Handlers/ScentSword.cs": {
+    "mtime": 1782603702.047491,
+    "ast_hash": "5a7e7d083997d307fdb03e10ab6a129a",
+    "semantic_hash": "5a7e7d083997d307fdb03e10ab6a129a"
+  },
+  "src/Nyx/Game/Attacking/Skills/ISkillHandler.cs": {
+    "mtime": 1782603702.0794895,
+    "ast_hash": "d1bbddf903cae0f27f96f9f99cd38634",
+    "semantic_hash": "d1bbddf903cae0f27f96f9f99cd38634"
+  },
+  "src/Nyx/Game/Attacking/Skills/SkillContext.cs": {
+    "mtime": 1782603702.0984862,
+    "ast_hash": "1df6bd25ddfbd8c263d1dad6a04f1671",
+    "semantic_hash": "1df6bd25ddfbd8c263d1dad6a04f1671"
+  },
+  "src/Nyx/Game/Attacking/Skills/SkillDispatcher.cs": {
+    "mtime": 1782603702.116491,
+    "ast_hash": "09d4a5113cc649089f34491cf77eb72e",
+    "semantic_hash": "09d4a5113cc649089f34491cf77eb72e"
+  },
+  "src/Nyx/Game/Attacking/Skills/SkillHandlerRegistry.cs": {
+    "mtime": 1782603702.1364863,
+    "ast_hash": "f75803c6caaac0b5b261bad41f50cca0",
+    "semantic_hash": "f75803c6caaac0b5b261bad41f50cca0"
+  },
+  "src/Nyx/Game/Attacking/Zoning.cs": {
+    "mtime": 1782603702.1764872,
+    "ast_hash": "846eadbdfed75279b228c43941d9da76",
+    "semantic_hash": "846eadbdfed75279b228c43941d9da76"
+  },
+  "src/Nyx/Game/Calculations.cs": {
+    "mtime": 1782603702.1934867,
+    "ast_hash": "a3b6fb830172b765c1b22000cc681625",
+    "semantic_hash": "a3b6fb830172b765c1b22000cc681625"
+  },
+  "src/Nyx/Game/Characters/AutoPromotionManager.cs": {
+    "mtime": 1782603702.40249,
+    "ast_hash": "d9a67c9e00f189fcb7c606258ba301bd",
+    "semantic_hash": "d9a67c9e00f189fcb7c606258ba301bd"
+  },
+  "src/Nyx/Game/Clone.cs": {
+    "mtime": 1782603702.9115405,
+    "ast_hash": "b4fb2d034e8f2349cf92a434b1415d6e",
+    "semantic_hash": "b4fb2d034e8f2349cf92a434b1415d6e"
+  },
+  "src/Nyx/Game/ConquerStructures/Booth.cs": {
+    "mtime": 1782603702.9955392,
+    "ast_hash": "1f4905f62adce073dba3ec1c9ea600de",
+    "semantic_hash": "1f4905f62adce073dba3ec1c9ea600de"
+  },
+  "src/Nyx/Game/ConquerStructures/BotShop.cs": {
+    "mtime": 1782603703.020539,
+    "ast_hash": "6bac655e61851fdc0d4c20fb53cd0962",
+    "semantic_hash": "6bac655e61851fdc0d4c20fb53cd0962"
+  },
+  "src/Nyx/Game/ConquerStructures/Broadcast.cs": {
+    "mtime": 1782603703.0785396,
+    "ast_hash": "5c9e747f60501105e55c6c68aa7b9b59",
+    "semantic_hash": "5c9e747f60501105e55c6c68aa7b9b59"
+  },
+  "src/Nyx/Game/ConquerStructures/Equipment.cs": {
+    "mtime": 1782603703.242545,
+    "ast_hash": "9a9e11779ada4d09f03e1da00914d1c5",
+    "semantic_hash": "9a9e11779ada4d09f03e1da00914d1c5"
+  },
+  "src/Nyx/Game/ConquerStructures/Inventory.cs": {
+    "mtime": 1782603703.3095384,
+    "ast_hash": "e95919a25d3784ca92e88d58458eb0eb",
+    "semantic_hash": "e95919a25d3784ca92e88d58458eb0eb"
+  },
+  "src/Nyx/Game/ConquerStructures/Mine.cs": {
+    "mtime": 1782603703.4665377,
+    "ast_hash": "7b5789f7b851a9b34cec328f28889bd3",
+    "semantic_hash": "7b5789f7b851a9b34cec328f28889bd3"
+  },
+  "src/Nyx/Game/ConquerStructures/Nobility.cs": {
+    "mtime": 1782603703.53354,
+    "ast_hash": "22cd5e067f9e23531cbdf7a383afc7ab",
+    "semantic_hash": "22cd5e067f9e23531cbdf7a383afc7ab"
+  },
+  "src/Nyx/Game/ConquerStructures/QuizShow.cs": {
+    "mtime": 1782603703.564541,
+    "ast_hash": "f750bbfaa24c4a158cdb8c5f9a709e52",
+    "semantic_hash": "f750bbfaa24c4a158cdb8c5f9a709e52"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Advertises.cs": {
+    "mtime": 1782603703.5975406,
+    "ast_hash": "dee2d50de48e7bfa25e58096e9447f83",
+    "semantic_hash": "dee2d50de48e7bfa25e58096e9447f83"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Apprentice.cs": {
+    "mtime": 1782603703.6275375,
+    "ast_hash": "4200bd562d85c354c39b4a1572492a73",
+    "semantic_hash": "4200bd562d85c354c39b4a1572492a73"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Arsenal.cs": {
+    "mtime": 1782762733.0768435,
+    "ast_hash": "51d19f1e3bfa788266d20edd2c32a82c",
+    "semantic_hash": "51d19f1e3bfa788266d20edd2c32a82c"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Clan.cs": {
+    "mtime": 1782763329.7211082,
+    "ast_hash": "f4aa07bf2bd293000b9b709677f61b36",
+    "semantic_hash": "f4aa07bf2bd293000b9b709677f61b36"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/ClanMember.cs": {
+    "mtime": 1782603703.7245376,
+    "ast_hash": "e25928771d31d8e8a372912d02c9c8db",
+    "semantic_hash": "e25928771d31d8e8a372912d02c9c8db"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Enemy.cs": {
+    "mtime": 1782603703.742538,
+    "ast_hash": "817595c03d10d829f2f184c4253375f2",
+    "semantic_hash": "817595c03d10d829f2f184c4253375f2"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Energy.cs": {
+    "mtime": 1782603703.760537,
+    "ast_hash": "78457f05e83a966959ba39a0dfb0fc03",
+    "semantic_hash": "78457f05e83a966959ba39a0dfb0fc03"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Friend.cs": {
+    "mtime": 1782603703.7775376,
+    "ast_hash": "62ff5755944201d179d165db6deae144",
+    "semantic_hash": "62ff5755944201d179d165db6deae144"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Guild.cs": {
+    "mtime": 1782603703.8015375,
+    "ast_hash": "f22923889882a56b38a0c425accb975c",
+    "semantic_hash": "f22923889882a56b38a0c425accb975c"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/GuildDonation.cs": {
+    "mtime": 1782603941.4158356,
+    "ast_hash": "7ffe39ce80b2f8feb3e604920af24f70",
+    "semantic_hash": "7ffe39ce80b2f8feb3e604920af24f70"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/GuildMinDonations.cs": {
+    "mtime": 1782603704.5235403,
+    "ast_hash": "b684025393bceee173ad3ffee04030a3",
+    "semantic_hash": "b684025393bceee173ad3ffee04030a3"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/GuildProfilePacket.cs": {
+    "mtime": 1782603704.5785394,
+    "ast_hash": "fa56dfb55505be8bfc6268bb7af18d99",
+    "semantic_hash": "fa56dfb55505be8bfc6268bb7af18d99"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Mentor.cs": {
+    "mtime": 1782603704.5995383,
+    "ast_hash": "8efb07ec2d4b5fb70a3b32680c67b9ae",
+    "semantic_hash": "8efb07ec2d4b5fb70a3b32680c67b9ae"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/Recruitment.cs": {
+    "mtime": 1782603704.631538,
+    "ast_hash": "576a85f602da608e77661d1ae19982f7",
+    "semantic_hash": "576a85f602da608e77661d1ae19982f7"
+  },
+  "src/Nyx/Game/ConquerStructures/Society/TradePartner.cs": {
+    "mtime": 1782603704.6555383,
+    "ast_hash": "b1101a644c7c2e677bfdaa46c8051270",
+    "semantic_hash": "b1101a644c7c2e677bfdaa46c8051270"
+  },
+  "src/Nyx/Game/ConquerStructures/Team.cs": {
+    "mtime": 1782603704.6875393,
+    "ast_hash": "bc8ea19ec0106843358640bf1ce7fec7",
+    "semantic_hash": "bc8ea19ec0106843358640bf1ce7fec7"
+  },
+  "src/Nyx/Game/ConquerStructures/Trade.cs": {
+    "mtime": 1782603705.0665545,
+    "ast_hash": "b7eaa972d1cf08ef4660d57577eaea60",
+    "semantic_hash": "b7eaa972d1cf08ef4660d57577eaea60"
+  },
+  "src/Nyx/Game/ConquerStructures/Warehouse.cs": {
+    "mtime": 1782603705.0855372,
+    "ast_hash": "b610b4836811decda2e6d73692781cbf",
+    "semantic_hash": "b610b4836811decda2e6d73692781cbf"
+  },
+  "src/Nyx/Game/DelayedTask.cs": {
+    "mtime": 1782665690.9039667,
+    "ast_hash": "a026f805c771ff2354ca117dd961902b",
+    "semantic_hash": "a026f805c771ff2354ca117dd961902b"
+  },
+  "src/Nyx/Game/Entity.cs": {
+    "mtime": 1785114329.0158298,
+    "ast_hash": "1ebfcd3059fb1a260c194fb0edc1ce51",
+    "semantic_hash": "1ebfcd3059fb1a260c194fb0edc1ce51"
+  },
+  "src/Nyx/Game/Enums.cs": {
+    "mtime": 1782603705.3845367,
+    "ast_hash": "597894540bd0e69fab2e049c2ee3e371",
+    "semantic_hash": "597894540bd0e69fab2e049c2ee3e371"
+  },
+  "src/Nyx/Game/Map.cs": {
+    "mtime": 1785083707.0710084,
+    "ast_hash": "32c46878bc18a47ca5a5cca2cd909bc3",
+    "semantic_hash": "32c46878bc18a47ca5a5cca2cd909bc3"
+  },
+  "src/Nyx/Game/MapManager.cs": {
+    "mtime": 1782667116.9712558,
+    "ast_hash": "e4883614dce4dd1d740ee558af81b4ce",
+    "semantic_hash": "e4883614dce4dd1d740ee558af81b4ce"
+  },
+  "src/Nyx/Game/MonsterSpawnSystem.cs": {
+    "mtime": 1784848653.1686802,
+    "ast_hash": "516c911cbce05eb3627a2d176f9b677e",
+    "semantic_hash": "516c911cbce05eb3627a2d176f9b677e"
+  },
+  "src/Nyx/Game/Monsters/ServerMonsterBridge.cs": {
+    "mtime": 1785083949.1174262,
+    "ast_hash": "7efe0a924751762eb9defd2baa7779fe",
+    "semantic_hash": "7efe0a924751762eb9defd2baa7779fe"
+  },
+  "src/Nyx/Game/Monsters/ServerMonsterServices.cs": {
+    "mtime": 1784856526.948887,
+    "ast_hash": "e14019ed8cfaa4189ef06889076c8998",
+    "semantic_hash": "e14019ed8cfaa4189ef06889076c8998"
+  },
+  "src/Nyx/Game/Monsters/ServerWorldView.cs": {
+    "mtime": 1784861986.1874425,
+    "ast_hash": "8632d4a1bc71afcba4b5c83dfd429423",
+    "semantic_hash": "8632d4a1bc71afcba4b5c83dfd429423"
+  },
+  "src/Nyx/Game/Npc/NpcAttribute.cs": {
+    "mtime": 1782603705.482538,
+    "ast_hash": "75d390ffe034fa82f8d1b7c52475ad09",
+    "semantic_hash": "75d390ffe034fa82f8d1b7c52475ad09"
+  },
+  "src/Nyx/Game/Npc/NpcHandler.cs": {
+    "mtime": 1782603705.5005412,
+    "ast_hash": "63f38c0e7429b88d2c5eba85ddf529bf",
+    "semantic_hash": "63f38c0e7429b88d2c5eba85ddf529bf"
+  },
+  "src/Nyx/Game/Npc/NpcID.cs": {
+    "mtime": 1782603705.5195389,
+    "ast_hash": "e9e40e3cfca1b4397412c7a404535779",
+    "semantic_hash": "e9e40e3cfca1b4397412c7a404535779"
+  },
+  "src/Nyx/Game/ProgressBar.cs": {
+    "mtime": 1782603705.538541,
+    "ast_hash": "d4f6fdb6616d694ea3e7ec9692ab44c9",
+    "semantic_hash": "d4f6fdb6616d694ea3e7ec9692ab44c9"
+  },
+  "src/Nyx/Game/Screen.cs": {
+    "mtime": 1785077129.434615,
+    "ast_hash": "4fa9c8aee6e9ef961735e94f3c69cfb0",
+    "semantic_hash": "4fa9c8aee6e9ef961735e94f3c69cfb0"
+  },
+  "src/Nyx/Game/[GM]ApeCity.cs": {
+    "mtime": 1782603705.5985453,
+    "ast_hash": "b761fe2d93aa259a05a5dba66313d112",
+    "semantic_hash": "b761fe2d93aa259a05a5dba66313d112"
+  },
+  "src/Nyx/Game/madf3.cs": {
+    "mtime": 1782603705.413537,
+    "ast_hash": "0b546728ec4835ff752502d37ed1c184",
+    "semantic_hash": "0b546728ec4835ff752502d37ed1c184"
+  },
+  "src/Nyx/GlobalUsings.cs": {
+    "mtime": 1782603706.0195389,
+    "ast_hash": "cad7c5f0ef0a309bd5bdef8c7d44702f",
+    "semantic_hash": "cad7c5f0ef0a309bd5bdef8c7d44702f"
+  },
+  "src/Nyx/Interfaces/IBaseEntity.cs": {
+    "mtime": 1782603706.050538,
+    "ast_hash": "c62691d4700175ccae945804a714ddf3",
+    "semantic_hash": "c62691d4700175ccae945804a714ddf3"
+  },
+  "src/Nyx/Interfaces/IConquerItem.cs": {
+    "mtime": 1782603706.3365376,
+    "ast_hash": "3a54b37a27a49a33767b73dd8f99836e",
+    "semantic_hash": "3a54b37a27a49a33767b73dd8f99836e"
+  },
+  "src/Nyx/Interfaces/IKnownPerson.cs": {
+    "mtime": 1782603706.394539,
+    "ast_hash": "3e9e1c771c6cbe2b2c13580f811fdeda",
+    "semantic_hash": "3e9e1c771c6cbe2b2c13580f811fdeda"
+  },
+  "src/Nyx/Interfaces/IMapObject.cs": {
+    "mtime": 1782603706.4135525,
+    "ast_hash": "607ccb1b11eaf8640fe00a56ce55722c",
+    "semantic_hash": "607ccb1b11eaf8640fe00a56ce55722c"
+  },
+  "src/Nyx/Interfaces/INpc.cs": {
+    "mtime": 1782603706.4325376,
+    "ast_hash": "ca8c0d3d18c3932cf9bfebd428534f0e",
+    "semantic_hash": "ca8c0d3d18c3932cf9bfebd428534f0e"
+  },
+  "src/Nyx/Interfaces/IPacket.cs": {
+    "mtime": 1782603706.4515483,
+    "ast_hash": "bbda6e9c0a64da3d29e6ff25b778d3ab",
+    "semantic_hash": "bbda6e9c0a64da3d29e6ff25b778d3ab"
+  },
+  "src/Nyx/Interfaces/IProf.cs": {
+    "mtime": 1782603706.4725382,
+    "ast_hash": "bd05418108bfc84d6d9bb70216953efc",
+    "semantic_hash": "bd05418108bfc84d6d9bb70216953efc"
+  },
+  "src/Nyx/Interfaces/IRoulette.cs": {
+    "mtime": 1782603706.494538,
+    "ast_hash": "54997f3b6e206ae4a1bc3547aec8d33a",
+    "semantic_hash": "54997f3b6e206ae4a1bc3547aec8d33a"
+  },
+  "src/Nyx/Interfaces/ISkill.cs": {
+    "mtime": 1782603706.5175374,
+    "ast_hash": "ca37dc514e8eeb580d6a7c4d82501991",
+    "semantic_hash": "ca37dc514e8eeb580d6a7c4d82501991"
+  },
+  "src/Nyx/Interfaces/ISobNpc.cs": {
+    "mtime": 1782603706.537537,
+    "ast_hash": "adc187d891c12c59b5bff66160483b0d",
+    "semantic_hash": "adc187d891c12c59b5bff66160483b0d"
+  },
+  "src/Nyx/Loading/ParallelDataLoader.cs": {
+    "mtime": 1782605341.036304,
+    "ast_hash": "a2980840dc7cde1a503472338947efe1",
+    "semantic_hash": "a2980840dc7cde1a503472338947efe1"
+  },
+  "src/Nyx/Loading/PartitionedDataLoader.cs": {
+    "mtime": 1782603706.5675392,
+    "ast_hash": "17093a133d8e74fffe09b1b1a17a8713",
+    "semantic_hash": "17093a133d8e74fffe09b1b1a17a8713"
+  },
+  "src/Nyx/Network/AuthPackets/Authentication.cs": {
+    "mtime": 1783010969.1895144,
+    "ast_hash": "4d5bdcd4288a6c247e13d2db8d9d91de",
+    "semantic_hash": "4d5bdcd4288a6c247e13d2db8d9d91de"
+  },
+  "src/Nyx/Network/AuthPackets/Forward.cs": {
+    "mtime": 1782603706.6255395,
+    "ast_hash": "80d55d7642b84596a16fd49e2268b092",
+    "semantic_hash": "80d55d7642b84596a16fd49e2268b092"
+  },
+  "src/Nyx/Network/AuthPackets/PasswordCryptographySeed.cs": {
+    "mtime": 1782603706.648536,
+    "ast_hash": "0afadde40658595b5a816f355122f824",
+    "semantic_hash": "0afadde40658595b5a816f355122f824"
+  },
+  "src/Nyx/Network/Cryptography/RC5Exception.cs": {
+    "mtime": 1782603707.0465403,
+    "ast_hash": "c17036c2856729a15fa32f27e744638e",
+    "semantic_hash": "c17036c2856729a15fa32f27e744638e"
+  },
+  "src/Nyx/Network/DataCollection.cs": {
+    "mtime": 1782665332.983364,
+    "ast_hash": "ab6c2357df625a68c1a76ce4894e1cb1",
+    "semantic_hash": "ab6c2357df625a68c1a76ce4894e1cb1"
+  },
+  "src/Nyx/Network/EnhancedPacketFilter.cs": {
+    "mtime": 1782605973.4008512,
+    "ast_hash": "37de107e9759e1efb062c601528bddda",
+    "semantic_hash": "37de107e9759e1efb062c601528bddda"
+  },
+  "src/Nyx/Network/GamePackets/AttributePacketHandlers.cs": {
+    "mtime": 1782603707.306538,
+    "ast_hash": "149c064c3677730a6cace298e5eca098",
+    "semantic_hash": "149c064c3677730a6cace298e5eca098"
+  },
+  "src/Nyx/Network/GamePackets/Chi/Chi.cs": {
+    "mtime": 1782603707.3255372,
+    "ast_hash": "3eb185f19f0a6b54809a7e8b5300a4b1",
+    "semantic_hash": "3eb185f19f0a6b54809a7e8b5300a4b1"
+  },
+  "src/Nyx/Network/GamePackets/Chi/ChiStructure.cs": {
+    "mtime": 1782603707.351537,
+    "ast_hash": "7977a017bde5b4ef5795b4d9dc56e78a",
+    "semantic_hash": "7977a017bde5b4ef5795b4d9dc56e78a"
+  },
+  "src/Nyx/Network/GamePackets/DHKeyExchange.cs": {
+    "mtime": 1782603707.765539,
+    "ast_hash": "4d3b97885abdc6bf79f29895adb92490",
+    "semantic_hash": "4d3b97885abdc6bf79f29895adb92490"
+  },
+  "src/Nyx/Network/GamePackets/ElitePkandTeamPk.cs": {
+    "mtime": 1782603708.0085366,
+    "ast_hash": "7664d77b6e4589cf1351c5e35809cb38",
+    "semantic_hash": "7664d77b6e4589cf1351c5e35809cb38"
+  },
+  "src/Nyx/Network/GamePackets/EpicTaoIcon.cs": {
+    "mtime": 1782603708.0705378,
+    "ast_hash": "0d0f7c52f92a606ea8a87414c78e3a09",
+    "semantic_hash": "0d0f7c52f92a606ea8a87414c78e3a09"
+  },
+  "src/Nyx/Network/GamePackets/Flowers.cs": {
+    "mtime": 1782603708.0935369,
+    "ast_hash": "af3ea5d099332f5344cd10ec4ba16040",
+    "semantic_hash": "af3ea5d099332f5344cd10ec4ba16040"
+  },
+  "src/Nyx/Network/GamePackets/InnerPower/InnerPower.cs": {
+    "mtime": 1782603708.1235392,
+    "ast_hash": "01bcb13f9a646f2ec86a49ff8f8fe362",
+    "semantic_hash": "01bcb13f9a646f2ec86a49ff8f8fe362"
+  },
+  "src/Nyx/Network/GamePackets/Item/ItemAdding.cs": {
+    "mtime": 1782603708.1565382,
+    "ast_hash": "ac5c1f2d408d3801bcc525d5be312e40",
+    "semantic_hash": "ac5c1f2d408d3801bcc525d5be312e40"
+  },
+  "src/Nyx/Network/GamePackets/Item/ItemAddingStabilization.cs": {
+    "mtime": 1782603708.1755378,
+    "ast_hash": "c84ddace6671c4e265fdbc9b836fcba7",
+    "semantic_hash": "c84ddace6671c4e265fdbc9b836fcba7"
+  },
+  "src/Nyx/Network/GamePackets/Item/ItemLock.cs": {
+    "mtime": 1782603708.1975524,
+    "ast_hash": "b1bbf5ed17b9e7b47878acb3b903e9e1",
+    "semantic_hash": "b1bbf5ed17b9e7b47878acb3b903e9e1"
+  },
+  "src/Nyx/Network/GamePackets/Item/ItemSoul.cs": {
+    "mtime": 1782603708.2195394,
+    "ast_hash": "9b749054d264f4145bbd05c82997d669",
+    "semantic_hash": "9b749054d264f4145bbd05c82997d669"
+  },
+  "src/Nyx/Network/GamePackets/Item/ItemUsage.cs": {
+    "mtime": 1784830155.894445,
+    "ast_hash": "13748e50cae4202ed6f111e4707df0cb",
+    "semantic_hash": "13748e50cae4202ed6f111e4707df0cb"
+  },
+  "src/Nyx/Network/GamePackets/JiangHu/JiangHu.cs": {
+    "mtime": 1782603708.2595391,
+    "ast_hash": "146aa43436f45d9eb08eaf7db3f912af",
+    "semantic_hash": "146aa43436f45d9eb08eaf7db3f912af"
+  },
+  "src/Nyx/Network/GamePackets/JiangHu/JiangHuPackets.cs": {
+    "mtime": 1782603708.3015373,
+    "ast_hash": "413f0fd665f8158c0ac5280a921d9055",
+    "semantic_hash": "413f0fd665f8158c0ac5280a921d9055"
+  },
+  "src/Nyx/Network/GamePackets/Lottery/Lottery.cs": {
+    "mtime": 1782603708.319538,
+    "ast_hash": "f77163fa833e088fab78c613dac59491",
+    "semantic_hash": "f77163fa833e088fab78c613dac59491"
+  },
+  "src/Nyx/Network/GamePackets/Lottery/LotteryPacket.cs": {
+    "mtime": 1782603708.349537,
+    "ast_hash": "c7c042c92596d75624950ae9e26fed89",
+    "semantic_hash": "c7c042c92596d75624950ae9e26fed89"
+  },
+  "src/Nyx/Network/GamePackets/Mentor & Apprentice/Apprentice.cs": {
+    "mtime": 1782603708.7555401,
+    "ast_hash": "92c216abf7bf4cea97ef203f172e2f6f",
+    "semantic_hash": "92c216abf7bf4cea97ef203f172e2f6f"
+  },
+  "src/Nyx/Network/GamePackets/Mentor & Apprentice/Mentor.cs": {
+    "mtime": 1782603708.7795408,
+    "ast_hash": "ef3dda1bc26f813aca832d2de5e16d2b",
+    "semantic_hash": "ef3dda1bc26f813aca832d2de5e16d2b"
+  },
+  "src/Nyx/Network/GamePackets/NPCs & SobNPCs/Npcs.cs": {
+    "mtime": 1782603709.1675382,
+    "ast_hash": "63858248fbf126baa1c2c3147ce71f9a",
+    "semantic_hash": "63858248fbf126baa1c2c3147ce71f9a"
+  },
+  "src/Nyx/Network/GamePackets/NPCs & SobNPCs/SobNpcSpawn.cs": {
+    "mtime": 1782603709.2065382,
+    "ast_hash": "2ef9feb25742e6a56ed00848705ba865",
+    "semantic_hash": "2ef9feb25742e6a56ed00848705ba865"
+  },
+  "src/Nyx/Network/GamePackets/NpcDialog.cs": {
+    "mtime": 1782603708.8565378,
+    "ast_hash": "40f5fdec383377fa86aed8d3c610598f",
+    "semantic_hash": "40f5fdec383377fa86aed8d3c610598f"
+  },
+  "src/Nyx/Network/GamePackets/NpcRouter.cs": {
+    "mtime": 1782603709.1145372,
+    "ast_hash": "3fefd5a72285c61d63ecf2ff8f79163d",
+    "semantic_hash": "3fefd5a72285c61d63ecf2ff8f79163d"
+  },
+  "src/Nyx/Network/GamePackets/Perfection.cs": {
+    "mtime": 1782603709.571541,
+    "ast_hash": "e6612fa6f7fee14a9b7c1048f300c9fd",
+    "semantic_hash": "e6612fa6f7fee14a9b7c1048f300c9fd"
+  },
+  "src/Nyx/Network/GamePackets/Purification.cs": {
+    "mtime": 1782603709.8215377,
+    "ast_hash": "a5bd7212c43f91a0bd1a588365418913",
+    "semantic_hash": "a5bd7212c43f91a0bd1a588365418913"
+  },
+  "src/Nyx/Network/GamePackets/Reincarnation.cs": {
+    "mtime": 1782603709.8615386,
+    "ast_hash": "aabd4e5ef431b1b16a7bb4362111a0df",
+    "semantic_hash": "aabd4e5ef431b1b16a7bb4362111a0df"
+  },
+  "src/Nyx/Network/GamePackets/Roulettes/RouletteActions.cs": {
+    "mtime": 1782603709.897541,
+    "ast_hash": "c49a3351e4c1de0c1cd09613e5584c4b",
+    "semantic_hash": "c49a3351e4c1de0c1cd09613e5584c4b"
+  },
+  "src/Nyx/Network/GamePackets/Roulettes/RouletteCheck.cs": {
+    "mtime": 1782603709.9185524,
+    "ast_hash": "821abfca53d15cf5afb08f5ba2247b15",
+    "semantic_hash": "821abfca53d15cf5afb08f5ba2247b15"
+  },
+  "src/Nyx/Network/GamePackets/Roulettes/RouletteSpawn.cs": {
+    "mtime": 1782603709.9555378,
+    "ast_hash": "f60e597585058fd76fb18213229bb1bb",
+    "semantic_hash": "f60e597585058fd76fb18213229bb1bb"
+  },
+  "src/Nyx/Network/GamePackets/Roulettes/RouletteStructure.cs": {
+    "mtime": 1782603709.9745398,
+    "ast_hash": "9ec9511195339c061a317346c2ac6904",
+    "semantic_hash": "9ec9511195339c061a317346c2ac6904"
+  },
+  "src/Nyx/Network/GamePackets/SlotMachine/SlotMachine.cs": {
+    "mtime": 1782603709.9935408,
+    "ast_hash": "bed4ab2e5addb08edd694733f84e85de",
+    "semantic_hash": "bed4ab2e5addb08edd694733f84e85de"
+  },
+  "src/Nyx/Network/GamePackets/SlotMachine/SlotMachineRequest.cs": {
+    "mtime": 1782603710.0155373,
+    "ast_hash": "bb3d995f2cb8b583ff246e5147b94d2d",
+    "semantic_hash": "bb3d995f2cb8b583ff246e5147b94d2d"
+  },
+  "src/Nyx/Network/GamePackets/SlotMachine/SlotMachineResponse.cs": {
+    "mtime": 1782603710.0345385,
+    "ast_hash": "809fa21898ab7bce04f8c8f4b93acbe3",
+    "semantic_hash": "809fa21898ab7bce04f8c8f4b93acbe3"
+  },
+  "src/Nyx/Network/GamePackets/StaticEntity.cs": {
+    "mtime": 1782603710.0655434,
+    "ast_hash": "b974289e15dcb2ef9e2e0de0c0cf2145",
+    "semantic_hash": "b974289e15dcb2ef9e2e0de0c0cf2145"
+  },
+  "src/Nyx/Network/GamePackets/Subclasses.cs": {
+    "mtime": 1782603710.4745376,
+    "ast_hash": "5b260e457348859f869eee4e0e8c79c0",
+    "semantic_hash": "5b260e457348859f869eee4e0e8c79c0"
+  },
+  "src/Nyx/Network/GamePackets/SyncPacket.cs": {
+    "mtime": 1782603710.7975569,
+    "ast_hash": "ac7de61840bb8f38623d075ea8e31baf",
+    "semantic_hash": "ac7de61840bb8f38623d075ea8e31baf"
+  },
+  "src/Nyx/Network/GamePackets/UnionClass.cs": {
+    "mtime": 1782763474.531801,
+    "ast_hash": "8da397275737b68008bdd01506da48e7",
+    "semantic_hash": "8da397275737b68008bdd01506da48e7"
+  },
+  "src/Nyx/Network/GamePackets/VariableVault.cs": {
+    "mtime": 1782603711.0075376,
+    "ast_hash": "0dd77ff602b678cf3360b7ed0feb38c5",
+    "semantic_hash": "0dd77ff602b678cf3360b7ed0feb38c5"
+  },
+  "src/Nyx/Network/GamePackets/[10005] - MsgWalk.cs": {
+    "mtime": 1782603711.0275383,
+    "ast_hash": "5e96b22550873d771a8a23c93be2fecc",
+    "semantic_hash": "5e96b22550873d771a8a23c93be2fecc"
+  },
+  "src/Nyx/Network/GamePackets/[10010] - MsgAction.cs": {
+    "mtime": 1782603711.0635448,
+    "ast_hash": "c2a7de0589e3b27907d5e2bf72b47518",
+    "semantic_hash": "c2a7de0589e3b27907d5e2bf72b47518"
+  },
+  "src/Nyx/Network/GamePackets/[10017] - MsgUserAttribute.cs": {
+    "mtime": 1782603711.1035378,
+    "ast_hash": "f249808eb40078433ca17c9e874a6dd2",
+    "semantic_hash": "f249808eb40078433ca17c9e874a6dd2"
+  },
+  "src/Nyx/Network/GamePackets/[1001] - MsgRegister.cs": {
+    "mtime": 1782603711.142555,
+    "ast_hash": "f3ed67e392cc2dadbcac304e11b6c717",
+    "semantic_hash": "f3ed67e392cc2dadbcac304e11b6c717"
+  },
+  "src/Nyx/Network/GamePackets/[1004] - MsgTalk.cs": {
+    "mtime": 1782603711.1625378,
+    "ast_hash": "4014691c2b74507f178888619ab95a1e",
+    "semantic_hash": "4014691c2b74507f178888619ab95a1e"
+  },
+  "src/Nyx/Network/GamePackets/[1006] - MsgUserInfo.cs": {
+    "mtime": 1782603711.2025387,
+    "ast_hash": "9a3a3c07dba45928eb301e2de23aac37",
+    "semantic_hash": "9a3a3c07dba45928eb301e2de23aac37"
+  },
+  "src/Nyx/Network/GamePackets/[1008] - MsgItemInfo.cs": {
+    "mtime": 1782603711.60855,
+    "ast_hash": "4f7ed32e6c2688f72e483ccdcd385eb5",
+    "semantic_hash": "4f7ed32e6c2688f72e483ccdcd385eb5"
+  },
+  "src/Nyx/Network/GamePackets/[1009] - MsgItemEquip.cs": {
+    "mtime": 1782603711.6865368,
+    "ast_hash": "084f7d7d8aa4321b7755167c506897ac",
+    "semantic_hash": "084f7d7d8aa4321b7755167c506897ac"
+  },
+  "src/Nyx/Network/GamePackets/[1009] - MsgObserv.cs": {
+    "mtime": 1782603711.9325387,
+    "ast_hash": "89fec7c36b1ac991ba549179b486fc17",
+    "semantic_hash": "89fec7c36b1ac991ba549179b486fc17"
+  },
+  "src/Nyx/Network/GamePackets/[1015] - MsgName.cs": {
+    "mtime": 1782603712.0625403,
+    "ast_hash": "a11a624446f61312d4761cc3fb92fb8e",
+    "semantic_hash": "a11a624446f61312d4761cc3fb92fb8e"
+  },
+  "src/Nyx/Network/GamePackets/[1019] - MsgFriend.cs": {
+    "mtime": 1782603712.495538,
+    "ast_hash": "6d300c4d96236cfb315b3597944a4bbd",
+    "semantic_hash": "6d300c4d96236cfb315b3597944a4bbd"
+  },
+  "src/Nyx/Network/GamePackets/[1022] - MsgAttack.cs": {
+    "mtime": 1782603712.6785395,
+    "ast_hash": "c356cb5fea6d5fb54cb90d03d28bfa11",
+    "semantic_hash": "c356cb5fea6d5fb54cb90d03d28bfa11"
+  },
+  "src/Nyx/Network/GamePackets/[1022] - MsgInteract.cs": {
+    "mtime": 1782603712.739537,
+    "ast_hash": "7a4de963a6893d9d216489167509f290",
+    "semantic_hash": "7a4de963a6893d9d216489167509f290"
+  },
+  "src/Nyx/Network/GamePackets/[1023] - MsgTeam.cs": {
+    "mtime": 1782603712.7905388,
+    "ast_hash": "048f6f4326cf8686d2ef9da801a6dff4",
+    "semantic_hash": "048f6f4326cf8686d2ef9da801a6dff4"
+  },
+  "src/Nyx/Network/GamePackets/[1025] - MsgWeaponSkill.cs": {
+    "mtime": 1782603712.8305373,
+    "ast_hash": "ccf77cb2517e1e97a095b38344242041",
+    "semantic_hash": "ccf77cb2517e1e97a095b38344242041"
+  },
+  "src/Nyx/Network/GamePackets/[1027] - MsgGemEmbed.cs": {
+    "mtime": 1782603712.8485377,
+    "ast_hash": "7bf84be0072d280ca10752d916e7dd8d",
+    "semantic_hash": "7bf84be0072d280ca10752d916e7dd8d"
+  },
+  "src/Nyx/Network/GamePackets/[1033] - MsgData.cs": {
+    "mtime": 1782603712.86754,
+    "ast_hash": "5a0cfa656bda22c14a815fc387269be0",
+    "semantic_hash": "5a0cfa656bda22c14a815fc387269be0"
+  },
+  "src/Nyx/Network/GamePackets/[1033] - MsgVigor.cs": {
+    "mtime": 1782603712.8865547,
+    "ast_hash": "8c84f6c7aa1c4f2ae1955ef0f5db65e8",
+    "semantic_hash": "8c84f6c7aa1c4f2ae1955ef0f5db65e8"
+  },
+  "src/Nyx/Network/GamePackets/[1034] - MsgDetainItemInfo.cs": {
+    "mtime": 1782603712.9035375,
+    "ast_hash": "eab4d72d80c1ff1cb115d87a32bced4d",
+    "semantic_hash": "eab4d72d80c1ff1cb115d87a32bced4d"
+  },
+  "src/Nyx/Network/GamePackets/[1035] - MsgDetainItemUpdate.cs": {
+    "mtime": 1782603712.935538,
+    "ast_hash": "d713827b60ca30486da2e45e726f5359",
+    "semantic_hash": "d713827b60ca30486da2e45e726f5359"
+  },
+  "src/Nyx/Network/GamePackets/[1040] - MsgPlayerAttriInfo.cs": {
+    "mtime": 1782603712.9555411,
+    "ast_hash": "297be8b5fca4c20774cec36311766d46",
+    "semantic_hash": "297be8b5fca4c20774cec36311766d46"
+  },
+  "src/Nyx/Network/GamePackets/[1046] - MsgMailList.cs": {
+    "mtime": 1782603712.9745378,
+    "ast_hash": "beb791f31a432cd6934e8589afa96d02",
+    "semantic_hash": "beb791f31a432cd6934e8589afa96d02"
+  },
+  "src/Nyx/Network/GamePackets/[1052] - MsgConnect.cs": {
+    "mtime": 1782603713.0135558,
+    "ast_hash": "4651d68368dbb71d94a3a20baaad148d",
+    "semantic_hash": "4651d68368dbb71d94a3a20baaad148d"
+  },
+  "src/Nyx/Network/GamePackets/[1056] - MsgTrade.cs": {
+    "mtime": 1782603713.5575383,
+    "ast_hash": "ed9735a6701395ba6332394284ed5ce8",
+    "semantic_hash": "ed9735a6701395ba6332394284ed5ce8"
+  },
+  "src/Nyx/Network/GamePackets/[1070] - MsgHangUp.cs": {
+    "mtime": 1782603713.65754,
+    "ast_hash": "002cba86ca9fafa66b1d96368e3ab857",
+    "semantic_hash": "002cba86ca9fafa66b1d96368e3ab857"
+  },
+  "src/Nyx/Network/GamePackets/[1071] - MsgCompeteRank.cs": {
+    "mtime": 1782603713.6965392,
+    "ast_hash": "ea9707295a71d8f17f4bea28fdca64d1",
+    "semantic_hash": "ea9707295a71d8f17f4bea28fdca64d1"
+  },
+  "src/Nyx/Network/GamePackets/[1101] - MsgMapItem.cs": {
+    "mtime": 1784840132.4511416,
+    "ast_hash": "59af7b6878baaa6eee50bebb9d876866",
+    "semantic_hash": "59af7b6878baaa6eee50bebb9d876866"
+  },
+  "src/Nyx/Network/GamePackets/[1102] - MsgPackage.cs": {
+    "mtime": 1782603714.0905402,
+    "ast_hash": "b168921d140c62f42e51ba99bf009da5",
+    "semantic_hash": "b168921d140c62f42e51ba99bf009da5"
+  },
+  "src/Nyx/Network/GamePackets/[1103] - MsgMagicInfo.cs": {
+    "mtime": 1782603714.1105409,
+    "ast_hash": "1692f74af6daa2d3a48b2e96c91f1ecd",
+    "semantic_hash": "1692f74af6daa2d3a48b2e96c91f1ecd"
+  },
+  "src/Nyx/Network/GamePackets/[1104] - MsgFlushExp.cs": {
+    "mtime": 1782603714.1325378,
+    "ast_hash": "9f6abca91445a7411ffb841525a37b72",
+    "semantic_hash": "9f6abca91445a7411ffb841525a37b72"
+  },
+  "src/Nyx/Network/GamePackets/[1105] - MsgMagicEffect.cs": {
+    "mtime": 1782603714.1595383,
+    "ast_hash": "6fd5442f5756a745ebe02ad2a8386ee7",
+    "semantic_hash": "6fd5442f5756a745ebe02ad2a8386ee7"
+  },
+  "src/Nyx/Network/GamePackets/[1107] - MsgGuild.cs": {
+    "mtime": 1782603714.3040638,
+    "ast_hash": "2b3893ea8cfbf7c7ce738c2f6dfd14d6",
+    "semantic_hash": "2b3893ea8cfbf7c7ce738c2f6dfd14d6"
+  },
+  "src/Nyx/Network/GamePackets/[1108] - MsgItemInfoEX.cs": {
+    "mtime": 1782603714.7495997,
+    "ast_hash": "82cbbe7a27527b38f08a91db7f1e7896",
+    "semantic_hash": "82cbbe7a27527b38f08a91db7f1e7896"
+  },
+  "src/Nyx/Network/GamePackets/[1110] - MsgMapInfo.cs": {
+    "mtime": 1782603714.8946,
+    "ast_hash": "f78453d3c22c8d8171503f42855c10d1",
+    "semantic_hash": "f78453d3c22c8d8171503f42855c10d1"
+  },
+  "src/Nyx/Network/GamePackets/[1111] - MsgMessageBoard.cs": {
+    "mtime": 1782603714.9715993,
+    "ast_hash": "45894ff3a9fabcbb4ac6ed3c72e657d0",
+    "semantic_hash": "45894ff3a9fabcbb4ac6ed3c72e657d0"
+  },
+  "src/Nyx/Network/GamePackets/[1113] - MsgDice.cs": {
+    "mtime": 1782603714.9906003,
+    "ast_hash": "25cfe507b163f43b507e9a8e6b0d9cbe",
+    "semantic_hash": "25cfe507b163f43b507e9a8e6b0d9cbe"
+  },
+  "src/Nyx/Network/GamePackets/[1114] - MsgSyncAction.cs": {
+    "mtime": 1782603715.0096014,
+    "ast_hash": "f28a66d3d24837410de3329e9a6790be",
+    "semantic_hash": "f28a66d3d24837410de3329e9a6790be"
+  },
+  "src/Nyx/Network/GamePackets/[1126] - MsgInviteTrans.cs": {
+    "mtime": 1782603715.0295997,
+    "ast_hash": "f9b2695f28ae64a55da0ba4bf328ccb4",
+    "semantic_hash": "f9b2695f28ae64a55da0ba4bf328ccb4"
+  },
+  "src/Nyx/Network/GamePackets/[1127] - MsgMentorPlayer.cs": {
+    "mtime": 1782603715.0555992,
+    "ast_hash": "61ab89d9773f54ee881edd09a0b24fe1",
+    "semantic_hash": "61ab89d9773f54ee881edd09a0b24fe1"
+  },
+  "src/Nyx/Network/GamePackets/[1128] - MsgVipUserHandle.cs": {
+    "mtime": 1782603715.5856001,
+    "ast_hash": "625cf3d07116b4b7781ad16995f46b1a",
+    "semantic_hash": "625cf3d07116b4b7781ad16995f46b1a"
+  },
+  "src/Nyx/Network/GamePackets/[1129] - VipFunctionValidNotify.cs": {
+    "mtime": 1782603715.606598,
+    "ast_hash": "012e9a3a74375a3a02ee6c4096b0f767",
+    "semantic_hash": "012e9a3a74375a3a02ee6c4096b0f767"
+  },
+  "src/Nyx/Network/GamePackets/[1130] - MsgTitle.cs": {
+    "mtime": 1782603715.6246018,
+    "ast_hash": "0d2f75a01637cba929ed57ff0e924bea",
+    "semantic_hash": "0d2f75a01637cba929ed57ff0e924bea"
+  },
+  "src/Nyx/Network/GamePackets/[1134 - 1135] - MsgTaskStatus.cs": {
+    "mtime": 1784693239.0509064,
+    "ast_hash": "312e068f57a952fc8939bcceef9fb9f7",
+    "semantic_hash": "312e068f57a952fc8939bcceef9fb9f7"
+  },
+  "src/Nyx/Network/GamePackets/[1136] - MsgAchievement.cs": {
+    "mtime": 1784685867.949866,
+    "ast_hash": "15a060b7c1d86d95bfc323a92cefa081",
+    "semantic_hash": "15a060b7c1d86d95bfc323a92cefa081"
+  },
+  "src/Nyx/Network/GamePackets/[1151] - MsgRank.cs": {
+    "mtime": 1782603716.0105991,
+    "ast_hash": "49b4f2aa1f9a653220b29bbeea3fcf7e",
+    "semantic_hash": "49b4f2aa1f9a653220b29bbeea3fcf7e"
+  },
+  "src/Nyx/Network/GamePackets/[1312] - MsgFamily.cs": {
+    "mtime": 1782603716.052613,
+    "ast_hash": "37f0dfefcc0ba2818853cb80924b55b7",
+    "semantic_hash": "37f0dfefcc0ba2818853cb80924b55b7"
+  },
+  "src/Nyx/Network/GamePackets/[1313] - MsgFamilyOccupy.cs": {
+    "mtime": 1782603716.0756001,
+    "ast_hash": "ab6003697579d67f4e3ad6b1341f2002",
+    "semantic_hash": "ab6003697579d67f4e3ad6b1341f2002"
+  },
+  "src/Nyx/Network/GamePackets/[1320] - MsgAuction.cs": {
+    "mtime": 1782752313.016962,
+    "ast_hash": "f56a8179c42f9e2600fd88b08f39c1ed",
+    "semantic_hash": "f56a8179c42f9e2600fd88b08f39c1ed"
+  },
+  "src/Nyx/Network/GamePackets/[2033] - MsgFriendInfo.cs": {
+    "mtime": 1782603716.1636007,
+    "ast_hash": "46d6cc023cbd168079c4ec2c12cc0dd7",
+    "semantic_hash": "46d6cc023cbd168079c4ec2c12cc0dd7"
+  },
+  "src/Nyx/Network/GamePackets/[2036] - MsgDataArray.cs": {
+    "mtime": 1782603716.1845992,
+    "ast_hash": "1f647d19e2a59b0fc3115b1d1c6d281e",
+    "semantic_hash": "1f647d19e2a59b0fc3115b1d1c6d281e"
+  },
+  "src/Nyx/Network/GamePackets/[2043] - MsgTrainingInfo.cs": {
+    "mtime": 1782603716.2045982,
+    "ast_hash": "0be22e5ca210dd226c8b263260023d64",
+    "semantic_hash": "0be22e5ca210dd226c8b263260023d64"
+  },
+  "src/Nyx/Network/GamePackets/[2045] - MsgAutoGroup.cs": {
+    "mtime": 1782603716.2225983,
+    "ast_hash": "3dde023f5ed3cbca0f81f483a1f99d2b",
+    "semantic_hash": "3dde023f5ed3cbca0f81f483a1f99d2b"
+  },
+  "src/Nyx/Network/GamePackets/[2050] - MsgPigeon.cs": {
+    "mtime": 1782603716.2416003,
+    "ast_hash": "3f30ad471c6623c93361af0b18cd77c4",
+    "semantic_hash": "3f30ad471c6623c93361af0b18cd77c4"
+  },
+  "src/Nyx/Network/GamePackets/[2064] - MsgPeerage.cs": {
+    "mtime": 1782603716.2635996,
+    "ast_hash": "cd43733c62d6219b164f296b83cc7bb2",
+    "semantic_hash": "cd43733c62d6219b164f296b83cc7bb2"
+  },
+  "src/Nyx/Network/GamePackets/[2068] - MsgQuiz.cs": {
+    "mtime": 1782603716.8186002,
+    "ast_hash": "5882b6e32b132c24814b775db418bf01",
+    "semantic_hash": "5882b6e32b132c24814b775db418bf01"
+  },
+  "src/Nyx/Network/GamePackets/[2071] - MsgRelation.cs": {
+    "mtime": 1782603717.150598,
+    "ast_hash": "295926fdfa7ad1bf84b4d5bcac29fc1c",
+    "semantic_hash": "295926fdfa7ad1bf84b4d5bcac29fc1c"
+  },
+  "src/Nyx/Network/GamePackets/[2072] - MsgRaceTrackProp.cs": {
+    "mtime": 1782603717.2066033,
+    "ast_hash": "a47bea4ab81890cd028cc4b89ac20e50",
+    "semantic_hash": "a47bea4ab81890cd028cc4b89ac20e50"
+  },
+  "src/Nyx/Network/GamePackets/[2075] - MsgRaceTrackStatus.cs": {
+    "mtime": 1782603717.2325997,
+    "ast_hash": "7e7c55270601ad9665ddbdb39fd93b9d",
+    "semantic_hash": "7e7c55270601ad9665ddbdb39fd93b9d"
+  },
+  "src/Nyx/Network/GamePackets/[2080] - MsgChangeName.cs": {
+    "mtime": 1782603717.7055979,
+    "ast_hash": "30ea64dcb5fd93c6018d459bc9f7e548",
+    "semantic_hash": "30ea64dcb5fd93c6018d459bc9f7e548"
+  },
+  "src/Nyx/Network/GamePackets/[2081] - MsgDeadMark.cs": {
+    "mtime": 1782603717.7476082,
+    "ast_hash": "e0ba6089d9904882c49b64fed7223116",
+    "semantic_hash": "e0ba6089d9904882c49b64fed7223116"
+  },
+  "src/Nyx/Network/GamePackets/[2201] - MsgTotemPoleInfo.cs": {
+    "mtime": 1782603717.7666075,
+    "ast_hash": "ffcd694684070ee1fb2be1df9cdc8df0",
+    "semantic_hash": "ffcd694684070ee1fb2be1df9cdc8df0"
+  },
+  "src/Nyx/Network/GamePackets/[2209] - MsgQualifyingDetailInfo.cs": {
+    "mtime": 1782603718.1106007,
+    "ast_hash": "a7d8909d04bcac1ecf4a10455eef6608",
+    "semantic_hash": "a7d8909d04bcac1ecf4a10455eef6608"
+  },
+  "src/Nyx/Network/GamePackets/[2220] - MsgPkStatistic.cs": {
+    "mtime": 1782603718.3055966,
+    "ast_hash": "379ee6fbff432995d6e7c6b75602ef47",
+    "semantic_hash": "379ee6fbff432995d6e7c6b75602ef47"
+  },
+  "src/Nyx/Network/GamePackets/[2225 - 2226 - 2227] - MsgSynRecruitAdvertising.cs": {
+    "mtime": 1782603718.3275971,
+    "ast_hash": "363404ccb67bf3b645b3fa4877cfe9c6",
+    "semantic_hash": "363404ccb67bf3b645b3fa4877cfe9c6"
+  },
+  "src/Nyx/Network/GamePackets/[2245] - MsgTeamArenaHeroData.cs": {
+    "mtime": 1782603718.3645985,
+    "ast_hash": "42173a3e0dee934c13c7817ecb46d1c9",
+    "semantic_hash": "42173a3e0dee934c13c7817ecb46d1c9"
+  },
+  "src/Nyx/Network/GamePackets/[2261] - Msg2ndPassword.cs": {
+    "mtime": 1782603718.387599,
+    "ast_hash": "e0263af4c88976ae77115884b9f2376c",
+    "semantic_hash": "e0263af4c88976ae77115884b9f2376c"
+  },
+  "src/Nyx/Network/GamePackets/[2320] - MsgSubPro.cs": {
+    "mtime": 1782603718.4105978,
+    "ast_hash": "f473bbad4a6a9af374171e54445b56db",
+    "semantic_hash": "f473bbad4a6a9af374171e54445b56db"
+  },
+  "src/Nyx/Network/GamePackets/[2430] - MsgNationality.cs": {
+    "mtime": 1782603718.4505973,
+    "ast_hash": "dc135e3353c028f7dce551447013fde1",
+    "semantic_hash": "dc135e3353c028f7dce551447013fde1"
+  },
+  "src/Nyx/Network/GamePackets/[2600] - MsgGoldLeaguePoint.cs": {
+    "mtime": 1782603718.4736001,
+    "ast_hash": "0306201c754d2ac160d94f4c488903a4",
+    "semantic_hash": "0306201c754d2ac160d94f4c488903a4"
+  },
+  "src/Nyx/Network/GamePackets/[2622] - MsgLeagueOpt.cs": {
+    "mtime": 1782603718.495597,
+    "ast_hash": "6b5759a339174f72c94aab1976cf0124",
+    "semantic_hash": "6b5759a339174f72c94aab1976cf0124"
+  },
+  "src/Nyx/Network/GamePackets/[2820 - 2822 - 2823] - Activeness.cs": {
+    "mtime": 1784681254.5775807,
+    "ast_hash": "bb9afac73e791d40c91595e41d81d7c2",
+    "semantic_hash": "bb9afac73e791d40c91595e41d81d7c2"
+  },
+  "src/Nyx/Network/GamePackets/[2823] - MsgStatisticDaily.cs": {
+    "mtime": 1782756691.0781102,
+    "ast_hash": "31091320c6e0fc8cc87162d1d39e779d",
+    "semantic_hash": "31091320c6e0fc8cc87162d1d39e779d"
+  },
+  "src/Nyx/Network/GamePackets/[3200] - MsgSignIn.cs": {
+    "mtime": 1782603719.6305983,
+    "ast_hash": "bed790787826027767356c3af6d3bc71",
+    "semantic_hash": "bed790787826027767356c3af6d3bc71"
+  },
+  "src/Nyx/Network/GamePackets/[3300 - 3301] - Coat-Title Storage.cs": {
+    "mtime": 1784698387.837108,
+    "ast_hash": "3ec881988c3ba2f889f7b3bfe7ecda03",
+    "semantic_hash": "3ec881988c3ba2f889f7b3bfe7ecda03"
+  },
+  "src/Nyx/Network/IPacket.cs": {
+    "mtime": 1782603719.8685968,
+    "ast_hash": "4ac8de76d760295dac707971caa1e982",
+    "semantic_hash": "4ac8de76d760295dac707971caa1e982"
+  },
+  "src/Nyx/Network/ImprovedPacketSystem/LoggingService.cs": {
+    "mtime": 1782603719.7895992,
+    "ast_hash": "525fb1dbe1b7274bd7638948a0d9e949",
+    "semantic_hash": "525fb1dbe1b7274bd7638948a0d9e949"
+  },
+  "src/Nyx/Network/ImprovedPacketSystem/PacketProcessor.cs": {
+    "mtime": 1782603719.8116,
+    "ast_hash": "8ab4f82fd7a7a003366d3d48e9f94d74",
+    "semantic_hash": "8ab4f82fd7a7a003366d3d48e9f94d74"
+  },
+  "src/Nyx/Network/ImprovedPacketSystem/PacketStructure.cs": {
+    "mtime": 1782603719.835598,
+    "ast_hash": "a4ac0ff1fef31ec65a4d8f486f228715",
+    "semantic_hash": "a4ac0ff1fef31ec65a4d8f486f228715"
+  },
+  "src/Nyx/Network/PacketAttribute.cs": {
+    "mtime": 1782603719.8905985,
+    "ast_hash": "883b322663bd6b4a14325ff8b6e2a630",
+    "semantic_hash": "883b322663bd6b4a14325ff8b6e2a630"
+  },
+  "src/Nyx/Network/PacketBuffer.cs": {
+    "mtime": 1782652918.4567628,
+    "ast_hash": "0e3b89a11881f7754bd55eff63396e92",
+    "semantic_hash": "0e3b89a11881f7754bd55eff63396e92"
+  },
+  "src/Nyx/Network/PacketErrorHandler.cs": {
+    "mtime": 1782603720.0385978,
+    "ast_hash": "0ac24278947e1d0b18eb331b8c52dad8",
+    "semantic_hash": "0ac24278947e1d0b18eb331b8c52dad8"
+  },
+  "src/Nyx/Network/PacketHandler.cs": {
+    "mtime": 1784861939.9873803,
+    "ast_hash": "6c9a30011695a51c300113c2ef7cc2e8",
+    "semantic_hash": "6c9a30011695a51c300113c2ef7cc2e8"
+  },
+  "src/Nyx/Network/PacketType.cs": {
+    "mtime": 1782603720.9026122,
+    "ast_hash": "2a70386eb7ff6fda259982b6dca2f619",
+    "semantic_hash": "2a70386eb7ff6fda259982b6dca2f619"
+  },
+  "src/Nyx/Network/PipeLineWriter.cs": {
+    "mtime": 1782603720.9346113,
+    "ast_hash": "e86f2ab9a66d3383f7806ab5629623d2",
+    "semantic_hash": "e86f2ab9a66d3383f7806ab5629623d2"
+  },
+  "src/Nyx/Network/Sockets/LoginBruteForce.cs": {
+    "mtime": 1782603720.980611,
+    "ast_hash": "256541c92a8490a99c2a91a0258ea8a1",
+    "semantic_hash": "256541c92a8490a99c2a91a0258ea8a1"
+  },
+  "src/Nyx/Npcs.cs": {
+    "mtime": 1784681254.5505815,
+    "ast_hash": "8993382fde9b4557b2891d1b62203023",
+    "semantic_hash": "8993382fde9b4557b2891d1b62203023"
+  },
+  "src/Nyx/Nyx.Server.csproj": {
+    "mtime": 1784856151.1748018,
+    "ast_hash": "d48d198b34260364f55f14e73184bab2",
+    "semantic_hash": "d48d198b34260364f55f14e73184bab2"
+  },
+  "src/Nyx/Packets/MsgChangeName.cs": {
+    "mtime": 1782603721.3586137,
+    "ast_hash": "bf93950a1bee6efcc2d89f7d08e17c75",
+    "semantic_hash": "bf93950a1bee6efcc2d89f7d08e17c75"
+  },
+  "src/Nyx/Packets/MsgCharacterStatistics.cs": {
+    "mtime": 1782603721.3866124,
+    "ast_hash": "ffd05b7b7ac96a1653dcca78dd6b2e70",
+    "semantic_hash": "ffd05b7b7ac96a1653dcca78dd6b2e70"
+  },
+  "src/Nyx/Packets/MsgExamplePacket1.cs": {
+    "mtime": 1782603721.4086115,
+    "ast_hash": "66948f6799cba36d6ee43098eab52491",
+    "semantic_hash": "66948f6799cba36d6ee43098eab52491"
+  },
+  "src/Nyx/Packets/MsgExamplePacket2.cs": {
+    "mtime": 1782603721.4316113,
+    "ast_hash": "3f62de753ed36a83455c1d3fbb7e09a5",
+    "semantic_hash": "3f62de753ed36a83455c1d3fbb7e09a5"
+  },
+  "src/Nyx/Packets/MsgFlowers.cs": {
+    "mtime": 1782605892.898628,
+    "ast_hash": "0ed16b2ea9f4941d806fb9575d0de3e1",
+    "semantic_hash": "0ed16b2ea9f4941d806fb9575d0de3e1"
+  },
+  "src/Nyx/Packets/MsgItem.cs": {
+    "mtime": 1784861940.267651,
+    "ast_hash": "6683c8298376d0ebd5cf61eb57956bd0",
+    "semantic_hash": "6683c8298376d0ebd5cf61eb57956bd0"
+  },
+  "src/Nyx/Packets/MsgLogin.cs": {
+    "mtime": 1782603721.5056112,
+    "ast_hash": "8091150206f6e4b708ba096e001a5597",
+    "semantic_hash": "8091150206f6e4b708ba096e001a5597"
+  },
+  "src/Nyx/Packets/MsgNpc.cs": {
+    "mtime": 1782605892.9116678,
+    "ast_hash": "bfd625e008f1a56d20dbaf44a08f5c95",
+    "semantic_hash": "bfd625e008f1a56d20dbaf44a08f5c95"
+  },
+  "src/Nyx/Packets/MsgPing.cs": {
+    "mtime": 1782603721.6296127,
+    "ast_hash": "505e1d500625bfaee247c1150402a932",
+    "semantic_hash": "505e1d500625bfaee247c1150402a932"
+  },
+  "src/Nyx/Packets/MsgPrestigeRanking.cs": {
+    "mtime": 1782603721.6526127,
+    "ast_hash": "6397228e12f92f0048f504db9eb8cc79",
+    "semantic_hash": "6397228e12f92f0048f504db9eb8cc79"
+  },
+  "src/Nyx/Packets/MsgQuest.cs": {
+    "mtime": 1782605892.9336255,
+    "ast_hash": "de12b71b945edeeafb28e0ece4223749",
+    "semantic_hash": "de12b71b945edeeafb28e0ece4223749"
+  },
+  "src/Nyx/Packets/MsgReloadScreen.cs": {
+    "mtime": 1782603721.7056153,
+    "ast_hash": "f5ccba4f02eb952ef37d5a323a1bd039",
+    "semantic_hash": "f5ccba4f02eb952ef37d5a323a1bd039"
+  },
+  "src/Nyx/Packets/MsgTalk.cs": {
+    "mtime": 1782603721.7266147,
+    "ast_hash": "29ca8a38750e1bc3fca0c29ef7e9c99f",
+    "semantic_hash": "29ca8a38750e1bc3fca0c29ef7e9c99f"
+  },
+  "src/Nyx/Program.cs": {
+    "mtime": 1785083513.379278,
+    "ast_hash": "c3aad0906487761446c7f3bad6e57193",
+    "semantic_hash": "c3aad0906487761446c7f3bad6e57193"
+  },
+  "src/Nyx/Scripts/DynamicItems/ItemScript.cs": {
+    "mtime": 1782603722.695611,
+    "ast_hash": "44a66cfeeffdc24c38b145e83d7bd5c9",
+    "semantic_hash": "44a66cfeeffdc24c38b145e83d7bd5c9"
+  },
+  "src/Nyx/Scripts/DynamicItems/ScriptGlobals.cs": {
+    "mtime": 1782603722.7756124,
+    "ast_hash": "0b648cfc4907d2680301215d999e0b26",
+    "semantic_hash": "0b648cfc4907d2680301215d999e0b26"
+  },
+  "src/Nyx/Scripts/DynamicMonsters/MonsterScriptGlobals.cs": {
+    "mtime": 1782603722.7976131,
+    "ast_hash": "332257dacc2f61b2101a4363d92a790a",
+    "semantic_hash": "332257dacc2f61b2101a4363d92a790a"
+  },
+  "src/Nyx/Scripts/DynamicMonsters/MonstersLuaScript.cs": {
+    "mtime": 1782603722.834613,
+    "ast_hash": "c5ab79d4703769f8051b5ae2e494c765",
+    "semantic_hash": "c5ab79d4703769f8051b5ae2e494c765"
+  },
+  "src/Nyx/Scripts/DynamicNpcDialog/NpcLuaScript.cs": {
+    "mtime": 1782603722.859612,
+    "ast_hash": "9a1167687499ea2edcdfd72ea359d9bb",
+    "semantic_hash": "9a1167687499ea2edcdfd72ea359d9bb"
+  },
+  "src/Nyx/Scripts/DynamicNpcDialog/NpcScriptGlobals.cs": {
+    "mtime": 1782603722.9046116,
+    "ast_hash": "2f85c1eda35c0cbf401f6d88d97e7e39",
+    "semantic_hash": "2f85c1eda35c0cbf401f6d88d97e7e39"
+  },
+  "src/Nyx/Scripts/DynamicNpcs/DynamicNpcsGlobals.cs": {
+    "mtime": 1782603722.9436119,
+    "ast_hash": "dfa9274e7fabaee473ea74d778338b41",
+    "semantic_hash": "dfa9274e7fabaee473ea74d778338b41"
+  },
+  "src/Nyx/Scripts/DynamicNpcs/LuaDynamicNpcsScript.cs": {
+    "mtime": 1782603723.058612,
+    "ast_hash": "47f4be845e107e42335749f3baddb96b",
+    "semantic_hash": "47f4be845e107e42335749f3baddb96b"
+  },
+  "src/Nyx/ServerConfigrations.json": {
+    "mtime": 1781628965.690327,
+    "ast_hash": "25b5261758f78ad76d909ddda9af3357",
+    "semantic_hash": "25b5261758f78ad76d909ddda9af3357"
+  },
+  "src/Nyx/ServerConfigurations.cs": {
+    "mtime": 1782603827.4407747,
+    "ast_hash": "66dba00955befe7ce6a31f2738e1569f",
+    "semantic_hash": "66dba00955befe7ce6a31f2738e1569f"
+  },
+  "src/Nyx/Services/NyxBrainIntegrationService.cs": {
+    "mtime": 1782603723.101611,
+    "ast_hash": "6cbff30b35a389febdc1cf9c13224f5d",
+    "semantic_hash": "6cbff30b35a389febdc1cf9c13224f5d"
+  },
+  "src/Nyx/System/BinaryWriter.cs": {
+    "mtime": 1782603723.1336105,
+    "ast_hash": "a1d9176b0d745632d2d64edf874d20e3",
+    "semantic_hash": "a1d9176b0d745632d2d64edf874d20e3"
+  },
+  "src/Nyx/System/BitVector32.cs": {
+    "mtime": 1782603723.1546116,
+    "ast_hash": "1b6bbf8c32a95b014aa0f3ee42a2a9ac",
+    "semantic_hash": "1b6bbf8c32a95b014aa0f3ee42a2a9ac"
+  },
+  "src/Nyx/System/CachedAttributeInvocation.cs": {
+    "mtime": 1782603723.180612,
+    "ast_hash": "028237ab6abdf7cdb2a0c775b56fc8d0",
+    "semantic_hash": "028237ab6abdf7cdb2a0c775b56fc8d0"
+  },
+  "src/Nyx/System/ClassExtensions.cs": {
+    "mtime": 1782677348.4006188,
+    "ast_hash": "16193f44029c66f8a5b95ae8b4b728ae",
+    "semantic_hash": "16193f44029c66f8a5b95ae8b4b728ae"
+  },
+  "src/Nyx/System/Common.cs": {
+    "mtime": 1782603723.2176118,
+    "ast_hash": "e9a108ceeb2a473533172ed0e4f8a302",
+    "semantic_hash": "e9a108ceeb2a473533172ed0e4f8a302"
+  },
+  "src/Nyx/System/Constants.cs": {
+    "mtime": 1785114361.0229201,
+    "ast_hash": "ce23d92b2a71e9b3f5a00285cafb4144",
+    "semantic_hash": "ce23d92b2a71e9b3f5a00285cafb4144"
+  },
+  "src/Nyx/System/CtrlType.cs": {
+    "mtime": 1782603723.4026117,
+    "ast_hash": "4bb5cf15c892648330caced1ea982e31",
+    "semantic_hash": "4bb5cf15c892648330caced1ea982e31"
+  },
+  "src/Nyx/System/DivineLeader/Core/DivineLeaderCore.cs": {
+    "mtime": 1782603723.4216466,
+    "ast_hash": "9ac80c6a11784d99e4a73108d5623f70",
+    "semantic_hash": "9ac80c6a11784d99e4a73108d5623f70"
+  },
+  "src/Nyx/System/GenericActionList.cs": {
+    "mtime": 1782667999.6773865,
+    "ast_hash": "33feef021a1f6331088bf114dfec9bd1",
+    "semantic_hash": "33feef021a1f6331088bf114dfec9bd1"
+  },
+  "src/Nyx/System/HardwareBan.cs": {
+    "mtime": 1782603723.4706116,
+    "ast_hash": "fcd9df349ae6910207a28d431a55d9d8",
+    "semantic_hash": "fcd9df349ae6910207a28d431a55d9d8"
+  },
+  "src/Nyx/System/HexChess/Core.cs": {
+    "mtime": 1782603723.4886134,
+    "ast_hash": "18e47c50a36f7f6b7dc4dfa840ba1aeb",
+    "semantic_hash": "18e47c50a36f7f6b7dc4dfa840ba1aeb"
+  },
+  "src/Nyx/System/Kernel.cs": {
+    "mtime": 1782603723.5346136,
+    "ast_hash": "3a899a97b023fb4bdf8c49ef1771d5b7",
+    "semantic_hash": "3a899a97b023fb4bdf8c49ef1771d5b7"
+  },
+  "src/Nyx/System/LoggingService.cs": {
+    "mtime": 1782603723.5656128,
+    "ast_hash": "338d3593622ce822c288e4437396c3b9",
+    "semantic_hash": "338d3593622ce822c288e4437396c3b9"
+  },
+  "src/Nyx/System/Native.cs": {
+    "mtime": 1782603723.6676128,
+    "ast_hash": "9168badb6da7e0a62548e53beae735b3",
+    "semantic_hash": "9168badb6da7e0a62548e53beae735b3"
+  },
+  "src/Nyx/System/Nullifications/Callculations.cs": {
+    "mtime": 1782603723.6976135,
+    "ast_hash": "c80b893536dd7f59174c6b41efe0e335",
+    "semantic_hash": "c80b893536dd7f59174c6b41efe0e335"
+  },
+  "src/Nyx/System/RedBlackTree.cs": {
+    "mtime": 1782603723.718616,
+    "ast_hash": "38dd6270905bccd0e147ae4dc941ab25",
+    "semantic_hash": "38dd6270905bccd0e147ae4dc941ab25"
+  },
+  "src/Nyx/System/SafeBinaryWriter.cs": {
+    "mtime": 1782603723.7486117,
+    "ast_hash": "e975ae4c73daf67cc5cb9a7e457cccf8",
+    "semantic_hash": "e975ae4c73daf67cc5cb9a7e457cccf8"
+  },
+  "src/Nyx/System/SafeWriter.cs": {
+    "mtime": 1782603724.3626275,
+    "ast_hash": "90894ab0db5c1fcd1edf65e5d8e5191f",
+    "semantic_hash": "90894ab0db5c1fcd1edf65e5d8e5191f"
+  },
+  "src/Nyx/System/SecurityIntegration.cs": {
+    "mtime": 1782656765.6849346,
+    "ast_hash": "0c188646432f424de08595907c55d429",
+    "semantic_hash": "0c188646432f424de08595907c55d429"
+  },
+  "src/Nyx/System/SecurityValidator.cs": {
+    "mtime": 1782603725.269623,
+    "ast_hash": "3eaf6b677a86f1354c77da20bf461ce8",
+    "semantic_hash": "3eaf6b677a86f1354c77da20bf461ce8"
+  },
+  "src/Nyx/System/ServerSettings.cs": {
+    "mtime": 1782603827.448774,
+    "ast_hash": "b1df013fab12252f8de94b12bfaacbf5",
+    "semantic_hash": "b1df013fab12252f8de94b12bfaacbf5"
+  },
+  "src/Nyx/System/World.cs": {
+    "mtime": 1785082607.5587165,
+    "ast_hash": "dbdb411efbda9bbe9bb4a3d5055f3914",
+    "semantic_hash": "dbdb411efbda9bbe9bb4a3d5055f3914"
+  },
+  "src/Nyx/System/Writer.cs": {
+    "mtime": 1782603725.7726254,
+    "ast_hash": "006ade1d8f90e7c0ce550edda1907d87",
+    "semantic_hash": "006ade1d8f90e7c0ce550edda1907d87"
+  },
+  "src/Nyx/Threading/GameTaskScheduler.cs": {
+    "mtime": 1782603726.0626283,
+    "ast_hash": "f8b427c8344f5619632b60e7640ec909",
+    "semantic_hash": "f8b427c8344f5619632b60e7640ec909"
+  },
+  "src/Nyx/Threading/Threding/CharacterService.cs": {
+    "mtime": 1784683811.8839056,
+    "ast_hash": "d40251d81f97d226baa7107049932b6e",
+    "semantic_hash": "d40251d81f97d226baa7107049932b6e"
+  },
+  "src/Nyx/Threading/Threding/SecurityService.cs": {
+    "mtime": 1782603726.252627,
+    "ast_hash": "a50846065efabfcea4447bc9f7b768f8",
+    "semantic_hash": "a50846065efabfcea4447bc9f7b768f8"
+  },
+  "src/Nyx/Threading/Threding/ThreadingBootstrapService.cs": {
+    "mtime": 1782603726.8346455,
+    "ast_hash": "c13c07edfa94196b65a85cb32977ded0",
+    "semantic_hash": "c13c07edfa94196b65a85cb32977ded0"
+  },
+  "src/Nyx/Threading/Threding/ThreadingTimerHostedService.cs": {
+    "mtime": 1782603727.0886235,
+    "ast_hash": "f014b2e15ce3d9dc4f4eb50dbdf5e2f5",
+    "semantic_hash": "f014b2e15ce3d9dc4f4eb50dbdf5e2f5"
+  },
+  "src/Nyx/Threading/Threding/TournamentsService.cs": {
+    "mtime": 1782603727.2166245,
+    "ast_hash": "f48ce9c31c36622aa18b620da4365aec",
+    "semantic_hash": "f48ce9c31c36622aa18b620da4365aec"
+  },
+  "src/Nyx/Threading/Threding/WorldStateService.cs": {
+    "mtime": 1784839770.8789687,
+    "ast_hash": "58c5c7154d62dadb4597762acdf5e92f",
+    "semantic_hash": "58c5c7154d62dadb4597762acdf5e92f"
+  },
+  "src/Nyx/Tournaments/Arena.cs": {
+    "mtime": 1782603727.2746246,
+    "ast_hash": "99e01ab4572b42848ca2932b46812b83",
+    "semantic_hash": "99e01ab4572b42848ca2932b46812b83"
+  },
+  "src/Nyx/Tournaments/CaptureTheFlag.cs": {
+    "mtime": 1784690480.3853781,
+    "ast_hash": "34feddb2aecd2d58a803ad34edeefa3f",
+    "semantic_hash": "34feddb2aecd2d58a803ad34edeefa3f"
+  },
+  "src/Nyx/Tournaments/ClanWar.cs": {
+    "mtime": 1782603728.5426245,
+    "ast_hash": "70994b42a6dd9b495316b6627b1dbc84",
+    "semantic_hash": "70994b42a6dd9b495316b6627b1dbc84"
+  },
+  "src/Nyx/Tournaments/ElitePK.cs": {
+    "mtime": 1782686745.905024,
+    "ast_hash": "d9010706a8bb3492f0b58daa53dd0bfa",
+    "semantic_hash": "d9010706a8bb3492f0b58daa53dd0bfa"
+  },
+  "src/Nyx/Tournaments/ElitePKTournament.cs": {
+    "mtime": 1782603728.6356256,
+    "ast_hash": "20b53fb17f76344f3c76148df1ecb265",
+    "semantic_hash": "20b53fb17f76344f3c76148df1ecb265"
+  },
+  "src/Nyx/Tournaments/GuildWar.cs": {
+    "mtime": 1782603728.6686244,
+    "ast_hash": "ea74976716778d94498f3f9875e2a705",
+    "semantic_hash": "ea74976716778d94498f3f9875e2a705"
+  },
+  "src/Nyx/Tournaments/SkillTournament.cs": {
+    "mtime": 1782603728.7606254,
+    "ast_hash": "339c4542a809a80fda52ab903ac1b93f",
+    "semantic_hash": "339c4542a809a80fda52ab903ac1b93f"
+  },
+  "src/Nyx/Tournaments/SteedRace.cs": {
+    "mtime": 1782603728.7916262,
+    "ast_hash": "c4a4d7851d688709ec0ba635bd508451",
+    "semantic_hash": "c4a4d7851d688709ec0ba635bd508451"
+  },
+  "src/Nyx/Tournaments/TeamArena.cs": {
+    "mtime": 1782603728.8216226,
+    "ast_hash": "d02cb9b6af20063b045f9f5c044cf1e1",
+    "semantic_hash": "d02cb9b6af20063b045f9f5c044cf1e1"
+  },
+  "src/Nyx/Utilities/AtomicCounter.cs": {
+    "mtime": 1782603728.8596244,
+    "ast_hash": "8c6437d72d6a27f74b7f71d97b79f09a",
+    "semantic_hash": "8c6437d72d6a27f74b7f71d97b79f09a"
+  },
+  "src/Nyx/Utilities/CareDictionary.cs": {
+    "mtime": 1782604060.0075262,
+    "ast_hash": "e63380b024b80d5d2a06a2343e3d774f",
+    "semantic_hash": "e63380b024b80d5d2a06a2343e3d774f"
+  },
+  "src/Nyx/Utilities/CrossPlatformIniFile.cs": {
+    "mtime": 1782605738.9214494,
+    "ast_hash": "4edec917befb18010f899d23c766284b",
+    "semantic_hash": "4edec917befb18010f899d23c766284b"
+  },
+  "src/Nyx/Utilities/GameTime.cs": {
+    "mtime": 1784860624.9198017,
+    "ast_hash": "daa81195fa938e787afa76ebd78a10a5",
+    "semantic_hash": "daa81195fa938e787afa76ebd78a10a5"
+  },
+  "src/Nyx/Utilities/GameTimer.cs": {
+    "mtime": 1782655501.91771,
+    "ast_hash": "1b7e615d5b64c50e90c074df51e6a1d4",
+    "semantic_hash": "1b7e615d5b64c50e90c074df51e6a1d4"
+  },
+  "src/Nyx/Utilities/IniFileWrapper.cs": {
+    "mtime": 1782605767.169575,
+    "ast_hash": "fa361f49f43577f3e4672c2443f702ae",
+    "semantic_hash": "fa361f49f43577f3e4672c2443f702ae"
+  },
+  "src/Nyx/Utilities/LazyDelegate.cs": {
+    "mtime": 1782605183.4826865,
+    "ast_hash": "ed11ffcde113444445f4448a713d7c1f",
+    "semantic_hash": "ed11ffcde113444445f4448a713d7c1f"
+  },
+  "src/Nyx/Utilities/RandomExtensions.cs": {
+    "mtime": 1782603729.7836235,
+    "ast_hash": "0d53a10ea02a532cfe84b85c66ce6bcc",
+    "semantic_hash": "0d53a10ea02a532cfe84b85c66ce6bcc"
+  },
+  "src/Nyx/Utilities/SafeConcurrentDictionary.cs": {
+    "mtime": 1782604074.3248942,
+    "ast_hash": "cc3ef1f424145e5f14c8d11f3b38a818",
+    "semantic_hash": "cc3ef1f424145e5f14c8d11f3b38a818"
+  },
+  "src/Nyx/Utilities/SafeDictionary.cs": {
+    "mtime": 1782603729.827624,
+    "ast_hash": "2ba64487fa82ae932f7fe96a095e030f",
+    "semantic_hash": "2ba64487fa82ae932f7fe96a095e030f"
+  },
+  "src/Nyx/appsettings.json": {
+    "mtime": 1753569272.9243946,
+    "ast_hash": "5a921a542827821c27a11b2e0956f246",
+    "semantic_hash": "5a921a542827821c27a11b2e0956f246"
+  },
+  "src/Nyx/bin/Debug/net9.0/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "src/Nyx/bin/Debug/net9.0/Modules/Nyx.Brain/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "src/Nyx/bin/Debug/net9.0/Nyx.Server.deps.json": {
+    "mtime": 1785084088.9866414,
+    "ast_hash": "9a44f360c09f224092c2eb833cca9ff3",
+    "semantic_hash": "9a44f360c09f224092c2eb833cca9ff3"
+  },
+  "src/Nyx/bin/Debug/net9.0/Nyx.Server.runtimeconfig.json": {
+    "mtime": 1785084089.0296438,
+    "ast_hash": "c43e6801cc7a7e75af2a6e9baa7e8cc0",
+    "semantic_hash": "c43e6801cc7a7e75af2a6e9baa7e8cc0"
+  },
+  "src/Nyx/bin/Debug/net9.0/ServerConfigrations.json": {
+    "mtime": 1781628965.690327,
+    "ast_hash": "25b5261758f78ad76d909ddda9af3357",
+    "semantic_hash": "25b5261758f78ad76d909ddda9af3357"
+  },
+  "src/Nyx/bin/Debug/net9.0/appsettings.json": {
+    "mtime": 1753569272.9243946,
+    "ast_hash": "5a921a542827821c27a11b2e0956f246",
+    "semantic_hash": "5a921a542827821c27a11b2e0956f246"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Promotions.json": {
+    "mtime": 1757876233.5058033,
+    "ast_hash": "7e97ab7b68d27ba188ab2261a1da395b",
+    "semantic_hash": "7e97ab7b68d27ba188ab2261a1da395b"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Quests/001.json": {
+    "mtime": 1766095105.7561054,
+    "ast_hash": "2e3ceefafd3518019fe881dbd26ba242",
+    "semantic_hash": "2e3ceefafd3518019fe881dbd26ba242"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Quests/Database/Monsters.json": {
+    "mtime": 1766190910.4539204,
+    "ast_hash": "7dd3a251b575a141e53af3c865dc8081",
+    "semantic_hash": "7dd3a251b575a141e53af3c865dc8081"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Quests/Database/RewardGenerator.py": {
+    "mtime": 1766108780.5935633,
+    "ast_hash": "94deb6b06384addddb08e13b77f73af7",
+    "semantic_hash": "94deb6b06384addddb08e13b77f73af7"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Quests/Database/Rewards.json": {
+    "mtime": 1766108178.0737622,
+    "ast_hash": "1b3d1852f2e12cb6571d504732582590",
+    "semantic_hash": "1b3d1852f2e12cb6571d504732582590"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/1001.lua": {
+    "mtime": 1761411745.5347452,
+    "ast_hash": "9d7b40a38ff7e84e7c8bf0266bba925a",
+    "semantic_hash": "9d7b40a38ff7e84e7c8bf0266bba925a"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/1002245.lua": {
+    "mtime": 1761428121.2448995,
+    "ast_hash": "9fbd9578e6986b093bbe550e851a51e1",
+    "semantic_hash": "9fbd9578e6986b093bbe550e851a51e1"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/1002246.lua": {
+    "mtime": 1761487982.487879,
+    "ast_hash": "24c0ae34be858816b2401359fd5e4409",
+    "semantic_hash": "24c0ae34be858816b2401359fd5e4409"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/1002247.lua": {
+    "mtime": 1761683546.199458,
+    "ast_hash": "24c0ae34be858816b2401359fd5e4409",
+    "semantic_hash": "24c0ae34be858816b2401359fd5e4409"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/1002248.lua": {
+    "mtime": 1771448387.8956304,
+    "ast_hash": "07f8b99859d6474ecb7fd393e4bb17f4",
+    "semantic_hash": "07f8b99859d6474ecb7fd393e4bb17f4"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/2416.lua": {
+    "mtime": 1768744523.9458015,
+    "ast_hash": "4ca204deeef5bb0b89d09d75c519490d",
+    "semantic_hash": "4ca204deeef5bb0b89d09d75c519490d"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/5517.lua": {
+    "mtime": 1761683624.4844615,
+    "ast_hash": "5c072b14108d0c237a2c7d72dfe3700c",
+    "semantic_hash": "5c072b14108d0c237a2c7d72dfe3700c"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/57.lua": {
+    "mtime": 1771464603.7410042,
+    "ast_hash": "e2d2095d6b545c8dc2b3606fb15552c1",
+    "semantic_hash": "e2d2095d6b545c8dc2b3606fb15552c1"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/601122.lua": {
+    "mtime": 1761359521.6212215,
+    "ast_hash": "20189e209c0c9d7ca49f4e13c28bde21",
+    "semantic_hash": "20189e209c0c9d7ca49f4e13c28bde21"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/602.lua": {
+    "mtime": 1761357656.0971932,
+    "ast_hash": "16f4a17d31a05f48b7dc06a3a6ea9295",
+    "semantic_hash": "16f4a17d31a05f48b7dc06a3a6ea9295"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/8877887.lua": {
+    "mtime": 1761411234.7227428,
+    "ast_hash": "a535da9ec40cbea167f9d769a1377122",
+    "semantic_hash": "a535da9ec40cbea167f9d769a1377122"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/888.lua": {
+    "mtime": 1761359931.0392694,
+    "ast_hash": "98aa16f60ee76fd48cf9abe8d90f5174",
+    "semantic_hash": "98aa16f60ee76fd48cf9abe8d90f5174"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/898989.lua": {
+    "mtime": 1761359401.9944668,
+    "ast_hash": "9fbd9578e6986b093bbe550e851a51e1",
+    "semantic_hash": "9fbd9578e6986b093bbe550e851a51e1"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Scripts/999.lua": {
+    "mtime": 1761357625.19955,
+    "ast_hash": "b0291196f40d90ef81a3aafc0477ee93",
+    "semantic_hash": "b0291196f40d90ef81a3aafc0477ee93"
+  },
+  "src/Nyx/mdf31.cs": {
+    "mtime": 1782603706.5875382,
+    "ast_hash": "32e3e5fe1b6a313ce5cf666b2926d1df",
+    "semantic_hash": "32e3e5fe1b6a313ce5cf666b2926d1df"
+  },
+  "src/Nyx/obj/Debug/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.1021762,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx/obj/Debug/Nyx.Server.AssemblyInfo.cs": {
+    "mtime": 1785084051.8662663,
+    "ast_hash": "7bc40951ed1caa72e8f5f535ae8de981",
+    "semantic_hash": "7bc40951ed1caa72e8f5f535ae8de981"
+  },
+  "src/Nyx/obj/Debug/Nyx.Server.GlobalUsings.g.cs": {
+    "mtime": 1776864729.106065,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx/obj/Debug/net9.0-windows/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.1140454,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx/obj/Debug/net9.0-windows/Nyx.Server.AssemblyInfo.cs": {
+    "mtime": 1776864729.1160395,
+    "ast_hash": "34627615ba5b48ab68b6e463320fab33",
+    "semantic_hash": "34627615ba5b48ab68b6e463320fab33"
+  },
+  "src/Nyx/obj/Debug/net9.0-windows/Nyx.Server.GlobalUsings.g.cs": {
+    "mtime": 1776864729.1170375,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.1080637,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx/obj/Debug/net9.0/Nyx.Server.AssemblyInfo.cs": {
+    "mtime": 1776864729.1100569,
+    "ast_hash": "001c08846c3591139eb4fafe3c553df0",
+    "semantic_hash": "001c08846c3591139eb4fafe3c553df0"
+  },
+  "src/Nyx/obj/Debug/net9.0/Nyx.Server.GlobalUsings.g.cs": {
+    "mtime": 1776864729.1120524,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx/obj/Debug/net9.0/Nyx.Server.sourcelink.json": {
+    "mtime": 1776607602.2402363,
+    "ast_hash": "f9a1040e371d15f1856debac492d41c5",
+    "semantic_hash": "f9a1040e371d15f1856debac492d41c5"
+  },
+  "src/Nyx/obj/Nyx.Server.csproj.nuget.dgspec.json": {
+    "mtime": 1784856458.6706326,
+    "ast_hash": "1a9a2d6cd36670509a5ce03222c46314",
+    "semantic_hash": "1a9a2d6cd36670509a5ce03222c46314"
+  },
+  "src/Nyx/obj/Release/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1781359546.5808241,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx/obj/Release/Nyx.Server.AssemblyInfo.cs": {
+    "mtime": 1781359546.6574538,
+    "ast_hash": "79624b8dbd4c0b5e0955c52ae4e6d511",
+    "semantic_hash": "79624b8dbd4c0b5e0955c52ae4e6d511"
+  },
+  "src/Nyx/obj/Release/Nyx.Server.GlobalUsings.g.cs": {
+    "mtime": 1781359541.242944,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx/obj/Release/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1776864729.1212924,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "src/Nyx/obj/Release/net9.0/Nyx.Server.AssemblyInfo.cs": {
+    "mtime": 1776864729.1232848,
+    "ast_hash": "53dace46f09699899384de6ccdfcf48d",
+    "semantic_hash": "53dace46f09699899384de6ccdfcf48d"
+  },
+  "src/Nyx/obj/Release/net9.0/Nyx.Server.GlobalUsings.g.cs": {
+    "mtime": 1776864729.124284,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "src/Nyx/obj/Release/net9.0/Nyx.Server.sourcelink.json": {
+    "mtime": 1776750207.5711374,
+    "ast_hash": "f9a1040e371d15f1856debac492d41c5",
+    "semantic_hash": "f9a1040e371d15f1856debac492d41c5"
+  },
+  "src/Nyx/obj/project.assets.json": {
+    "mtime": 1784856458.6506312,
+    "ast_hash": "103159c3797e78a4f0499f4eff684a52",
+    "semantic_hash": "103159c3797e78a4f0499f4eff684a52"
+  },
+  "src/Server/net9.0-windows/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "src/Server/net9.0-windows/Modules/Nyx.Brain/Config/BrainConfig.json": {
+    "mtime": 1781613738.8068118,
+    "ast_hash": "34e4956b9c609f480f279d1ebe897f88",
+    "semantic_hash": "34e4956b9c609f480f279d1ebe897f88"
+  },
+  "src/Server/net9.0-windows/Nyx.Domain.deps.json": {
+    "mtime": 1785084089.9656396,
+    "ast_hash": "1985c0e0162f6f1ff325579397901aeb",
+    "semantic_hash": "1985c0e0162f6f1ff325579397901aeb"
+  },
+  "src/Server/net9.0-windows/Nyx.Server.deps.json": {
+    "mtime": 1785084088.9866414,
+    "ast_hash": "9a44f360c09f224092c2eb833cca9ff3",
+    "semantic_hash": "9a44f360c09f224092c2eb833cca9ff3"
+  },
+  "src/Server/net9.0-windows/Nyx.Server.runtimeconfig.json": {
+    "mtime": 1785084089.0296438,
+    "ast_hash": "c43e6801cc7a7e75af2a6e9baa7e8cc0",
+    "semantic_hash": "c43e6801cc7a7e75af2a6e9baa7e8cc0"
+  },
+  "src/Server/net9.0-windows/ServerConfigrations.json": {
+    "mtime": 1781628965.690327,
+    "ast_hash": "25b5261758f78ad76d909ddda9af3357",
+    "semantic_hash": "25b5261758f78ad76d909ddda9af3357"
+  },
+  "src/Server/net9.0-windows/appsettings.json": {
+    "mtime": 1753569272.9243946,
+    "ast_hash": "5a921a542827821c27a11b2e0956f246",
+    "semantic_hash": "5a921a542827821c27a11b2e0956f246"
+  },
+  "Modules/Nyx.AttackSystem/Core/Validation.cs": {
+    "mtime": 1785114932.786739,
+    "ast_hash": "8e3bda8d3bfd4fb6d227c6cf3bb661b0",
+    "semantic_hash": "8e3bda8d3bfd4fb6d227c6cf3bb661b0"
+  },
+  "Modules/Nyx.AttackSystem/Entities/Caster.cs": {
+    "mtime": 1785114542.7839496,
+    "ast_hash": "69d5d18ff7d309d29af7895d00bddecd",
+    "semantic_hash": "69d5d18ff7d309d29af7895d00bddecd"
+  },
+  "Modules/Nyx.AttackSystem/Entities/Target.cs": {
+    "mtime": 1785114557.7685833,
+    "ast_hash": "5ae18a26ee0ea9da6e09fd1f52719815",
+    "semantic_hash": "5ae18a26ee0ea9da6e09fd1f52719815"
+  },
+  "Modules/Nyx.AttackSystem/Enums/AttackType.cs": {
+    "mtime": 1785113029.217629,
+    "ast_hash": "5745bca70969ac03592810a65a3ba347",
+    "semantic_hash": "5745bca70969ac03592810a65a3ba347"
+  },
+  "Modules/Nyx.AttackSystem/Nyx.AttackSystem.csproj": {
+    "mtime": 1785112545.7307155,
+    "ast_hash": "32e595fdf1f8e8c5d837aa338daf6610",
+    "semantic_hash": "32e595fdf1f8e8c5d837aa338daf6610"
+  },
+  "Modules/Nyx.AttackSystem/obj/Debug/net9.0/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs": {
+    "mtime": 1785112148.068781,
+    "ast_hash": "ff3517b1163003098ee37a1a6f1dc08d",
+    "semantic_hash": "ff3517b1163003098ee37a1a6f1dc08d"
+  },
+  "Modules/Nyx.AttackSystem/obj/Debug/net9.0/Nyx.AttackSystem.AssemblyInfo.cs": {
+    "mtime": 1785112148.0807805,
+    "ast_hash": "0229708c6b877627f0dfe540a4a14a85",
+    "semantic_hash": "0229708c6b877627f0dfe540a4a14a85"
+  },
+  "Modules/Nyx.AttackSystem/obj/Debug/net9.0/Nyx.AttackSystem.GlobalUsings.g.cs": {
+    "mtime": 1785112148.0107815,
+    "ast_hash": "9706b2dbf69f7db452e8b0d5baf54dcf",
+    "semantic_hash": "9706b2dbf69f7db452e8b0d5baf54dcf"
+  },
+  "Modules/Nyx.AttackSystem/obj/Nyx.AttackSystem.csproj.nuget.dgspec.json": {
+    "mtime": 1785112148.1657808,
+    "ast_hash": "40ac612e7f71ae0dcac7c53cd032919b",
+    "semantic_hash": "40ac612e7f71ae0dcac7c53cd032919b"
+  },
+  "Modules/Nyx.AttackSystem/obj/project.assets.json": {
+    "mtime": 1785112148.1617813,
+    "ast_hash": "d33034c2b2278801bc113265074eae9f",
+    "semantic_hash": "d33034c2b2278801bc113265074eae9f"
+  },
+  ".docs/Analysis.md": {
+    "mtime": 1776446794.2228851,
+    "ast_hash": "959323be553428a029167a8ad9d373ac",
+    "semantic_hash": "959323be553428a029167a8ad9d373ac"
+  },
+  ".docs/DEEP_SCAN_REPORT.md": {
+    "mtime": 1782577396.8276892,
+    "ast_hash": "21861e84db824506d194a34ef2795a24",
+    "semantic_hash": "21861e84db824506d194a34ef2795a24"
+  },
+  ".docs/DESIGN_PATTERNS_GUIDE.md": {
+    "mtime": 1782579605.2336094,
+    "ast_hash": "169d1c8da15c7f9c038736d4c46a2e08",
+    "semantic_hash": "169d1c8da15c7f9c038736d4c46a2e08"
+  },
+  ".docs/Final_Exp_System_Implementation.md": {
+    "mtime": 1781619695.914748,
+    "ast_hash": "2d6354d34d8545e990eba9755c73fac8",
+    "semantic_hash": "2d6354d34d8545e990eba9755c73fac8"
+  },
+  ".docs/IMPLEMENTATION_PLAN.md": {
+    "mtime": 1782577993.3291798,
+    "ast_hash": "8d4d0371447ed238820026790c9a2dc6",
+    "semantic_hash": "8d4d0371447ed238820026790c9a2dc6"
+  },
+  ".docs/IMPLEMENTATION_PLAN_V2.md": {
+    "mtime": 1782578910.1433446,
+    "ast_hash": "8b5f3e0811bc17a7b7b527d6ef9d0f82",
+    "semantic_hash": "8b5f3e0811bc17a7b7b527d6ef9d0f82"
+  },
+  ".docs/Implementation_Summary.md": {
+    "mtime": 1781359014.4000802,
+    "ast_hash": "a715b83322b2365dc1424aa4408042e3",
+    "semantic_hash": "a715b83322b2365dc1424aa4408042e3"
+  },
+  ".docs/Links.md": {
+    "mtime": 1776446735.6247878,
+    "ast_hash": "22f45734b7bf223681b901c0b48c13cd",
+    "semantic_hash": "22f45734b7bf223681b901c0b48c13cd"
+  },
+  ".docs/Monster_Kill_And_Exp_Fixes.md": {
+    "mtime": 1781619226.395367,
+    "ast_hash": "889da502c72b53863a18cbad7f63bffb",
+    "semantic_hash": "889da502c72b53863a18cbad7f63bffb"
+  },
+  ".docs/Network_System_Migration_Plan.md": {
+    "mtime": 1779569860.7943995,
+    "ast_hash": "5ebe92c1db01eefed99874978a4e23d4",
+    "semantic_hash": "5ebe92c1db01eefed99874978a4e23d4"
+  },
+  ".docs/NyxBrainIntegration.md": {
+    "mtime": 1781615567.4028866,
+    "ast_hash": "ac8c46a2eac2d12a39cbdda82aa49c0c",
+    "semantic_hash": "ac8c46a2eac2d12a39cbdda82aa49c0c"
+  },
+  ".docs/NyxV2_Technical_Summary.md": {
+    "mtime": 1776457052.1142116,
+    "ast_hash": "ddcc97b1fd9c5a8fbfc2843829ba134e",
+    "semantic_hash": "ddcc97b1fd9c5a8fbfc2843829ba134e"
+  },
+  ".docs/Optimal_Exp_System_Design.md": {
+    "mtime": 1781619378.2402334,
+    "ast_hash": "e2f82377756b682d9d34cc1dccc07c3a",
+    "semantic_hash": "e2f82377756b682d9d34cc1dccc07c3a"
+  },
+  ".docs/TODO.md": {
+    "mtime": 1782670942.5937161,
+    "ast_hash": "494ed13533d3d1bb370a540965ce32df",
+    "semantic_hash": "494ed13533d3d1bb370a540965ce32df"
+  },
+  ".docs/Threading_System_Analysis_and_Design.md": {
+    "mtime": 1779569102.3242364,
+    "ast_hash": "bf4febbb2acdfff3db3690244c57d21e",
+    "semantic_hash": "bf4febbb2acdfff3db3690244c57d21e"
+  },
+  ".errors/0.0.1.md": {
+    "mtime": 1782608476.451751,
+    "ast_hash": "6072f1930ddefa5995fe845d568eeac2",
+    "semantic_hash": "6072f1930ddefa5995fe845d568eeac2"
+  },
+  ".errors/0.0.10-fix-seal-offset.md": {
+    "mtime": 1782657462.7032816,
+    "ast_hash": "f7b2d52d05d1beeb2be8338e26baf6f8",
+    "semantic_hash": "f7b2d52d05d1beeb2be8338e26baf6f8"
+  },
+  ".errors/0.0.10.1.md": {
+    "mtime": 1782657635.9287064,
+    "ast_hash": "4e8d6684fa4cf1b0b3dea5bf3552af88",
+    "semantic_hash": "4e8d6684fa4cf1b0b3dea5bf3552af88"
+  },
+  ".errors/0.0.10.10.md": {
+    "mtime": 1782756106.0766296,
+    "ast_hash": "7665d1ecbef2d122a7a85384a1b773d6",
+    "semantic_hash": "7665d1ecbef2d122a7a85384a1b773d6"
+  },
+  ".errors/0.0.10.11.md": {
+    "mtime": 1782760902.8635814,
+    "ast_hash": "895cd781dcd6c0258e4907eb03142466",
+    "semantic_hash": "895cd781dcd6c0258e4907eb03142466"
+  },
+  ".errors/0.0.10.12.md": {
+    "mtime": 1782762051.0126839,
+    "ast_hash": "4c8ec90b343efb9654b8f1dc0a02e6d0",
+    "semantic_hash": "4c8ec90b343efb9654b8f1dc0a02e6d0"
+  },
+  ".errors/0.0.10.13.md": {
+    "mtime": 1782763838.327878,
+    "ast_hash": "a7475b473419d5bea07402419aa4c72b",
+    "semantic_hash": "a7475b473419d5bea07402419aa4c72b"
+  },
+  ".errors/0.0.10.14.md": {
+    "mtime": 1782765309.4100409,
+    "ast_hash": "afe81a0ba1e4e8b08aa6a27b2ac6aa37",
+    "semantic_hash": "afe81a0ba1e4e8b08aa6a27b2ac6aa37"
+  },
+  ".errors/0.0.10.15.md": {
+    "mtime": 1783088333.3017123,
+    "ast_hash": "0c88e0ac72cdd05d0f908f73cd4037ba",
+    "semantic_hash": "0c88e0ac72cdd05d0f908f73cd4037ba"
+  },
+  ".errors/0.0.10.16.md": {
+    "mtime": 1783090273.4783854,
+    "ast_hash": "e5119d1f878b86252d5bec4ddfa26746",
+    "semantic_hash": "e5119d1f878b86252d5bec4ddfa26746"
+  },
+  ".errors/0.0.10.17.md": {
+    "mtime": 1783093794.8927302,
+    "ast_hash": "f969500f5dede588a662f9ce88d15d74",
+    "semantic_hash": "f969500f5dede588a662f9ce88d15d74"
+  },
+  ".errors/0.0.10.18.md": {
+    "mtime": 1783095320.6982808,
+    "ast_hash": "f47c25400936b7672e68c03cfc617335",
+    "semantic_hash": "f47c25400936b7672e68c03cfc617335"
+  },
+  ".errors/0.0.10.19.md": {
+    "mtime": 1783106795.8607304,
+    "ast_hash": "1827143503555ae489c0f7f7b03aac32",
+    "semantic_hash": "1827143503555ae489c0f7f7b03aac32"
+  },
+  ".errors/0.0.10.2-fix-seal-validation.md": {
+    "mtime": 1782657882.0998,
+    "ast_hash": "e13517fe1496c1a471e9e2f4a8f93f67",
+    "semantic_hash": "e13517fe1496c1a471e9e2f4a8f93f67"
+  },
+  ".errors/0.0.10.20.md": {
+    "mtime": 1784678837.331525,
+    "ast_hash": "3044b33c2aa789ea2f53338f55d537ea",
+    "semantic_hash": "3044b33c2aa789ea2f53338f55d537ea"
+  },
+  ".errors/0.0.10.21.md": {
+    "mtime": 1784679730.908336,
+    "ast_hash": "103bf498b8c3a85ce32710b331addcd2",
+    "semantic_hash": "103bf498b8c3a85ce32710b331addcd2"
+  },
+  ".errors/0.0.10.22.md": {
+    "mtime": 1784681477.9776146,
+    "ast_hash": "03cdda644c21b8f88d833863c18f5fe5",
+    "semantic_hash": "03cdda644c21b8f88d833863c18f5fe5"
+  },
+  ".errors/0.0.10.23.md": {
+    "mtime": 1784686235.902727,
+    "ast_hash": "93da1f980b4885ad14695b98a981881f",
+    "semantic_hash": "93da1f980b4885ad14695b98a981881f"
+  },
+  ".errors/0.0.10.24.md": {
+    "mtime": 1784687897.5499046,
+    "ast_hash": "6c3850333672a0127a78ff7b88312d9c",
+    "semantic_hash": "6c3850333672a0127a78ff7b88312d9c"
+  },
+  ".errors/0.0.10.25.md": {
+    "mtime": 1784689234.974658,
+    "ast_hash": "c2a2e026c64a59941de043be028159a1",
+    "semantic_hash": "c2a2e026c64a59941de043be028159a1"
+  },
+  ".errors/0.0.10.26.md": {
+    "mtime": 1784689415.6121845,
+    "ast_hash": "6da617115da414a5f036b419549f05a2",
+    "semantic_hash": "6da617115da414a5f036b419549f05a2"
+  },
+  ".errors/0.0.10.27.md": {
+    "mtime": 1784692517.9422119,
+    "ast_hash": "707f917bc9226238ecc571df00969655",
+    "semantic_hash": "707f917bc9226238ecc571df00969655"
+  },
+  ".errors/0.0.10.28.md": {
+    "mtime": 1784693951.6161022,
+    "ast_hash": "958495bdbd8dd0f1097c114a2540aac4",
+    "semantic_hash": "958495bdbd8dd0f1097c114a2540aac4"
+  },
+  ".errors/0.0.10.29.md": {
+    "mtime": 1784695046.2044885,
+    "ast_hash": "2818496aa7698f297781d9582579d050",
+    "semantic_hash": "2818496aa7698f297781d9582579d050"
+  },
+  ".errors/0.0.10.3-fix-packet-framing.md": {
+    "mtime": 1782658572.1489418,
+    "ast_hash": "5c106883fa0ac780b6165525ba055d03",
+    "semantic_hash": "5c106883fa0ac780b6165525ba055d03"
+  },
+  ".errors/0.0.10.3.md": {
+    "mtime": 1782658254.8768456,
+    "ast_hash": "80b78459f89670f86d192f2062fe9982",
+    "semantic_hash": "80b78459f89670f86d192f2062fe9982"
+  },
+  ".errors/0.0.10.30.md": {
+    "mtime": 1784698240.6445057,
+    "ast_hash": "82011a7e9e802cfcfceea89670d227d9",
+    "semantic_hash": "82011a7e9e802cfcfceea89670d227d9"
+  },
+  ".errors/0.0.10.4.md": {
+    "mtime": 1782665348.2774656,
+    "ast_hash": "2ec31cec2b32df9c2a9ed4a3d2dee08f",
+    "semantic_hash": "2ec31cec2b32df9c2a9ed4a3d2dee08f"
+  },
+  ".errors/0.0.10.5.md": {
+    "mtime": 1782688827.4054956,
+    "ast_hash": "aa22a4abba309ded6993a80063939f7c",
+    "semantic_hash": "aa22a4abba309ded6993a80063939f7c"
+  },
+  ".errors/0.0.10.6.md": {
+    "mtime": 1782689516.901113,
+    "ast_hash": "146010614092e557f67de69883a11bbc",
+    "semantic_hash": "146010614092e557f67de69883a11bbc"
+  },
+  ".errors/0.0.10.7.md": {
+    "mtime": 1782747291.8075254,
+    "ast_hash": "91e1de20bf059084a6ff5189c0eb4293",
+    "semantic_hash": "91e1de20bf059084a6ff5189c0eb4293"
+  },
+  ".errors/0.0.10.8.md": {
+    "mtime": 1782751116.5800786,
+    "ast_hash": "ee3b23d49ea50e85e8be9d0f1842e269",
+    "semantic_hash": "ee3b23d49ea50e85e8be9d0f1842e269"
+  },
+  ".errors/0.0.10.9.md": {
+    "mtime": 1782755512.514418,
+    "ast_hash": "201b8058cdd8d3ac8ed12a81466a0065",
+    "semantic_hash": "201b8058cdd8d3ac8ed12a81466a0065"
+  },
+  ".errors/0.0.11.1.md": {
+    "mtime": 1784826753.4232433,
+    "ast_hash": "c7bdc64c3676abee71274faef3c4064a",
+    "semantic_hash": "c7bdc64c3676abee71274faef3c4064a"
+  },
+  ".errors/0.0.11.2.md": {
+    "mtime": 1784830588.2193232,
+    "ast_hash": "933cb525092be1b1101f946971e989cb",
+    "semantic_hash": "933cb525092be1b1101f946971e989cb"
+  },
+  ".errors/0.0.11.3.md": {
+    "mtime": 1784832876.4183705,
+    "ast_hash": "0f9c579ed32bac9a584cf4f551c96c2e",
+    "semantic_hash": "0f9c579ed32bac9a584cf4f551c96c2e"
+  },
+  ".errors/0.0.11.md": {
+    "mtime": 1784698358.1532328,
+    "ast_hash": "bcd69e8648b2d373b69f231dcc656834",
+    "semantic_hash": "bcd69e8648b2d373b69f231dcc656834"
+  },
+  ".errors/0.0.2.md": {
+    "mtime": 1782608851.39896,
+    "ast_hash": "413017d916e348796839a0bbe267bf84",
+    "semantic_hash": "413017d916e348796839a0bbe267bf84"
+  },
+  ".errors/0.0.3.md": {
+    "mtime": 1782609296.8348608,
+    "ast_hash": "da47a5429e94bd70a469a6093a15f1e2",
+    "semantic_hash": "da47a5429e94bd70a469a6093a15f1e2"
+  },
+  ".errors/0.0.4-fix-dh-handshake.md": {
+    "mtime": 1782652011.710685,
+    "ast_hash": "0029604d49b39d0e432aef454ef2f8ea",
+    "semantic_hash": "0029604d49b39d0e432aef454ef2f8ea"
+  },
+  ".errors/0.0.5-fix-seal-value.md": {
+    "mtime": 1782653060.5805516,
+    "ast_hash": "fb27246da3a87763088bcfb58cafe46d",
+    "semantic_hash": "fb27246da3a87763088bcfb58cafe46d"
+  },
+  ".errors/0.0.5.md": {
+    "mtime": 1782652220.552723,
+    "ast_hash": "f69db2c3cb1cf278c330ac3067a080fd",
+    "semantic_hash": "f69db2c3cb1cf278c330ac3067a080fd"
+  },
+  ".errors/0.0.6.md": {
+    "mtime": 1782653735.5618927,
+    "ast_hash": "b263646d0c76262e70b0643b200070a5",
+    "semantic_hash": "b263646d0c76262e70b0643b200070a5"
+  },
+  ".errors/0.0.7-phase2-post-handshake.md": {
+    "mtime": 1782653788.8844304,
+    "ast_hash": "0aedc10061c5c0bd98bbccca6f1bc2d5",
+    "semantic_hash": "0aedc10061c5c0bd98bbccca6f1bc2d5"
+  },
+  ".errors/0.0.8-fix-gametimer-disposal.md": {
+    "mtime": 1782655617.2238996,
+    "ast_hash": "41dfa4f2e36b63d31155c6afa08ac803",
+    "semantic_hash": "41dfa4f2e36b63d31155c6afa08ac803"
+  },
+  ".errors/0.0.9.md": {
+    "mtime": 1782657145.676351,
+    "ast_hash": "9c0162b23bda945c1028d93a3abd452a",
+    "semantic_hash": "9c0162b23bda945c1028d93a3abd452a"
+  },
+  ".vs/Nyx/v17/HierarchyCache.v1.txt": {
+    "mtime": 1784851596.185269,
+    "ast_hash": "5c23f11fa94ccc7b74510d912a58c470",
+    "semantic_hash": "5c23f11fa94ccc7b74510d912a58c470"
+  },
+  "AGENTS.md": {
+    "mtime": 1783434508.0614963,
+    "ast_hash": "d4070c4c73cd2215d20221f9fd726a84",
+    "semantic_hash": "d4070c4c73cd2215d20221f9fd726a84"
+  },
+  "Modules/Nyx.AI/obj/Debug/net9.0/Nyx.AI.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084051.2442653,
+    "ast_hash": "d6e41021c2e8f48d2f9a6ebe4fd82da8",
+    "semantic_hash": "d6e41021c2e8f48d2f9a6ebe4fd82da8"
+  },
+  "Modules/Nyx.AI/obj/Release/net9.0/Nyx.AI.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359544.4886303,
+    "ast_hash": "fe09f1a6169b3b24bc937b9b3ffb1448",
+    "semantic_hash": "fe09f1a6169b3b24bc937b9b3ffb1448"
+  },
+  "Modules/Nyx.Analysis/obj/Debug/net9.0/Nyx.Analysis.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.8002672,
+    "ast_hash": "16b23f2c6c74230a48a8a4580a3a7bf2",
+    "semantic_hash": "16b23f2c6c74230a48a8a4580a3a7bf2"
+  },
+  "Modules/Nyx.Analysis/obj/Release/net9.0/Nyx.Analysis.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359543.9976654,
+    "ast_hash": "751a2945046ced0a722262b548b0afef",
+    "semantic_hash": "751a2945046ced0a722262b548b0afef"
+  },
+  "Modules/Nyx.Asphodel/obj/Debug/net9.0/Nyx.Asphodel.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.7352688,
+    "ast_hash": "923f57c68138a4541cf74ddc3958a033",
+    "semantic_hash": "923f57c68138a4541cf74ddc3958a033"
+  },
+  "Modules/Nyx.Asphodel/obj/Release/net9.0/Nyx.Asphodel.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359543.879128,
+    "ast_hash": "3bfcfe5e9487a4628b7ddc611fef78b8",
+    "semantic_hash": "3bfcfe5e9487a4628b7ddc611fef78b8"
+  },
+  "Modules/Nyx.Brain/INTEGRATION_GUIDE.md": {
+    "mtime": 1781615820.019066,
+    "ast_hash": "d040a1dcbdbccd3fcc77bafa26148962",
+    "semantic_hash": "d040a1dcbdbccd3fcc77bafa26148962"
+  },
+  "Modules/Nyx.Brain/README.md": {
+    "mtime": 1781615765.9698477,
+    "ast_hash": "285cdb03bee1a6a17298521a376d581f",
+    "semantic_hash": "285cdb03bee1a6a17298521a376d581f"
+  },
+  "Modules/Nyx.Brain/obj/Debug/net9.0/Nyx.Brain.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.6832695,
+    "ast_hash": "a3b726b791bffbf13de1b228ece274eb",
+    "semantic_hash": "a3b726b791bffbf13de1b228ece274eb"
+  },
+  "Modules/Nyx.Brain/obj/Release/net9.0/Nyx.Brain.csproj.FileListAbsolute.txt": {
+    "mtime": 1781617798.3920832,
+    "ast_hash": "266a5d8302151cfc8a1dec9dc547aee0",
+    "semantic_hash": "266a5d8302151cfc8a1dec9dc547aee0"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Debug/net9.0/Nyx.CharacterAscension.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.2702677,
+    "ast_hash": "e9cef9bf88dea701cb683fdfb52989eb",
+    "semantic_hash": "e9cef9bf88dea701cb683fdfb52989eb"
+  },
+  "Modules/Nyx.CharacterAscension/obj/Release/net9.0/Nyx.CharacterAscension.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359543.0350754,
+    "ast_hash": "7299e3942414e62c87da5a6cef661075",
+    "semantic_hash": "7299e3942414e62c87da5a6cef661075"
+  },
+  "Modules/Nyx.HexChess/obj/Debug/net9.0-windows/Nyx.HexChess.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.124269,
+    "ast_hash": "9f3802622e6b9bc5f323290985dc235f",
+    "semantic_hash": "9f3802622e6b9bc5f323290985dc235f"
+  },
+  "Modules/Nyx.HexChess/obj/Release/net9.0-windows/Nyx.HexChess.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359542.814711,
+    "ast_hash": "86907d6aa8f2e32fce81cd076c6e7e90",
+    "semantic_hash": "86907d6aa8f2e32fce81cd076c6e7e90"
+  },
+  "Modules/Nyx.Inventory/obj/Debug/net9.0/Nyx.Inventory.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084053.517267,
+    "ast_hash": "779243d359853bb68be0a49e57989bc0",
+    "semantic_hash": "779243d359853bb68be0a49e57989bc0"
+  },
+  "Modules/Nyx.Inventory/obj/Release/net9.0/Nyx.Inventory.csproj.FileListAbsolute.txt": {
+    "mtime": 1781617799.8415966,
+    "ast_hash": "b0544f59987e770d1ef9ec54e612cd65",
+    "semantic_hash": "b0544f59987e770d1ef9ec54e612cd65"
+  },
+  "Modules/Nyx.Spellcasting/obj/Debug/net9.0/Nyx.Spellcasting.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084051.6422696,
+    "ast_hash": "65475ffafb09bfcab833286ec473174e",
+    "semantic_hash": "65475ffafb09bfcab833286ec473174e"
+  },
+  "Modules/Nyx.Spellcasting/obj/Release/net9.0/Nyx.Spellcasting.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359543.9071732,
+    "ast_hash": "b7f67fb0bac86241819e1c50c9488c77",
+    "semantic_hash": "b7f67fb0bac86241819e1c50c9488c77"
+  },
+  "Modules/Nyx.Validation/obj/Debug/net9.0/Nyx.Validation.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084051.5172682,
+    "ast_hash": "92c0a633589bb0a12f45a926ebc8a3d8",
+    "semantic_hash": "92c0a633589bb0a12f45a926ebc8a3d8"
+  },
+  "Modules/Nyx.Validation/obj/Release/net9.0/Nyx.Validation.csproj.FileListAbsolute.txt": {
+    "mtime": 1781617797.7965114,
+    "ast_hash": "18daab4eb505ff301bfd97af12a824f5",
+    "semantic_hash": "18daab4eb505ff301bfd97af12a824f5"
+  },
+  "REFACTORING_MONSTER_INFORMATION.md": {
+    "mtime": 1785084311.1809719,
+    "ast_hash": "383a1196de6f1d65e18b5dc32fe0e49f",
+    "semantic_hash": "383a1196de6f1d65e18b5dc32fe0e49f"
+  },
+  "docs/Generic_Attack_System_Design.md": {
+    "mtime": 1785107753.1986582,
+    "ast_hash": "2f2da7547787659ff9641e9237f7bf1c",
+    "semantic_hash": "2f2da7547787659ff9641e9237f7bf1c"
+  },
+  "scripts/README.md": {
+    "mtime": 1782685398.886515,
+    "ast_hash": "29f380149a4ca90167b9d57d7dffcb16",
+    "semantic_hash": "29f380149a4ca90167b9d57d7dffcb16"
+  },
+  "scripts/requirements.txt": {
+    "mtime": 1782685198.9830642,
+    "ast_hash": "e645d7666b8629aa7cd295a350f66a08",
+    "semantic_hash": "e645d7666b8629aa7cd295a350f66a08"
+  },
+  "src/Nyx.Auth/obj/Debug/net9.0/Nyx.Auth.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084053.1292684,
+    "ast_hash": "d0ec057e90ea66533900c846c9fd0803",
+    "semantic_hash": "d0ec057e90ea66533900c846c9fd0803"
+  },
+  "src/Nyx.Calculations/obj/Debug/net9.0/Nyx.Calculations.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084051.5992846,
+    "ast_hash": "33f7a7fd22588ab97a9afd89aea80c53",
+    "semantic_hash": "33f7a7fd22588ab97a9afd89aea80c53"
+  },
+  "src/Nyx.Database/obj/Debug/net9.0/Nyx.Database.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.394269,
+    "ast_hash": "73d1d66462b438cc05ab5abd4c799f89",
+    "semantic_hash": "73d1d66462b438cc05ab5abd4c799f89"
+  },
+  "src/Nyx.Database/obj/Release/net9.0/Nyx.Database.csproj.FileListAbsolute.txt": {
+    "mtime": 1781617798.103948,
+    "ast_hash": "f53fa5a36cc478ca0c34b120775921dd",
+    "semantic_hash": "f53fa5a36cc478ca0c34b120775921dd"
+  },
+  "src/Nyx.Domain/obj/Debug/net9.0-windows/Nyx.Domain.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084069.6662657,
+    "ast_hash": "a834fed0a1346be3eb78e878a83a87f9",
+    "semantic_hash": "a834fed0a1346be3eb78e878a83a87f9"
+  },
+  "src/Nyx.Domain/obj/Release/net9.0-windows/Nyx.Domain.csproj.FileListAbsolute.txt": {
+    "mtime": 1781617817.0999634,
+    "ast_hash": "b18a9a1b8c5e3db42b71cec4696d9595",
+    "semantic_hash": "b18a9a1b8c5e3db42b71cec4696d9595"
+  },
+  "src/Nyx.Monsters/obj/Debug/net9.0/Nyx.Monsters.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084051.391269,
+    "ast_hash": "131e87bec09182f0de205541caa8d8ed",
+    "semantic_hash": "131e87bec09182f0de205541caa8d8ed"
+  },
+  "src/Nyx.Network/obj/Debug/net9.0/Nyx.Network.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084050.5592704,
+    "ast_hash": "09d66980f0321d2574f5616a8732bd6b",
+    "semantic_hash": "09d66980f0321d2574f5616a8732bd6b"
+  },
+  "src/Nyx.Network/obj/Release/net9.0/Nyx.Network.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359543.4136977,
+    "ast_hash": "b77d3b5116312b209efde38bca70b327",
+    "semantic_hash": "b77d3b5116312b209efde38bca70b327"
+  },
+  "src/Nyx.Shared/obj/Debug/net9.0/Nyx.Shared.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084049.972266,
+    "ast_hash": "5dff5e517f141e04da0550c6ff7eec5a",
+    "semantic_hash": "5dff5e517f141e04da0550c6ff7eec5a"
+  },
+  "src/Nyx.Shared/obj/Release/net9.0/Nyx.Shared.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359543.7509544,
+    "ast_hash": "fd16486c3d79218a7677659c369f1f12",
+    "semantic_hash": "fd16486c3d79218a7677659c369f1f12"
+  },
+  "src/Nyx.Threading/obj/Debug/net9.0/Nyx.Threading.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084052.8692658,
+    "ast_hash": "08d09e25ce7c1f5de30fa291571f481f",
+    "semantic_hash": "08d09e25ce7c1f5de30fa291571f481f"
+  },
+  "src/Nyx.Threading/obj/Release/net9.0/Nyx.Threading.csproj.FileListAbsolute.txt": {
+    "mtime": 1781359545.5722306,
+    "ast_hash": "6be20224628bced4ee1bf0b214295fe2",
+    "semantic_hash": "6be20224628bced4ee1bf0b214295fe2"
+  },
+  "src/Nyx/Game/Attacking/Skills/README.md": {
+    "mtime": 1768741027.7899475,
+    "ast_hash": "0b7b03e80560d4666c69132d6b6b2da1",
+    "semantic_hash": "0b7b03e80560d4666c69132d6b6b2da1"
+  },
+  "src/Nyx/Scripts/NPC_LUA_SCRIPTING_README.md": {
+    "mtime": 1761358770.3944266,
+    "ast_hash": "d19c691b862274e8b05fdadeeabfad49",
+    "semantic_hash": "d19c691b862274e8b05fdadeeabfad49"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Booths.txt": {
+    "mtime": 1474039356.7613,
+    "ast_hash": "5cafee6bfa2c8a6f52eb6919149610e5",
+    "semantic_hash": "5cafee6bfa2c8a6f52eb6919149610e5"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/BugList.txt": {
+    "mtime": 1468071914.7426465,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Bugs.md": {
+    "mtime": 1762235766.050815,
+    "ast_hash": "628b966c39435c2bb8013427d439b47b",
+    "semantic_hash": "628b966c39435c2bb8013427d439b47b"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Flowers.txt": {
+    "mtime": 1785112819.954438,
+    "ast_hash": "4a0e0b35b6d54667ddd3314381669c0b",
+    "semantic_hash": "4a0e0b35b6d54667ddd3314381669c0b"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/GameMap.txt": {
+    "mtime": 1761933872.2894673,
+    "ast_hash": "482cee8256dae5ec63bf6049476af8a0",
+    "semantic_hash": "482cee8256dae5ec63bf6049476af8a0"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Items.txt": {
+    "mtime": 1784827608.1427584,
+    "ast_hash": "0586e2a45b5871cdc3c89db9d395171d",
+    "semantic_hash": "0586e2a45b5871cdc3c89db9d395171d"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/JianghuAttributes.txt": {
+    "mtime": 1413425325.6835938,
+    "ast_hash": "3f43f1b5a050d2f6df8f7363900bf006",
+    "semantic_hash": "3f43f1b5a050d2f6df8f7363900bf006"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/JingHuCultivateStatus.txt": {
+    "mtime": 1464003233.296875,
+    "ast_hash": "b4b1a6022980053bca1a70a11671189e",
+    "semantic_hash": "b4b1a6022980053bca1a70a11671189e"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Kisses.txt": {
+    "mtime": 1785112819.954438,
+    "ast_hash": "1f7df9ff4061ed24ee42d9806587cad9",
+    "semantic_hash": "1f7df9ff4061ed24ee42d9806587cad9"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/LotteryItems.txt": {
+    "mtime": 1465424636.796875,
+    "ast_hash": "ae2c9477303cc149d2e7c33ab4ec570f",
+    "semantic_hash": "ae2c9477303cc149d2e7c33ab4ec570f"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/Monsters.txt": {
+    "mtime": 1473933745.7841141,
+    "ast_hash": "37bdea77d309fc1674246ea233b4a268",
+    "semantic_hash": "37bdea77d309fc1674246ea233b4a268"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/PokerTables.txt": {
+    "mtime": 1473000779.0267932,
+    "ast_hash": "408bcd2694ff447f621f635420cbd651",
+    "semantic_hash": "408bcd2694ff447f621f635420cbd651"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/QuizShow.txt": {
+    "mtime": 1464212815.375,
+    "ast_hash": "b8270b2f00d4f60b4ba9d80f1cc7b866",
+    "semantic_hash": "b8270b2f00d4f60b4ba9d80f1cc7b866"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/RouletteTables.txt": {
+    "mtime": 1463934873.015625,
+    "ast_hash": "dd932a891721d7bc422e73587a8ddbc7",
+    "semantic_hash": "dd932a891721d7bc422e73587a8ddbc7"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/ability_score.txt": {
+    "mtime": 1467753786.671875,
+    "ast_hash": "350ec4f66d41e51a621118b24c3759f0",
+    "semantic_hash": "350ec4f66d41e51a621118b24c3759f0"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/client_config.txt": {
+    "mtime": 1467562393.09375,
+    "ast_hash": "3d662a96ba9f96e2cda22ef70d7d2447",
+    "semantic_hash": "3d662a96ba9f96e2cda22ef70d7d2447"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/coat_storage_attr.txt": {
+    "mtime": 1466386204.0625,
+    "ast_hash": "4b6f3977760e79f5052206a94c71af0d",
+    "semantic_hash": "4b6f3977760e79f5052206a94c71af0d"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/coat_storage_type.txt": {
+    "mtime": 1469841321.091391,
+    "ast_hash": "1983adcf248e2aed1e23f5d47eb210b8",
+    "semantic_hash": "1983adcf248e2aed1e23f5d47eb210b8"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/item_refine_attr.txt": {
+    "mtime": 1467644631.203125,
+    "ast_hash": "301d1511908af8aa5cd748a9cd8016eb",
+    "semantic_hash": "301d1511908af8aa5cd748a9cd8016eb"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/item_refine_cost.txt": {
+    "mtime": 1467136748.234375,
+    "ast_hash": "4b44b3d8735dbe718a310bc259bc9b98",
+    "semantic_hash": "4b44b3d8735dbe718a310bc259bc9b98"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/item_refine_effect.txt": {
+    "mtime": 1466421500.640625,
+    "ast_hash": "56f5530ea6062f13e455615a85ed4022",
+    "semantic_hash": "56f5530ea6062f13e455615a85ed4022"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/item_refine_upgrade.txt": {
+    "mtime": 1466421523.0,
+    "ast_hash": "cf8490666eb7008f5843bdc18b537200",
+    "semantic_hash": "cf8490666eb7008f5843bdc18b537200"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/magictype.txt": {
+    "mtime": 1771197236.8202484,
+    "ast_hash": "3510ebad58caabb64d2f13935cebcca1",
+    "semantic_hash": "3510ebad58caabb64d2f13935cebcca1"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/soulgear.txt": {
+    "mtime": 1352317900.0,
+    "ast_hash": "ed1dde88d48c3579434f3e6212f3d18d",
+    "semantic_hash": "ed1dde88d48c3579434f3e6212f3d18d"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/souls_protection.txt": {
+    "mtime": 1461666966.203125,
+    "ast_hash": "a76b0e7c2ec56c9161530f257063319b",
+    "semantic_hash": "a76b0e7c2ec56c9161530f257063319b"
+  },
+  "src/Nyx/bin/Debug/net9.0/database/stagegoal.txt": {
+    "mtime": 1458742220.859375,
+    "ast_hash": "203bc4c2213447c3af47d70d6bdece92",
+    "semantic_hash": "203bc4c2213447c3af47d70d6bdece92"
+  },
+  "src/Nyx/obj/Debug/Nyx.Server.csproj.FileListAbsolute.txt": {
+    "mtime": 1785084069.655264,
+    "ast_hash": "3960992d138f0d775dd7ce2d54632760",
+    "semantic_hash": "3960992d138f0d775dd7ce2d54632760"
+  },
+  "src/Nyx/obj/Debug/net9.0/Nyx.Server.csproj.FileListAbsolute.txt": {
+    "mtime": 1776608752.3015869,
+    "ast_hash": "11631151815e42ba2053b450e6babf7e",
+    "semantic_hash": "11631151815e42ba2053b450e6babf7e"
+  },
+  "src/Nyx/obj/Release/Nyx.Server.csproj.FileListAbsolute.txt": {
+    "mtime": 1782669564.4020073,
+    "ast_hash": "940ec2a68bb50b0b67521ada57c2c0d9",
+    "semantic_hash": "940ec2a68bb50b0b67521ada57c2c0d9"
+  },
+  "src/Nyx/obj/Release/net9.0/Nyx.Server.csproj.FileListAbsolute.txt": {
+    "mtime": 1776207654.0796616,
+    "ast_hash": "27df7cd6209346860fbd6452b4496632",
+    "semantic_hash": "27df7cd6209346860fbd6452b4496632"
+  }
+}
