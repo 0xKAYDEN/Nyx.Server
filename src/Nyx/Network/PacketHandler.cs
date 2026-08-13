@@ -27,42 +27,6 @@ namespace Nyx.Server.Network
 
         public static Network.DataCollection DataCollection = new Network.DataCollection();
 
-        #region Nyx.Combat accessors
-
-        // Resolved once and cached. The previous implementation called
-        // GetRequiredService twice per attack packet, which put a container lookup
-        // (and its lock) on the hottest path in the server; combat traffic is
-        // measured in thousands of packets a second per shard.
-
-        private static Game.Attacking.CombatAdapter _combatAdapter;
-        private static bool? _combatEngineEnabled;
-
-        private static bool CombatEngineEnabled
-            => _combatEngineEnabled ??= Program.ApplicationHost?.Services
-                .GetService<Nyx.Server.CombatConfiguration>()?.UseCombatEngine ?? false;
-
-        private static Game.Attacking.CombatAdapter CombatAdapterInstance
-            => _combatAdapter ??= Program.ApplicationHost!.Services
-                .GetRequiredService<Game.Attacking.CombatAdapter>();
-
-        /// <summary>
-        /// Finds the entity an attack packet names: players live in the global pool,
-        /// everything else on the attacker's own map.
-        /// </summary>
-        private static Game.Entity ResolveTarget(Client.GameClient client, uint uid)
-        {
-            if (uid == 0 || uid == client.Entity.UID) return null;
-
-            if (Kernel.GamePool.TryGetValue(uid, out var targetClient) && targetClient?.Entity != null)
-                return targetClient.Entity;
-
-            if (client.Map != null && client.Map.Entities.TryGetValue(uid, out var entity))
-                return entity;
-
-            return null;
-        }
-
-        #endregion
         public static string ReadString(byte[] data, ushort position, ushort count)
         {
             StringBuilder builder = new StringBuilder();
@@ -2006,12 +1970,8 @@ namespace Nyx.Server.Network
                                     // it always has. Declining beats rejecting here — a
                                     // swallowed attack leaves the player animating against
                                     // a target that never takes damage.
-                                    if (CombatEngineEnabled
-                                        && ResolveTarget(client, attack.Attacked) is Game.Entity engineTarget
-                                        && CombatAdapterInstance.TryResolve(client.Entity, engineTarget, attack))
-                                    {
+                                    if (Game.Attacking.CombatGateway.TryHandle(client.Entity, attack))
                                         break;
-                                    }
 
                                     new Game.Attacking.Handle(attack, client.Entity, null);
                                     break;

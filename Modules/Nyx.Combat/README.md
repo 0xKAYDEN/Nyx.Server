@@ -258,20 +258,43 @@ is why the adapter reads the skill id *before* writing damage back.
 
 ## How it is wired into Nyx.Server
 
-Four host-side files, all under `src/Nyx`, plus one flag:
+Five host-side files, all under `src/Nyx`, plus one flag:
 
 | File | Role |
 |---|---|
 | `Game/Attacking/CombatProjection.cs` | `Entity` → `Combatant` snapshot. The only place that knows both models. |
 | `Game/Attacking/NyxCombatWorld.cs` | `ICombatWorld`: proximity over `Kernel.Maps[id].Entities` + `Kernel.GamePool`, hostility delegated to `Handle.CanAttack`. |
 | `Game/Attacking/CombatAdapter.cs` | Packet ↔ engine translation; hands resolved damage to `Handle.ReceiveAttack`. |
+| `Game/Attacking/CombatGateway.cs` | The one seam every call site uses: flag check, cached adapter, target lookup, exception containment. |
 | `Extensions/CombatServiceCollectionExtensions.cs` | `AddCombat()` — the composition root. |
 
 `Program.InitializeServer` loads the catalog from `cq_magictype` after
-`DataHolder.Configure` and logs the rank/type counts. `PacketHandler` case `1022`
-calls the adapter, which **declines rather than rejects** anything it does not
-fully own, so the legacy `Handle` path still runs for every case the engine has
-not taken over.
+`DataHolder.Configure` and logs the rank/type counts.
+
+### Where it hooks in
+
+An attack reaches the server from **two** directions, and both are wired:
+
+| Call site | When it fires |
+|---|---|
+| `PacketHandler` case `1022` | Once, when the player first clicks a target. |
+| `World.AutoAttackCallback` (×2 — magic and melee/ranged) | Every swing thereafter, replaying `Entity.AttackPacket`. |
+
+This distinction matters more than it looks. `MsgAttack` arrives *once per
+chain*; the auto-attack loop produces every subsequent swing. Hooking only the
+packet handler would have sent the first hit of a fight through the engine and
+all the rest through the legacy code — the two would disagree and damage would
+visibly change mid-fight.
+
+Every call site goes through `CombatGateway.TryHandle`, which **declines rather
+than rejects** anything the engine does not fully own, so the legacy `Handle`
+path still runs for every case not yet taken over. A projection failure is
+caught, logged, and degraded to the legacy path rather than being allowed to
+kill a world tick.
+
+Monster-initiated attacks (`Handle(null, monster, target)` in `Screen.cs` and
+`World.cs`) are **not** routed yet: they never build an `Attack` packet, so they
+need a different entry shape. They remain on the legacy path.
 
 **The switch is `Combat.UseCombatEngine` (default `false`).** With it off the
 catalog still loads — so a bad table is caught at boot — but not one instruction of

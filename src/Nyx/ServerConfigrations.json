@@ -26,6 +26,9 @@
     "AuthPort": 9960,
     "GamePort": 5816
   },
+  "Combat": {
+    "UseCombatEngine": false
+  },
   "Partitioning": {
     "PartitionCount": 32,
     "EntitiesPerPartition": 200,
