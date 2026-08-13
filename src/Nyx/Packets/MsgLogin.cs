@@ -18,7 +18,7 @@ namespace Nyx.Server.Packets
             {
                 Connect connect = new Connect();
                 connect.Deserialize(packet);
-                PacketHandler.AppendConnect(connect, client);
+                await PacketHandler.AppendConnect(connect, client);
             }
             else
                 client.Disconnect();

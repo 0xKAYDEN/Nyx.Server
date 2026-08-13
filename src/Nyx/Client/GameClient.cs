@@ -4753,7 +4753,13 @@ namespace Nyx.Server.Client
                 this.Spells = new SafeDictionary<ushort, Interfaces.ISkill>();
                 this.Proficiencies = new SafeDictionary<ushort, Interfaces.IProf>();
 
-                PacketHandler.LoadEntity(this);
+                // Boot-time only. FakeLoad2 builds the placeholder clients that back the static
+                // booth NPCs; it runs from Booths.Load() inside InitializeServer(), before any
+                // listener is accepting connections, on the startup thread. Blocking here delays
+                // startup rather than a live player, and making it async would only push the same
+                // block up through CreateBooths -> Booths.Load -> InitializeServer, which is a
+                // synchronous void by design.
+                PacketHandler.LoadEntityAsync(this).GetAwaiter().GetResult();
             }
         }
     }
