@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using Dapper;
 
 namespace Nyx.Server.Database
@@ -36,20 +37,44 @@ namespace Nyx.Server.Database
         public int RandomKey { get; private set; }
         public bool Exists { get; private set; }
 
-        public AccountTable(string username)
+        /// <summary>
+        /// Use <see cref="CreateAsync"/>. The constructor no longer performs I/O.
+        /// </summary>
+        /// <remarks>
+        /// This used to call a blocking <c>Load()</c>, so simply constructing an AccountTable made
+        /// a synchronous database round-trip. The single call site is the authentication packet
+        /// handler, which runs on the auth session's packet-processing loop -- so every login
+        /// blocked that loop, and any thread-pool thread it happened to be running on, for the
+        /// duration of a database query. A constructor cannot be awaited, hence the async factory.
+        /// </remarks>
+        private AccountTable(string username)
+        {
+            Username = username;
+        }
+
+        /// <summary>
+        /// Loads an account by username without blocking the calling thread.
+        /// </summary>
+        /// <returns>
+        /// An instance whose <see cref="Exists"/> reports whether the account was found. Lookup
+        /// failures are reported the same way as a missing account, matching the previous
+        /// behaviour: authentication must not distinguish "no such user" from "database error".
+        /// </returns>
+        public static async Task<AccountTable> CreateAsync(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentNullException(nameof(username));
 
-            Username = username;
-            Load();
+            var table = new AccountTable(username);
+            await table.LoadAsync().ConfigureAwait(false);
+            return table;
         }
 
-        private void Load()
+        private async Task LoadAsync()
         {
             try
             {
-                var account = Repository.GetByUsernameAsync(Username).GetAwaiter().GetResult();
+                var account = await Repository.GetByUsernameAsync(Username).ConfigureAwait(false);
                 if (account != null)
                 {
                     Exists = true;
