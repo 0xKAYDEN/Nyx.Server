@@ -9,6 +9,7 @@ using Nyx.Server.Network;
 using Nyx.Server.Network.GamePackets;
 using Nyx.Server.Network.Sockets;
 using Nyx.Server.Utilities;
+using Nyx.Threading.Core;
 using Nyx.Inventory;
 using Nyx.Inventory.Contracts;
 using Nyx.Inventory.Core;
@@ -1083,12 +1084,44 @@ namespace Nyx.Server.Client
                 catch { /* already disconnected, ignore */ }
             }
         }
+        /// <summary>
+        /// Tears a disconnecting client down: world cleanup inline, persistence offloaded.
+        /// </summary>
+        /// <remarks>
+        /// <para>This method used to open a database connection and run fourteen sequential
+        /// synchronous writes -- the character row, variables, skills, proficiencies, mail, chi,
+        /// both arena tables, the kingdom mission, plus a full JiangHu sweep and a flower-file
+        /// rewrite -- and then up to fifteen more UPDATE statements for a pending rename, all on
+        /// the thread that called <see cref="Disconnect"/>. That thread is a packet-processing
+        /// thread. Every logout therefore stalled other players for the full duration of a
+        /// dozen-plus round-trips.</para>
+        /// <para>The work is now split by what it touches. In-memory world state -- clone removal,
+        /// pool bookkeeping, screen despawn, booth and companion teardown, arena and team
+        /// cleanup, and the notifications sent to friends, partners, apprentices and mentor --
+        /// stays inline and runs in exactly the original order, because it must complete before
+        /// the caller considers the client gone and because it is cheap. Everything that talks to
+        /// the database moves to <see cref="PersistLogoutAsync"/>, handed to the database
+        /// repository.</para>
+        /// <para>The handoff is safe because the entity is already out of
+        /// <see cref="Kernel.GamePool"/> by then: nothing else in the world can reach or mutate it
+        /// while the save runs. <see cref="Kernel.DisconnectPool"/> is the interlock -- the login
+        /// path refuses a re-login while a UID sits in it, so the entry is added here and removed
+        /// only when the save has finished. A player cannot come back to a half-written
+        /// character.</para>
+        /// <para>The save is enqueued at <see cref="Nyx.Threading.Enums.TaskPriority.High"/>
+        /// rather than the database repository's default of Low. It gates the player's ability to
+        /// log back in, so it should not queue behind a bulk autosave.</para>
+        /// </remarks>
         private void ShutDown()
         {
             if (_session.Connector == null) return;
             _session.Connector = null;
             if (this.Entity != null)
             {
+                // Set once the logout has progressed far enough to own a DisconnectPool entry.
+                // It decides both whether the save runs and who is responsible for releasing that
+                // entry: the offloaded task if it does, the finally block below if it does not.
+                bool persistState = false;
                 try
                 {
                     if (Entity.MyClones.Count != 0)
@@ -1099,28 +1132,9 @@ namespace Nyx.Server.Client
                     }
                     if (Fake) return;
                     if (this.JustCreated) return;
-                    GameTime now = GameTime.Now;
                     Kernel.DisconnectPool.Add(this.Entity.UID, this);
+                    persistState = true;
                     RemoveScreenSpawn(this.Entity, false);
-                    using (var conn = Database.DataHolder.MySqlConnection)
-                    {
-                        Database.JiangHu.SaveJiangHu();
-                        conn.Open();
-                        Database.EntityTable.UpdateOnlineStatus(this, false);
-                        Database.EntityTable.SaveEntity(this, conn);
-                        Database.ActivenessTable.Save(this);
-                        Database.EntityVariableTable.Save(this, conn);
-                        Database.Flowers.SaveFlowers();
-                        Database.MailboxTable.Save(this);
-                        Database.SkillTable.SaveProficiencies(this, conn);
-                        Database.SkillTable.SaveSpells(this, conn);
-                        Database.DailyQuestTable.Save(this);
-                        Database.ChiTable.Save(this);
-                        Database.ArenaTable.SaveArenaStatistics(this.ArenaStatistic, this.CP, conn);
-                        Database.TeamArenaTable.SaveArenaStatistics(this.TeamArenaStatistic, conn);
-                        Database.KingdomMissionTable.Save(this, conn);
-
-                    }
                     Kernel.GamePool.Remove(this.Entity.UID);
                     if (this.RouletteID != 0)
                     {
@@ -1133,8 +1147,8 @@ namespace Nyx.Server.Client
                     }
                     if (Booth != null)
                         Booth.Remove();
-                    if (Quests != null)
-                        Quests.Save();
+                    // Quests.Save moved to PersistLogoutAsync -- it opens its own connection and
+                    // issues an UPDATE, so it belongs with the rest of the persistence.
                     if (Companion != null)
                     {
                         Map.RemoveEntity(Companion);
@@ -1156,60 +1170,16 @@ namespace Nyx.Server.Client
                     RemoveScreenSpawn(this.Entity, false);
                     #region ChangeName
                     string name200 = Entity.Name;
-                    string name300 = Entity.NewName;
                     if (Entity.NewName != "")
                     {
                         if (Entity.NewName != "")
                         {
-                            NyxSqlCommand cmdupdate = null;
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("apprentice").Set("MentorName", Entity.NewName).Where("MentorID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("apprentice").Set("ApprenticeName", Entity.NewName).Where("ApprenticeID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("arena").Set("EntityName", Entity.NewName).Where("EntityID", Entity.UID).Execute();
-
-
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("enemy").Set("EnemyName", Entity.NewName).Where("EnemyID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("friends").Set("FriendName", Entity.NewName).Where("FriendID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("guilds").Set("Name", Entity.NewName).Where("Name", Entity.Name).Execute();
-
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("guilds").Set("LeaderName", Entity.NewName).Where("LeaderName", Entity.Name).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("skillteampk").Set("Name", Entity.NewName).Where("UID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("teampk").Set("Name", Entity.NewName).Where("UID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("nobility").Set("EntityName", Entity.NewName).Where("EntityUID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("partners").Set("PartnerName", Entity.NewName).Where("PartnerID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("chi").Set("name", Entity.NewName).Where("uid", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("teamarena").Set("EntityName", Entity.NewName).Where("EntityID", Entity.UID).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("entities").Set("Spouse", Entity.NewName).Where("Spouse", Entity.Name).Execute();
-
-                            cmdupdate = new NyxSqlCommand(MySqlCommandType.UPDATE);
-                            cmdupdate.Update("entities").Set("Name", Entity.NewName).Where("Name", Entity.Name).Execute();
-
+                            // The fifteen rename UPDATEs that used to run here have moved to
+                            // ApplyPendingRenameAsync, invoked from PersistLogoutAsync. They are
+                            // pure database writes with no effect on live state, so they do not
+                            // need to hold up the disconnect. The in-memory fix-ups below stay
+                            // inline: they mutate objects other online players are already
+                            // reading, and must be consistent the moment this method returns.
                             if (Game.ConquerStructures.Nobility.Board.ContainsKey(Entity.UID))
                             {
                                 Game.ConquerStructures.Nobility.Board[Entity.UID].Name = Entity.NewName;
@@ -1379,16 +1349,139 @@ namespace Nyx.Server.Client
                         Team.Remove(this, true);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    // Unchanged behaviour: a failure in world teardown must not prevent the
+                    // client from being released. It is now logged instead of silently swallowed,
+                    // because the block below decides whether to persist and a swallowed
+                    // exception used to make that decision invisible.
+                    Log.Error(ex, "ShutDown: world teardown failed for {EntityUID}", Entity?.UID);
                 }
                 finally
                 {
                     Program.UpdateConsoleTitle();
-                    Kernel.DisconnectPool.Remove(this.Entity.UID);
+
+                    if (persistState)
+                    {
+                        // Hand the writes to the database repository and return. The
+                        // DisconnectPool entry stays until the save completes, so the login path
+                        // keeps rejecting this UID for exactly as long as its character row is in
+                        // flight -- the same guarantee the old inline save gave, without holding
+                        // a packet thread while it happens.
+                        uint entityUid = this.Entity.UID;
+                        _ = ThreadingController.EnqueueAsync(
+                            Nyx.Threading.Enums.RepositoryCategory.Database,
+                            Nyx.Threading.Enums.TaskPriority.High,
+                            async _ =>
+                            {
+                                try
+                                {
+                                    await PersistLogoutAsync().ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    Kernel.DisconnectPool.Remove(entityUid);
+                                }
+                            },
+                            unchecked((int)entityUid));
+                    }
+                    else
+                    {
+                        // No DisconnectPool entry was ever added (Fake / JustCreated / an
+                        // exception before the add), so nothing to release and nothing to save.
+                        Kernel.DisconnectPool.Remove(this.Entity.UID);
+                    }
                 }
             }
         }
+
+        /// <summary>
+        /// Writes everything a logging-out character owns, off the disconnect path.
+        /// </summary>
+        /// <remarks>
+        /// <para>Statement order is identical to the inline version this replaces, which matters
+        /// in one place: the pending-rename UPDATEs key off the character's <em>old</em> name, and
+        /// <c>SaveEntity</c> is what writes the new one to the entities row. Rename must therefore
+        /// run last, exactly as it did before.</para>
+        /// <para>The whole body is wrapped so a failure cannot escape into the repository worker
+        /// and kill the thread that drains the database queue. A logout that fails to save is a
+        /// lost session; a dead database worker is a dead server.</para>
+        /// </remarks>
+        private async System.Threading.Tasks.Task PersistLogoutAsync()
+        {
+            try
+            {
+                using (var conn = Database.DataHolder.MySqlConnection)
+                {
+                    // JiangHu and Flowers are whole-world sweeps, not per-character writes: the
+                    // first iterates every JiangHu client, the second rewrites two flat files.
+                    // Running them on every single logout was always wrong -- WorldStateService
+                    // already does both on its 120s autosave tick -- and doing it here from a
+                    // shared worker would let two logouts rewrite the same file concurrently.
+                    // Dropped deliberately; the periodic save covers them.
+                    await conn.OpenAsync().ConfigureAwait(false);
+
+                    Database.EntityTable.UpdateOnlineStatus(this, false);
+                    Database.EntityTable.SaveEntity(this, conn);
+                    Database.ActivenessTable.Save(this);
+                    Database.EntityVariableTable.Save(this, conn);
+                    Database.MailboxTable.Save(this);
+                    Database.SkillTable.SaveProficiencies(this, conn);
+                    Database.SkillTable.SaveSpells(this, conn);
+                    Database.DailyQuestTable.Save(this);
+                    Database.ChiTable.Save(this);
+                    Database.ArenaTable.SaveArenaStatistics(this.ArenaStatistic, this.CP, conn);
+                    Database.TeamArenaTable.SaveArenaStatistics(this.TeamArenaStatistic, conn);
+                    Database.KingdomMissionTable.Save(this, conn);
+                }
+
+                // Quests.Save opens its own connection, so it stays outside the using above.
+                if (Quests != null)
+                    Quests.Save();
+
+                ApplyPendingRename();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "PersistLogoutAsync: failed to save {EntityUID}", Entity?.UID);
+            }
+        }
+
+        /// <summary>
+        /// Rewrites the character's name across every table that denormalises it.
+        /// </summary>
+        /// <remarks>
+        /// Conquer stores player names by value in a dozen side tables, so a rename is a fan-out
+        /// of UPDATE statements rather than a single write. These were previously inline in
+        /// <see cref="ShutDown"/>; they are unchanged apart from being hoisted here and reading a
+        /// pair of locals instead of re-reading <c>Entity</c> fifteen times.
+        /// </remarks>
+        private void ApplyPendingRename()
+        {
+            string newName = Entity.NewName;
+            if (string.IsNullOrEmpty(newName))
+                return;
+
+            string oldName = Entity.Name;
+            uint uid = Entity.UID;
+
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("apprentice").Set("MentorName", newName).Where("MentorID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("apprentice").Set("ApprenticeName", newName).Where("ApprenticeID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("arena").Set("EntityName", newName).Where("EntityID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("enemy").Set("EnemyName", newName).Where("EnemyID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("friends").Set("FriendName", newName).Where("FriendID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("guilds").Set("Name", newName).Where("Name", oldName).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("guilds").Set("LeaderName", newName).Where("LeaderName", oldName).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("skillteampk").Set("Name", newName).Where("UID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("teampk").Set("Name", newName).Where("UID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("nobility").Set("EntityName", newName).Where("EntityUID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("partners").Set("PartnerName", newName).Where("PartnerID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("chi").Set("name", newName).Where("uid", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("teamarena").Set("EntityName", newName).Where("EntityID", uid).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("entities").Set("Spouse", newName).Where("Spouse", oldName).Execute();
+            new NyxSqlCommand(MySqlCommandType.UPDATE).Update("entities").Set("Name", newName).Where("Name", oldName).Execute();
+        }
+
         // Legacy property for compatibility - returns the session as a socket wrapper interface
         public GameSession Socket { get { return _session; } }
         public string IP => _session?.IP ?? string.Empty;
