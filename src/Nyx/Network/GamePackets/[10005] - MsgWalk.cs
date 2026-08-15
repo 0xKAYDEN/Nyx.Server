@@ -60,7 +60,7 @@ namespace Nyx.Server.Network.GamePackets
             if (packet.Id != MessageId)
                 throw new InvalidDataException($"Expected MsgWalk ({MessageId}), received {packet.Id}.");
 
-            var reader = new TqPacketReader(packet.Payload);
+            var reader = new TqPacketReader(packet.Payload.ToArray());
             Direction = (Game.Enums.ConquerAngle)(ReadVarIntField(ref reader, 1) % 24);
             UID = ReadVarIntField(ref reader, 2);
             GroundMovementType = ReadVarIntField(ref reader, 3);
