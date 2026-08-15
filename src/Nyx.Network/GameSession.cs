@@ -177,6 +177,7 @@ public sealed class GameSession : IDisposable
                 catch (SocketException ex) when (
                     ex.SocketErrorCode == SocketError.ConnectionReset ||
                     ex.SocketErrorCode == SocketError.ConnectionAborted ||
+                    ex.SocketErrorCode == SocketError.OperationAborted ||
                     ex.SocketErrorCode == SocketError.Shutdown ||
                     ex.SocketErrorCode == SocketError.HostUnreachable ||
                     ex.SocketErrorCode == SocketError.NetworkDown ||

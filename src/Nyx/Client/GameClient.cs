@@ -225,8 +225,8 @@ namespace Nyx.Server.Client
         private readonly TqHandshakeAccumulator _handshake = new();
 
         /// <summary>
-        /// Buffers the fixed 140-byte client DH response across arbitrary TCP reads. Any bytes
-        /// coalesced after it are returned unchanged for normal packet framing.
+        /// Locates and buffers the fixed 140-byte client DH record behind its variable-length
+        /// patch-6323 envelope. Any coalesced bytes after it are returned for packet framing.
         /// </summary>
         public bool TryAppendHandshake(
             byte[] plaintext,

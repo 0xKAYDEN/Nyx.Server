@@ -43,7 +43,7 @@ The transport does not attempt to inspect encrypted length bytes. Framing happen
 
 `NetworkService` owns and awaits one channel consumer per session. Routed work now completes only after the network-container handler itself finishes (not merely after queue admission). Disconnect callbacks and client-state disposal therefore run only after `GameSession` completes the inbound channel and the final queued chunk has been decrypted and dispatched. Service shutdown tracks the same per-client operations instead of disposing sessions from a competing task.
 
-The DH response is not a regular length-prefixed game packet. Its fixed 140 bytes are buffered separately across TCP reads. Bytes coalesced after the response are passed unchanged to the normal game decoder.
+The DH response is not a regular length-prefixed game packet. Patch 6323 sends a variable-length random envelope followed by a fixed record: a little-endian key length (`128`), 128 ASCII hexadecimal key bytes, and `TQClient`. A dedicated default-key receive cipher decrypts that stream in order, while `TqHandshakeAccumulator` locates and validates the 140-byte record across arbitrary TCP splits. Envelope bytes are discarded; bytes coalesced after the validated record are passed unchanged to the normal game decoder.
 
 ## Protocol types
 

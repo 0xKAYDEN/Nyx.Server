@@ -67,6 +67,21 @@ public sealed class TqPacketStreamDecoderTests
         Assert.Equal(packet, actual);
     }
 
+    [Fact]
+    public void Decoder_enforces_the_configured_buffer_limit()
+    {
+        using var decoder = new TqPacketStreamDecoder(
+            TqPacketFraming.Authentication,
+            maximumPacketLength: TqPacketProtocol.MinimumPacketLength,
+            maximumBufferedBytes: TqPacketProtocol.MinimumPacketLength);
+
+        TqPacketStreamException exception = Assert.Throws<TqPacketStreamException>(
+            () => decoder.Append(new byte[TqPacketProtocol.MinimumPacketLength + 1]));
+
+        Assert.Equal(TqPacketStreamError.BufferLimitExceeded, exception.Error);
+        Assert.Equal(0, decoder.BufferedBytes);
+    }
+
     private static byte[] CreateClientPacket(ushort id, uint value)
     {
         byte[] packet = new byte[TqPacketProtocol.HeaderSize + sizeof(uint) + TqPacketProtocol.SealSize];

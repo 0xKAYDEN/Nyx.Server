@@ -707,6 +707,11 @@ public sealed class Program
             {
                 Log.Debug("Received encrypted chunk of {Length} bytes from {IP}", packet.Length, session.IP);
                 await GameServer_OnClientReceiveAsync(packet, packet.Length, session);
+
+                // A protocol rejection closes the session and may leave already-queued TCP chunks.
+                // Stop at that boundary instead of feeding them into completed handshake/packet state.
+                if (session.Connector is Client.GameClient client && client.Disconnected)
+                    break;
             }
             Log.Information("Packet processing ended for {IP}", session.IP);
         }
@@ -759,15 +764,21 @@ public sealed class Program
             }
 
             Client.GameClient client = session.Connector as Client.GameClient;
+            if (client == null || client.Disconnected)
+                return;
 
             if (client.Exchange)
             {
                 Log.Debug("Processing handshake bytes: received {Length} from {IP}", length, client.IP);
 
-                // The client DH response is a fixed 140-byte encrypted record, but TCP may split it
-                // anywhere. Decrypt each byte once with the dedicated default cipher and buffer until
-                // the complete record exists.
-                client.HandshakeCryptography!.Decrypt(buffer, length);
+                // Keep the original patch-6323 behavior: decrypt the client DH stream with a
+                // default-key receive cipher independent of the cipher that encrypted the server
+                // response. The fixed 140-byte key record follows a variable envelope, so the
+                // accumulator locates its validated structure instead of treating offset zero as
+                // the public-key length. Persisting this cipher also supports fragmented TCP reads.
+                GameCryptography handshakeCryptography = client.HandshakeCryptography
+                    ?? throw new InvalidOperationException("Handshake cipher is unavailable before key exchange completion.");
+                handshakeCryptography.Decrypt(buffer, length);
                 if (!client.TryAppendHandshake(buffer, length, out byte[] handshake, out byte[] trailingBytes))
                     return;
 
@@ -783,7 +794,7 @@ public sealed class Program
 
                 string publicKey = System.Text.Encoding.ASCII.GetString(handshake, pos, publicKeyLength);
                 client.Cryptography = client.DHKeyExchange.HandleClientKeyPacket(publicKey, client.Cryptography);
-                client.HandshakeCryptography.Dispose();
+                handshakeCryptography.Dispose();
                 client.HandshakeCryptography = null;
                 client.Exchange = false;
                 client.Action = 1;
@@ -803,7 +814,10 @@ public sealed class Program
         catch (Exception ex)
         {
             Log.Error(ex, "Error in GameServer_OnClientReceive. Length: {Length}", length);
-            session.Disconnect();
+            if (session.Connector is Client.GameClient client)
+                client.Disconnect();
+            else
+                session.Disconnect();
         }
     }
 
