@@ -2,6 +2,7 @@ using Nyx.Threading.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Nyx.Threading.Enums;
 
 namespace Nyx.Threading.Contracts;
 
@@ -24,6 +25,12 @@ public interface IGameTask : IRepositoryTask
     int ShardKey { get; }
 }
 
+// NOTE: TaskPriority intentionally lives in Nyx.Threading.Enums (single source of truth) and is
+// imported above via `using Nyx.Threading.Enums`. There was once a SECOND `TaskPriority` enum
+// declared right here in this namespace, which produced CS0104 "ambiguous reference" in every file
+// that imported both namespaces (Repository, ThreadContainer, ThreadingController,
+// NetworkThreadContainer) and took the whole solution down. Do NOT reintroduce a duplicate enum
+// here; reference the canonical one in Nyx.Threading.Enums instead.
 
 /// <summary>
 /// Base class for game tasks with common functionality.

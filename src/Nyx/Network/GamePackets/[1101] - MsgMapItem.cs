@@ -1,4 +1,4 @@
-﻿using Nyx.Server.Utilities;
+using Nyx.Server.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,12 @@ namespace Nyx.Server.Network.GamePackets
               FlameLotus = 940,
             FuryofEgg = 41,
             ShacklingIce = 42;
-        public static AtomicCounter FloorUID = new AtomicCounter(0);
+        // FloorItem UIDs start at 800000 so they live in a range disjoint from every other
+        // allocator: monsters 400000/100000, clones 700100, players & inventory items 1000000.
+        // The per-player screen is keyed purely by UID (no object-type component), so a floor
+        // item that collided with an existing screen entry was rejected by Screen.Add, its spawn
+        // packet was skipped, and it stayed invisible (but still pick-up-able) forever.
+        public static AtomicCounter FloorUID = new AtomicCounter(800000) { Finish = 999999 };
         byte[] Buffer;
         Client.GameClient owner;
         ushort mapid;

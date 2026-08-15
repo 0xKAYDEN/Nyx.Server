@@ -60,6 +60,13 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     /// </summary>
     private readonly SemaphoreSlim _workAvailable = new(0);
 
+    /// <summary>
+    /// Pending-task count at which the container is judged unhealthy. Defaults to the container's
+    /// own capacity so a small background container (e.g. 5000) is not judged against the same
+    /// hardcoded threshold as a large network container.
+    /// </summary>
+    private readonly int _unhealthyThreshold;
+
     private readonly ConcurrentDictionary<string, IRepository> _repositories = new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource _cts = new();
     private readonly Task _workerTask;
@@ -126,10 +133,18 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     /// Maximum number of pending tasks. 
     /// If null or 0, creates an unbounded channel.
     /// </param>
-    public ThreadContainer(string name, int coreIndex, int? capacity = null)
+    /// <param name="unhealthyThreshold">
+    /// Pending-task count at which this container is judged unhealthy. When 0 (default), it is
+    /// derived from the container's own capacity so each container is judged against itself rather
+    /// than a single hardcoded threshold.
+    /// </param>
+    public ThreadContainer(string name, int coreIndex, int? capacity = null, int unhealthyThreshold = 0)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
         CoreIndex = coreIndex;
+        _unhealthyThreshold = unhealthyThreshold > 0
+            ? unhealthyThreshold
+            : (capacity is > 0 ? capacity.Value : 10000);
 
         for (var i = 0; i < PriorityCount; i++)
         {
@@ -450,7 +465,7 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
     {
         var pendingTasks = PendingTasksCount;
         var avgLatency = AverageLatencyMs;
-        var isHealthy = _isRunning && pendingTasks < 10000 && avgLatency < 1000;
+        var isHealthy = _isRunning && pendingTasks < _unhealthyThreshold && avgLatency < 1000;
         
         return new ContainerHealthStatus
         {

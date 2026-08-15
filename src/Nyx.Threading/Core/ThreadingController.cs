@@ -390,7 +390,11 @@ public static class ThreadingController
         ArgumentNullException.ThrowIfNull(task);
         
         var repo = GetRepository(RepositoryCategory.GameLogic, task.ShardKey);
-        return repo.EnqueueTaskAsync(task);
+
+        // Honour the task's own Priority. The single-argument Repository overload substitutes the
+        // repository's DefaultPriority, which would silently downgrade a Critical/High game task
+        // to Normal on the way in.
+        return repo.EnqueueTaskAsync(task, task.Priority);
     }
 
     /// <summary>
@@ -402,7 +406,7 @@ public static class ThreadingController
         ArgumentNullException.ThrowIfNull(task);
         
         var repo = GetRepository(RepositoryCategory.GameLogic, task.ShardKey);
-        return repo.TryEnqueueTask(task);
+        return repo.TryEnqueueTask(task, task.Priority);
     }
 
     /// <summary>

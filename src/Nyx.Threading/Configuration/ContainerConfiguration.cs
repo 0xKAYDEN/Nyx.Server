@@ -39,11 +39,17 @@ public sealed class ContainerConfiguration
     /// Gets or sets the maximum pending tasks before warning.
     /// </summary>
     public int WarningThreshold { get; init; } = 1000;
-    
+
     /// <summary>
-    /// Gets or sets the maximum pending tasks before rejecting new tasks.
+    /// Gets or sets the pending-task count at which the container is judged unhealthy.
     /// </summary>
-    public int RejectionThreshold { get; init; } = 10000;
+    /// <remarks>
+    /// This is purely a health/observability threshold -- nothing is ever <em>rejected</em> on it.
+    /// Backpressure is the channel <see cref=\"Capacity\"/>'s job. It is kept alongside
+    /// <see cref=\"Capacity\"/> so the capacity and the threshold that judges it live together
+    /// rather than being compared against a single hardcoded value.
+    /// </remarks>
+    public int UnhealthyThreshold { get; init; } = 10000;
 }
 
 /// <summary>
@@ -62,7 +68,7 @@ public static class ContainerPresets
         Capacity = 50000,
         ShardCount = 1,
         WarningThreshold = 5000,
-        RejectionThreshold = 50000
+        UnhealthyThreshold = 50000
     };
     
     /// <summary>
@@ -76,7 +82,7 @@ public static class ContainerPresets
         Capacity = 20000,
         ShardCount = 1,
         WarningThreshold = 2000,
-        RejectionThreshold = 20000
+        UnhealthyThreshold = 20000
     };
     
     /// <summary>
@@ -90,7 +96,7 @@ public static class ContainerPresets
         Capacity = 10000,
         ShardCount = 4,
         WarningThreshold = 1000,
-        RejectionThreshold = 10000
+        UnhealthyThreshold = 10000
     };
     
     /// <summary>
@@ -104,7 +110,7 @@ public static class ContainerPresets
         Capacity = 5000,
         ShardCount = 2,
         WarningThreshold = 500,
-        RejectionThreshold = 5000
+        UnhealthyThreshold = 5000
     };
     
     /// <summary>
@@ -118,7 +124,7 @@ public static class ContainerPresets
         Capacity = 15000,
         ShardCount = 1,
         WarningThreshold = 1500,
-        RejectionThreshold = 15000
+        UnhealthyThreshold = 15000
     };
     
     /// <summary>
@@ -132,6 +138,6 @@ public static class ContainerPresets
         Capacity = 5000,
         ShardCount = 1,
         WarningThreshold = 500,
-        RejectionThreshold = 5000
+        UnhealthyThreshold = 5000
     };
 }
