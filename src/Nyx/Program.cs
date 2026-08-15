@@ -705,12 +705,18 @@ public sealed class Program
             Log.Information("Starting packet processing for {IP}", session.IP);
             await foreach (var packet in session.Channel.Reader.ReadAllAsync())
             {
+                // Keep the connector reference across dispatch. Disconnecting a fully loaded player
+                // clears session.Connector during ShutDown(), so looking it up only after dispatch
+                // misses the disconnected state and processes another already-queued TCP chunk.
+                if (session.Connector is not Client.GameClient client)
+                    break;
+
                 Log.Debug("Received encrypted chunk of {Length} bytes from {IP}", packet.Length, session.IP);
                 await GameServer_OnClientReceiveAsync(packet, packet.Length, session);
 
                 // A protocol rejection closes the session and may leave already-queued TCP chunks.
-                // Stop at that boundary instead of feeding them into completed handshake/packet state.
-                if (session.Connector is Client.GameClient client && client.Disconnected)
+                // Stop at that boundary instead of feeding them into disposed packet/client state.
+                if (client.Disconnected)
                     break;
             }
             Log.Information("Packet processing ended for {IP}", session.IP);

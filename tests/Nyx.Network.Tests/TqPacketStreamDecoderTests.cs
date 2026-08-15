@@ -1,3 +1,4 @@
+using System.Buffers;
 using Nyx.Network.Protocol;
 
 namespace Nyx.Network.Tests;
@@ -82,6 +83,20 @@ public sealed class TqPacketStreamDecoderTests
         Assert.Equal(0, decoder.BufferedBytes);
     }
 
+    [Fact]
+    public void Decoder_grows_its_pooled_buffer_for_valid_data_below_the_limit()
+    {
+        using var decoder = new TqPacketStreamDecoder(
+            TqPacketFraming.Game,
+            TqPacketSeal.Client,
+            pool: new ExactArrayPool());
+        byte[] data = new byte[5000];
+
+        decoder.Append(data);
+
+        Assert.Equal(data.Length, decoder.BufferedBytes);
+    }
+
     private static byte[] CreateClientPacket(ushort id, uint value)
     {
         byte[] packet = new byte[TqPacketProtocol.HeaderSize + sizeof(uint) + TqPacketProtocol.SealSize];
@@ -89,5 +104,14 @@ public sealed class TqPacketStreamDecoderTests
         writer.WriteUInt32(value);
         writer.Complete();
         return packet;
+    }
+
+    private sealed class ExactArrayPool : ArrayPool<byte>
+    {
+        public override byte[] Rent(int minimumLength) => new byte[minimumLength];
+
+        public override void Return(byte[] array, bool clearArray = false)
+        {
+        }
     }
 }
