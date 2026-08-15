@@ -38,7 +38,7 @@ public sealed record CombatOptions
     /// model is a bounded linear reduction. Defaults to the legacy one so
     /// enabling the engine changes nothing until an operator opts in.
     /// </summary>
-    public BattlePowerModel BattlePowerModel { get; init; } = BattlePowerModel.LegacyExponential;
+    public BattlePowerModel BattlePowerModel { get; init; } = BattlePowerModel.Disabled;
 
     /// <summary>Divisor of the exponential BP term: <c>2^(Δbp / divisor)</c>.</summary>
     public double BattlePowerExponentDivisor { get; init; } = 12.0;

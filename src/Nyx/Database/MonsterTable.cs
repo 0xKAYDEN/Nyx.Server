@@ -124,8 +124,16 @@ namespace Nyx.Server.Database
         }
 
         /// <summary>
-        /// Record damage dealt by a player for exp calculation on death
-        /// </summary>
+        /// Record damage dealt by a player. Retained purely so the killer can be identified
+        /// when the monster dies; it no longer drives the EXP amount.
+        /// </summary> 
+        /// <remarks>
+        /// The previous hybrid system scaled EXP by <c>DamageDealt / MaxHitpoints</c> and
+        /// awarded it on every hit. Under the new original-Conquer model a monster grants a
+        /// flat, monster-level-based amount on death regardless of who dealt the final blow,
+        /// so the accumulated damage value is deliberately ignored by
+        /// <see cref="AwardExpToPlayers"/>.
+        /// </remarks>
         public void RecordDamage(uint playerUID, uint damage)
         {
             if (!DamageByPlayer.ContainsKey(playerUID))
@@ -138,40 +146,34 @@ namespace Nyx.Server.Database
         /// </summary>
         public void AwardExpToPlayers()
         {
-            if (DamageByPlayer.Count == 0 || MaxHitpoints == 0) return;
+            if (DamageByPlayer.Count == 0) return;
 
             try
             {
                 foreach (var entry in DamageByPlayer)
                 {
                     uint playerUID = entry.Key;
-                    uint damageDealt = entry.Value;
 
-                    if (damageDealt == 0) continue;
-
+                    if (entry.Value == 0) continue;
                     // Find player
                     var player = Kernel.GamePool.Values.FirstOrDefault(c => c?.Entity?.UID == playerUID);
                     if (player == null || player.Entity == null) continue;
 
-                    // Calculate exp based on damage contribution using hybrid formula
-                    ulong exp = Game.Attacking.Calculate.CalculatePlayerExpShare(
-                        player.Entity.Level,
-                        Level,
-                        damageDealt,
-                        MaxHitpoints
-                    );
+                    // Flat EXP from monster level and the player's level difference, not damage.
+                    ulong exp = Game.LevelingSystem.KillExperience(player.Entity.Level, Level);
+
 
                     if (exp > 0)
                     {
                         // Award exp with all multipliers (VIP, guild, server rate, etc.)
                         player.IncreaseExperience(exp, true);
 
-                        // Record for Brain metrics
-                        try
-                        {
-                            Program.BrainService?.RecordExpGain(exp, 0);
-                        }
-                        catch { /* Brain service not critical */ }
+                        //// Record for Brain metrics
+                        //try
+                        //{
+                        //    Program.BrainService?.RecordExpGain(exp, 0);
+                        //}
+                        //catch { /* Brain service not critical */ }
                     }
                 }
 
@@ -384,8 +386,8 @@ namespace Nyx.Server.Database
             if (killer == null || Owner == null || Name.Contains("Guard") || killer.Name.Contains("Guard") || killer.Name.Contains("ShadowClone") || killer.ClanName == "ShadowClone" || this == null)
                 return;
 
-            // Award exp to all players who damaged this monster
-            AwardExpToPlayers();
+            //// Award exp to all players who damaged this monster
+            //AwardExpToPlayers();
 
             #region OwnsItems
             if (OwnItemID != 0 && OwnItemRate != 0)

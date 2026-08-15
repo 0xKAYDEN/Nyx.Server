@@ -1,3 +1,4 @@
+using Nyx.Threading.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,36 +24,6 @@ public interface IGameTask : IRepositoryTask
     int ShardKey { get; }
 }
 
-/// <summary>
-/// Task priority levels for scheduling.
-/// </summary>
-public enum TaskPriority
-{
-    /// <summary>
-    /// Critical tasks that must be processed immediately (network disconnect, errors).
-    /// </summary>
-    Critical = 0,
-    
-    /// <summary>
-    /// High priority tasks (combat, movement, real-time updates).
-    /// </summary>
-    High = 1,
-    
-    /// <summary>
-    /// Normal priority tasks (general game logic).
-    /// </summary>
-    Normal = 2,
-    
-    /// <summary>
-    /// Low priority tasks (background processing).
-    /// </summary>
-    Low = 3,
-    
-    /// <summary>
-    /// Background tasks (saves, cleanup, analytics).
-    /// </summary>
-    Background = 4
-}
 
 /// <summary>
 /// Base class for game tasks with common functionality.

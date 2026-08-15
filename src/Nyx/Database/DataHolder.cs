@@ -138,19 +138,14 @@ namespace Nyx.Server.Database
         /// <summary>
         /// Gets level experience from Level.ini file.
         /// </summary>
-        public static ulong LevelExperience(byte level)
-        {
-            // TODO: Load from Level.ini
-            return 1000 * (ulong)level * (ulong)level;
-        }
+        public static ulong LevelExperience(byte level) => Nyx.Server.Game.LevelingSystem.ExperienceToNextLevel(level);
         
         /// <summary>
         /// Gets proficiency level experience.
         /// </summary>
         public static uint ProficiencyLevelExperience(byte level)
         {
-            // TODO: Load from ProficiencyLevel.ini
-            return 500 * (uint)level * (uint)level;
+            return proficiencyLevelExperience[Math.Min(level, (byte)20)];
         }
         
         /// <summary>
@@ -176,19 +171,7 @@ namespace Nyx.Server.Database
         /// </summary>
         public static uint ComposePlusPoints(uint plus)
         {
-            // TODO: Load from configuration
-            return plus * 100;
-        }
-        
-        /// <summary>
-        /// Finds a revive spot.
-        /// </summary>
-        public static void FindReviveSpot(Client.GameClient client)
-        {
-            // TODO: Implement revive spot logic
-            client.Entity.MapID = 1002;
-            client.Entity.X = 300;
-            client.Entity.Y = 278;
+            return ComposePoints[Math.Min(plus, (byte)12)];
         }
         
         /// <summary>
@@ -196,8 +179,28 @@ namespace Nyx.Server.Database
         /// </summary>
         public static ushort[] FindReviveSpot(ushort mapId)
         {
-            // TODO: Implement revive spot logic
-            return new ushort[] { 1002, 300, 278 };
+            IniFile IniFile = new IniFile(Constants.RevivePoints);
+            string value = IniFile.ReadString(mapId.ToString(), "Value");
+            if (value == String.Empty)
+                return new ushort[] { 1002, 302, 280 };
+
+            if (value.Contains("L"))
+                value = IniFile.ReadString(value.Remove(0, 7), "Value");
+
+            string[] split = value.Split(' ');
+            List<ushort> values = new List<ushort>();
+            try
+            {
+                values.Add(ushort.Parse(split[0]));
+                values.Add(ushort.Parse(split[1]));
+                values.Add(ushort.Parse(split[2]));
+            }
+            catch
+            {
+
+                return new ushort[] { 1002, 300, 278 };
+            }
+            return values.ToArray();
         }
         
         /// <summary>
@@ -205,17 +208,15 @@ namespace Nyx.Server.Database
         /// </summary>
         public static uint PurifyStabilizationPoints(uint plus)
         {
-            // TODO: Load from configuration
-            return plus * 10;
+            return purifyStabilizationPoints[Math.Min(plus - 1, (byte)5)];
         }
-        
+
         /// <summary>
         /// Gets stone plus points.
         /// </summary>
-        public static uint StonePlusPoints(uint plus)
+        public static uint StonePlusPoints(byte plus)
         {
-            // TODO: Load from configuration
-            return plus * 50;
+            return StonePoints[Math.Min((int)plus, 8)];
         }
         
         /// <summary>
@@ -223,22 +224,42 @@ namespace Nyx.Server.Database
         /// </summary>
         public static uint TalismanPlusPoints(uint plus)
         {
-            // TODO: Load from configuration
-            return plus * 30;
+            return TalismanExtra[Math.Min(plus, (byte)9)];
         }
-        
+
         /// <summary>
         /// Gets steed speed.
         /// </summary>
         public static uint SteedSpeed(uint plus)
         {
-            // TODO: Load from configuration
-            return plus * 5;
+            return _SteedSpeed[Math.Min(plus, (byte)12)];
         }
-        
+
+        private static ushort[] purifyStabilizationPoints = new ushort[6] { 10, 30, 60, 100, 150, 200 };
+
+        private static ushort[] refineryStabilizationPoints = new ushort[5] { 10, 30, 70, 150, 270 };
+
+        private static ushort[] StonePoints = new ushort[9] { 1, 10, 40, 120, 360, 1080, 3240, 9720, 29160 };
+
+        private static ushort[] ComposePoints = new ushort[13] { 20, 20, 80, 240, 720, 2160, 6480, 19440, 58320, 2700, 5500, 9000, 0 };
+
+        private static byte[] _SteedSpeed = new byte[] { 0, 5, 10, 15, 20, 30, 40, 50, 65, 85, 90, 95, 100 };
+
+        private static ushort[] TalismanExtra = new ushort[10] { 0, 6, 30, 70, 240, 740, 2240, 6670, 20000, 60000 };
+
         /// <summary>
         /// Disguises dictionary.
         /// </summary>
-        public static System.Collections.Generic.Dictionary<int, int> Disguises = new System.Collections.Generic.Dictionary<int, int>();
+        /// 
+        private static uint[] proficiencyLevelExperience = new uint[21]
+       {
+            0, 1200, 68000, 250000, 640000, 1600000, 4000000, 10000000, 22000000, 40000000, 90000000, 95000000, 142500000,
+            213750000, 320625000, 480937500, 721406250, 1082109375, 1623164063, 2100000000, 0
+       };
+
+        public static ushort[] Disguises = new ushort[] { 111, 224, 117, 152, 113, 833, 116, 245, 223, 112, 222, 114, 221, 115, 220 };
+
+        //public static System.Collections.Generic.Dictionary<int, int> Disguises = new System.Collections.Generic.Dictionary<int, int>();
+
     }
 }

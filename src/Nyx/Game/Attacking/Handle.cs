@@ -1,4 +1,5 @@
 using CO2_CORE_DLL.Map;
+using Microsoft.AspNetCore.Identity;
 using Nyx.Server.Database;
 using Nyx.Server.Game.Attacking.Skills;
 using Nyx.Server.Interfaces;
@@ -8929,7 +8930,16 @@ namespace Nyx.Server.Game.Attacking
                     // Track damage for exp calculation on monster death (instead of awarding per-hit)
                     if (attacked.EntityFlag == EntityFlag.Monster && attacked.MonsterInfo != null)
                     {
-                        attacked.MonsterInfo.RecordDamage(attacker.UID, damage);
+                        //ulong LevelExpAmount = Math.Min(damage, attacked.Hitpoints) / Constants.DevideExpNumber;
+                        //attacker.Owner.IncreaseExperience(LevelExpAmount, addMultiple: false);
+
+                        ulong Exp = LevelingSystem.KillExperience(attacker.Level, attacked.Level);
+                        attacker.Owner.IncreaseExperience(Exp, addMultiple: true);
+
+                        //ulong baseExp = (ulong)attacked.Level * (ulong)attacked.Level * 2UL;
+                        //attacker.Owner.IncreaseProficiencyExperience((uint)baseExp, (ushort)attacker.Owner.Weapons.Item1.ID);
+                        //attacker.Owner.IncreaseProficiencyExperience((uint)baseExp, (ushort)attacker.Owner.Weapons.Item2.ID);
+                        //attacked.MonsterInfo.RecordDamage(attacker.UID, damage);
                     }
                     
                     // Still award skill exp per hit (but not character exp)
