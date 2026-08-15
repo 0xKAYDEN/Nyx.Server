@@ -1,6 +1,7 @@
 using Nyx.Network;
 using Nyx.Threading.Core;
 using Nyx.Threading.Contracts;
+using Nyx.Threading.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,10 @@ namespace Nyx.Threading.Network
         public NetworkRepository(string name, IThreadContainer container)
             : base(name, container)
         {
+            // Inbound packet decode must not queue behind ordinary game logic on the same
+            // container. Without this, a login handshake or any latency-critical packet waits for
+            // however many game-logic tasks are already in the backlog.
+            DefaultPriority = TaskPriority.Critical;
         }
 
         /// <summary>
@@ -64,6 +69,8 @@ namespace Nyx.Threading.Network
         public NetworkRepository(string name, IThreadContainer container, TState state)
             : base(name, container, state)
         {
+            // See the non-generic constructor: packet I/O is latency-critical.
+            DefaultPriority = TaskPriority.Critical;
         }
 
         /// <summary>

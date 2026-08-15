@@ -149,7 +149,10 @@ public sealed class ShardedRepository : IDisposable
         ArgumentNullException.ThrowIfNull(task);
         
         var shard = GetShard(task.ShardKey);
-        return shard.EnqueueTaskAsync(task);
+
+        // Honour the task's own Priority rather than the shard repository's DefaultPriority
+        // (see ThreadingController.EnqueueGameTaskAsync for the same fix).
+        return shard.EnqueueTaskAsync(task, task.Priority);
     }
     
     /// <summary>
@@ -161,7 +164,7 @@ public sealed class ShardedRepository : IDisposable
         ArgumentNullException.ThrowIfNull(task);
         
         var shard = GetShard(task.ShardKey);
-        return shard.TryEnqueueTask(task);
+        return shard.TryEnqueueTask(task, task.Priority);
     }
     
     /// <summary>
