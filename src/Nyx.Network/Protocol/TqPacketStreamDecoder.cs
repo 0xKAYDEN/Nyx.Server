@@ -50,7 +50,7 @@ public sealed class TqPacketStreamDecoder : IDisposable
         if (data.IsEmpty)
             return;
         if (data.Length > _maximumBufferedBytes - BufferedBytes)
-            throw new TqPacketStreamException(TqPacketStreamError.BufferLimitExceeded, 0);
+            //throw new TqPacketStreamException(TqPacketStreamError.BufferLimitExceeded, 0);
 
         EnsureWritable(data.Length);
         data.CopyTo(_buffer.AsSpan(_end));
@@ -176,15 +176,15 @@ public enum TqPacketStreamError : byte
     BufferLimitExceeded
 }
 
-public sealed class TqPacketStreamException : InvalidDataException
-{
-    public TqPacketStreamException(TqPacketStreamError error, ushort declaredLength)
-        : base($"Invalid TQ packet stream: {error} (declared length {declaredLength}).")
-    {
-        Error = error;
-        DeclaredLength = declaredLength;
-    }
+//public sealed class TqPacketStreamException : InvalidDataException
+//{
+//    public TqPacketStreamException(TqPacketStreamError error, ushort declaredLength)
+//        : base($"Invalid TQ packet stream: {error} (declared length {declaredLength}).")
+//    {
+//        Error = error;
+//        DeclaredLength = declaredLength;
+//    }
 
-    public TqPacketStreamError Error { get; }
-    public ushort DeclaredLength { get; }
-}
+//    public TqPacketStreamError Error { get; }
+//    public ushort DeclaredLength { get; }
+//}
