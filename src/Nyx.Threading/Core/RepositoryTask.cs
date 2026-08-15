@@ -83,9 +83,17 @@ public sealed class RepositoryTask : IPooledTask
     /// </summary>
     public async ValueTask ExecuteAsync(CancellationToken ct)
     {
-        if (_handler != null)
+        try
         {
-            await _handler(ct);
+            if (_handler != null)
+                await _handler(ct);
+        }
+        finally
+        {
+            Action? release = _releaseAction;
+            _releaseAction = null;
+            try { release?.Invoke(); }
+            catch { /* Release callbacks must not destabilize the worker. */ }
         }
     }
 
@@ -216,9 +224,17 @@ public sealed class RepositoryTask<TPayload> : IPooledTask
     /// </summary>
     public async ValueTask ExecuteAsync(CancellationToken ct)
     {
-        if (_handler != null)
+        try
         {
-            await _handler(Payload, ct);
+            if (_handler != null)
+                await _handler(Payload, ct);
+        }
+        finally
+        {
+            Action<TPayload>? release = _releaseAction;
+            _releaseAction = null;
+            try { release?.Invoke(Payload); }
+            catch { /* Release callbacks must not destabilize the worker. */ }
         }
     }
 

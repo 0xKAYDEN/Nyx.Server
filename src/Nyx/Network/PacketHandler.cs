@@ -18,6 +18,7 @@ using Serilog;
 using Nyx.Server.Bots;
 using Nyx.Server.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using Nyx.Network.Protocol;
 using Nyx.Threading.Core;
 namespace Nyx.Server.Network
 {
@@ -40,51 +41,91 @@ namespace Nyx.Server.Network
             }
             return builder.ToString().Replace("\0", "").Replace("\r", "");
         }
-        public static ulong ClientSeal = BitConverter.ToUInt64(Encoding.Default.GetBytes("TQClient"), 0);
-        public static async Task HandlePacket(byte[] packet, Client.GameClient client)
+        [TqPacketHandler((ushort)PacketType.MsgTalk)]
+        private static ValueTask HandleTalkPacket(
+            Client.GameClient client,
+            byte[] packet,
+            CancellationToken cancellationToken)
         {
-            if (packet == null)
-                return;
-            if (client == null)
-                return;
+            if (client.Action != 2)
+                return ValueTask.CompletedTask;
 
-            // Try the new attribute-based packet system first; fall through to the legacy switch
-            // below if no handler claimed the packet.
-            //
-            // ProcessAsync returns true when it has fully handled the packet. That result used to be
-            // discarded into an empty block, so a packet claimed by the new system was ALSO run
-            // through the legacy switch -- double dispatch. Returning makes the handoff exclusive,
-            // which is the precondition for migrating handlers out of this file one at a time:
-            // register a real [PacketAttribute] handler, then delete the matching legacy case.
-            //
-            // Exclusive dispatch is only safe because every registered handler is authoritative.
-            // The five "example" stubs that used to be registered (walk/action/talk/attack/sign-in)
-            // parsed nothing and applied no game logic -- returning on those would have silently
-            // dropped core gameplay packets. They have been removed; the registry is empty until
-            // real handlers land.
-            //if (await PacketProcessor.ProcessAsync(client, packet))
-            //    return;
+            var message = new Message();
+            message.Deserialize(packet);
+            Chat(message, client);
+            return ValueTask.CompletedTask;
+        }
 
-            ushort Length = BitConverter.ToUInt16(packet, 0);
-            ushort ID = BitConverter.ToUInt16(packet, 2);
-            ushort TypeP4 = BitConverter.ToUInt16(packet, 4);
-            ushort Offest6 = BitConverter.ToUInt16(packet, 6);
-            if (client.Filtering)
-                if (client.PacketRateLimiter.Filter(ID))
-                    return;
-            
-            // Validate client seal (TQClient) at the end of the packet
-            // The seal is 8 bytes at the end: packet[Length] to packet[Length+7]
-            if (Length + 8 <= packet.Length)
+        [TqPacketHandler((ushort)PacketType.MsgWalk)]
+        private static ValueTask HandleMovementPacket(
+            Client.GameClient client,
+            byte[] packet,
+            CancellationToken cancellationToken)
+        {
+            if (client.Action != 2)
+                return ValueTask.CompletedTask;
+
+            var movement = new GroundMovement(false);
+            movement.Deserialize(packet);
+            client.LastMove = GameTime.Now;
+            PlayerGroundMovment(movement, client);
+            return ValueTask.CompletedTask;
+        }
+
+        [TqPacketHandler((ushort)PacketType.MsgAction)]
+        private static ValueTask HandleActionPacket(
+            Client.GameClient client,
+            byte[] packet,
+            CancellationToken cancellationToken)
+        {
+            if (client.Action == 2)
+                HandleData(client, packet);
+            return ValueTask.CompletedTask;
+        }
+
+        [TqPacketHandler((ushort)PacketType.MsgData)]
+        private static ValueTask HandleTimePacket(
+            Client.GameClient client,
+            byte[] packet,
+            CancellationToken cancellationToken)
+        {
+            var time = new ServerTime
             {
-                if (ClientSeal != BitConverter.ToUInt64(packet, Length))
-                {
-                    Log.Warning("Invalid packet seal from {Name}, ID={ID}, Length={Length}", client.Entity?.Name ?? "Unknown", ID, Length);
-                    client.Disconnect();
-                    return;
-                }
-            }
-            
+                Year = (uint)DateTime.Now.Year,
+                Month = (uint)DateTime.Now.Month,
+                DayOfYear = (uint)DateTime.Now.DayOfYear,
+                DayOfMonth = (uint)DateTime.Now.Day,
+                Hour = (uint)DateTime.Now.Hour,
+                Minute = (uint)DateTime.Now.Minute,
+                Second = (uint)DateTime.Now.Second
+            };
+            client.Send(time);
+            return ValueTask.CompletedTask;
+        }
+
+        [TqPacketHandler((ushort)PacketType.MsgConnect)]
+        private static async ValueTask HandleLoginPacket(
+            Client.GameClient client,
+            byte[] packet,
+            CancellationToken cancellationToken)
+        {
+            if (client.Action != 1)
+                return;
+
+            var connect = new Network.GamePackets.Connect();
+            connect.Deserialize(packet);
+            await AppendConnect(connect, client).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Compatibility boundary for packet business logic that has not yet moved into a focused
+        /// <see cref="TqPacketHandlerAttribute"/> method. Framing, seal validation, rate limiting,
+        /// and primary dispatch are owned by GamePacketDispatcher and are intentionally absent here.
+        /// </summary>
+        internal static async ValueTask HandleLegacyPacket(byte[] packet, Client.GameClient client)
+        {
+            ushort ID = BitConverter.ToUInt16(packet, 2);
+
             switch (ID)
             {
                 #region Item/Ping (1009)
@@ -1274,14 +1315,6 @@ namespace Nyx.Server.Network
                     break;
 
                 #endregion
-                #region ChangeName (2080) - Moved to MsgChangeName.cs
-                // Handled by MsgChangeName.cs using PacketReader/Writer
-                // case 2080:
-                //     {
-                //         // Moved to Nyx/Packets/MsgChangeName.cs
-                //         break;
-                //     }
-                #endregion
                 #region JiangAttackFlag
                 case 2704:
                     {
@@ -2164,17 +2197,6 @@ namespace Nyx.Server.Network
                                 client.Send(new Message(Message, "ALLUSERS", System.Drawing.Color.Orange, GamePackets.Message.PopUP));
 
                         }
-                        break;
-                    }
-                #endregion
-                #region Chat/Message (1004)
-                case 1004:
-                    {
-                        if (client.Action != 2)
-                            return;
-                        Message message = new Message();
-                        message.Deserialize(packet);
-                        Chat(message, client);
                         break;
                     }
                 #endregion
@@ -6330,18 +6352,6 @@ namespace Nyx.Server.Network
                         break;
                     }
                 #endregion
-                #region Movement/Walk (10005)
-                case 10005:
-                    {
-                        if (client.Action != 2)
-                            return;
-                        GroundMovement groundMovement = new GroundMovement(false);
-                        groundMovement.Deserialize(packet);
-                        client.LastMove = GameTime.Now;
-                        PlayerGroundMovment(groundMovement, client);
-                        break;
-                    }
-                #endregion
                 #region Reincarnation (1066)
                 case 1066:
                     {
@@ -7165,30 +7175,6 @@ namespace Nyx.Server.Network
                         break;
                     }
                 #endregion
-                #region Data (10010)
-                case 10010:
-                    {
-                        if (client.Action != 2)
-                            return;
-                        HandleData(client, packet);
-                        break;
-                    }
-                #endregion
-                #region TimePacket (1033)
-                case 1033:
-                    {
-                        ServerTime time = new ServerTime();
-                        time.Year = (uint)DateTime.Now.Year;
-                        time.Month = (uint)DateTime.Now.Month;
-                        time.DayOfYear = (uint)DateTime.Now.DayOfYear;
-                        time.DayOfMonth = (uint)DateTime.Now.Day;
-                        time.Hour = (uint)DateTime.Now.Hour;
-                        time.Minute = (uint)DateTime.Now.Minute;
-                        time.Second = (uint)DateTime.Now.Second;
-                        client.Send(time);
-                        break;
-                    }
-                #endregion
                 #region Chi (2533)
 
                 case 2533:
@@ -7217,18 +7203,6 @@ namespace Nyx.Server.Network
                         break;
                     }
 
-                #endregion
-                #region Login (1052)
-                case 1052:
-                    {
-                        if (client.Action == 1)
-                        {
-                            Network.GamePackets.Connect connect = new Network.GamePackets.Connect();
-                            connect.Deserialize(packet);
-                            await AppendConnect(connect, client);
-                        }
-                        break;
-                    }
                 #endregion
                 default:
                     {

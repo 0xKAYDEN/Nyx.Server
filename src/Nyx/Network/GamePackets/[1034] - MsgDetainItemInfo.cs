@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Storage.Json;
-using Nyx.Network.Core.Packets;
 using Nyx.Server.Game;
 
 namespace Nyx.Server.Network.GamePackets
@@ -243,22 +242,6 @@ namespace Nyx.Server.Network.GamePackets
         }
         public byte[] Encode()
         {
-            //var writer = new PacketWriter();
-            //writer.Write((ushort)Buffer.Length);//0
-            //writer.Write((ushort)1034); //2
-            //writer.Write(UID); //4
-            //writer.Write(ItemUID); //8
-            //writer.Write(ItemID); //12
-            //writer.Write(Durability); //16
-            //writer.Write(MaximDurability); //18
-            //writer.Write(Page); //20
-            //writer.Write(SocketProgress); //24
-            //writer.Write((byte)SocketOne); //28
-            //writer.Write((byte)SocketTwo); //29
-            //writer.Write((ushort)Effect); //30
-            //writer.BaseStream.Seek(37, SeekOrigin.Begin); //37
-            //writer.Write(Plus); //37
-
             return Buffer;
         }
         public void Deserialize(byte[] buffer)

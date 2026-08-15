@@ -178,7 +178,7 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
             () => WorkerLoopAsync(_cts.Token),
             _cts.Token,
             TaskCreationOptions.LongRunning,
-            TaskScheduler.Default);
+            TaskScheduler.Default).Unwrap();
 
         _logger.Information("ThreadContainer '{Name}' initialized on core {CoreIndex}", Name, coreIndex);
     }
@@ -523,6 +523,21 @@ public sealed class ThreadContainer : IThreadContainer, IAsyncDisposable
         catch (OperationCanceledException)
         {
             // Expected
+        }
+
+        // Cancellation can stop the worker with tasks still queued. Dispose those tasks rather
+        // than abandoning payload references and release callbacks in completed channels.
+        for (var i = 0; i < PriorityCount; i++)
+        {
+            while (_channels[i].Reader.TryRead(out var pending))
+            {
+                Interlocked.Decrement(ref _pendingTasksCount);
+                try { pending.Dispose(); }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Error releasing queued task in container '{Name}'", Name);
+                }
+            }
         }
 
         // Dispose repositories

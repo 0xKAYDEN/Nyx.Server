@@ -40,6 +40,8 @@ public abstract class NetworkService : BackgroundService
 
     private readonly ILogger<NetworkService> _logger;
     private readonly ConcurrentDictionary<string, SessionInfo> _sessions = new();
+    private readonly ConcurrentDictionary<long, TaskCompletionSource> _clientOperations = new();
+    private long _clientOperationId;
     private Socket? _listenSocket;
     private int _port;
     private CancellationTokenSource? _linkedCts;
@@ -69,9 +71,16 @@ public abstract class NetworkService : BackgroundService
     public event Action<GameSession>? OnSessionConnected;
 
     /// <summary>
-    /// Raised when a session is disconnected (after cleanup).
+    /// Raised when a session is disconnected (after its inbound channel has been fully drained).
     /// </summary>
     public event Action<GameSession>? OnSessionDisconnected;
+
+    /// <summary>
+    /// Optional single-reader consumer for each session's ordered inbound chunk channel. The
+    /// service awaits it before disconnect callbacks and disposal, so a final socket read cannot
+    /// race client-state teardown.
+    /// </summary>
+    public Func<GameSession, Task>? SessionPacketProcessor { get; set; }
 
     #endregion
 
@@ -122,6 +131,11 @@ public abstract class NetworkService : BackgroundService
             _logger.LogError("NetworkService not configured. Call Configure(port) before starting.");
             return;
         }
+        if (SessionPacketProcessor is null)
+        {
+            _logger.LogError("NetworkService has no session packet processor configured.");
+            return;
+        }
 
         _linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
 
@@ -164,8 +178,9 @@ public abstract class NetworkService : BackgroundService
                         clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                     }
                     
-                    // Handle client in background (don't await)
-                    _ = HandleClientAsync(clientSocket, _linkedCts.Token);
+                    // The accept loop stays non-blocking, but the operation is tracked so service
+                    // shutdown can await channel drain, final packet dispatch, and disconnect hooks.
+                    StartTrackedClient(clientSocket, _linkedCts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -195,6 +210,33 @@ public abstract class NetworkService : BackgroundService
     #endregion
 
     #region Session Management
+
+    private void StartTrackedClient(Socket socket, CancellationToken token)
+    {
+        long operationId = Interlocked.Increment(ref _clientOperationId);
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        if (!_clientOperations.TryAdd(operationId, completion))
+            throw new InvalidOperationException($"Duplicate client operation id {operationId}.");
+
+        _ = RunTrackedClientAsync(operationId, completion, socket, token);
+    }
+
+    private async Task RunTrackedClientAsync(
+        long operationId,
+        TaskCompletionSource completion,
+        Socket socket,
+        CancellationToken token)
+    {
+        try
+        {
+            await HandleClientAsync(socket, token).ConfigureAwait(false);
+        }
+        finally
+        {
+            completion.TrySetResult();
+            _clientOperations.TryRemove(operationId, out _);
+        }
+    }
 
     private async Task HandleClientAsync(Socket socket, CancellationToken token)
     {
@@ -230,11 +272,15 @@ public abstract class NetworkService : BackgroundService
 
             _logger.LogInformation("Client connected: {IP} (Session: {Id})", ip, sessionId);
 
-            // Notify listeners
+            // Initialize protocol/client state before the packet consumer starts.
             OnSessionConnected?.Invoke(session);
 
-            // Process the receive loop (blocks until disconnected)
-            await session.ProcessReceiveLoopAsync(token);
+            // The transport completes the channel after the final socket bytes are enqueued. Await
+            // both sides so disconnect cleanup cannot dispose client state while that final chunk is
+            // still being decrypted or dispatched.
+            Task packetProcessor = SessionPacketProcessor?.Invoke(session) ?? Task.CompletedTask;
+            await session.ProcessReceiveLoopAsync(token).ConfigureAwait(false);
+            await packetProcessor.ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -338,28 +384,28 @@ public abstract class NetworkService : BackgroundService
     private async Task ShutdownAllSessionsAsync()
     {
         _logger.LogInformation("Shutting down all sessions ({Count} active)", _sessions.Count);
+        _linkedCts?.Cancel();
 
-        var shutdownTasks = new List<Task>();
-        
         foreach (var kvp in _sessions)
         {
-            shutdownTasks.Add(Task.Run(() =>
+            try
             {
-                try
-                {
-                    kvp.Value.Session.Disconnect();
-                    kvp.Value.Session.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error shutting down session {SessionId}", kvp.Key);
-                }
-            }));
+                // HandleClientAsync remains the sole owner of disconnect callbacks and disposal.
+                // Closing the socket completes its receive loop and inbound channel.
+                kvp.Value.Session.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error stopping session {SessionId}", kvp.Key);
+            }
         }
 
-        await Task.WhenAll(shutdownTasks);
+        Task[] clientOperations = _clientOperations.Values
+            .Select(static completion => completion.Task)
+            .ToArray();
+        await Task.WhenAll(clientOperations).ConfigureAwait(false);
         _sessions.Clear();
-        
+
         _logger.LogInformation("All sessions shut down");
     }
 
@@ -386,13 +432,9 @@ public abstract class NetworkService : BackgroundService
     /// <summary>
     /// Sends data to a specific socket.
     /// </summary>
-    public async Task SendAsync(Socket socket, byte[] data)
-    {
-        if (socket == null || !socket.Connected)
-            return;
-        
-        await socket.SendAsync(data, SocketFlags.None);
-    }
+    [Obsolete("Send through GameSession so writes remain serialized and stream-ordered.", error: true)]
+    public Task SendAsync(Socket socket, byte[] data) =>
+        throw new NotSupportedException("Direct socket sends bypass the per-session outbound queue.");
 
     /// <summary>
     /// Receives data from a specific socket.

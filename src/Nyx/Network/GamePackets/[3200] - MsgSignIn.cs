@@ -1,4 +1,3 @@
-using Nyx.Network.Core.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;

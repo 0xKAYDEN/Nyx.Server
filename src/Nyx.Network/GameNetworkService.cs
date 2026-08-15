@@ -1,33 +1,18 @@
 using Microsoft.Extensions.Logging;
 using System.Net.Sockets;
 
-namespace Nyx.Network
+namespace Nyx.Network;
+
+public sealed class GameNetworkService : NetworkService
 {
-    public class GameNetworkService : NetworkService
+    public GameNetworkService(ILogger<GameNetworkService> logger) : base(logger)
     {
-        private byte[] _defaultKey;
+    }
 
-        public GameNetworkService(ILogger<GameNetworkService> logger) : base(logger)
-        {
-        }
-
-        public void Configure(int port, byte[] defaultKey)
-        {
-            base.Configure(port);
-            _defaultKey = defaultKey;
-        }
-        protected override GameSession CreateSession(System.Net.Sockets.Socket socket)
-        {
-            var session = base.CreateSession(socket);
-            if (_defaultKey != null)
-            {
-                // Legacy support: Handshake is handled manually in GameServer_OnClientReceive with manual decryption.
-                // We must NOT encrypt/decrypt at the session level initially.
-                // session.SetCryptography(new Cryptography.SafeGameCryptography(_defaultKey));
-            }
-            // Enable RawMode for initial handshake (DH Exchange is not framed standardly)
-            session.EnableRawMode();
-            return session;
-        }
+    protected override GameSession CreateSession(Socket socket)
+    {
+        // The transport emits encrypted chunks. Framing begins after the DH exchange in the
+        // protocol layer because packet length bytes are encrypted on the wire.
+        return base.CreateSession(socket);
     }
 }
