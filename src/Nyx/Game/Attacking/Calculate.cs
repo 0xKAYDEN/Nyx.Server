@@ -32,6 +32,12 @@ namespace Nyx.Server.Game.Attacking
             return RateStatus(30);
           
         }
+
+        /// <summary>
+        /// Applies a player-vs-monster level-difference bonus to an EXP amount.
+        /// Used for spell/proficiency experience (the character leveling EXP now lives in
+        /// <see cref="Game.LevelingSystem.KillExperience"/>).
+        /// </summary>
         public static ulong CalculateExpBonus(ushort Level, ushort MonsterLevel, ulong Experience)
         {
             int leveldiff = (2 + Level - MonsterLevel);
@@ -59,29 +65,6 @@ namespace Nyx.Server.Game.Attacking
             return (ulong)(monsterLevel * monsterLevel * 2);
         }
 
-        /// <summary>
-        /// Calculate player's exp share based on damage contribution
-        /// This creates a hybrid system: level-based baseline + damage-based distribution
-        /// </summary>
-        public static ulong CalculatePlayerExpShare(
-            ushort playerLevel, 
-            ushort monsterLevel, 
-            uint damageDealt, 
-            uint monsterMaxHP)
-        {
-            // Get monster's base exp value
-            ulong baseExp = GetMonsterBaseExp(monsterLevel);
-            
-            // Calculate player's damage contribution (0.0 to 1.0)
-            // If player deals 50% damage, they get 50% of exp
-            double damageShare = Math.Min(1.0, (double)damageDealt / Math.Max(1, monsterMaxHP));
-            
-            // Player gets exp proportional to damage contribution
-            ulong playerExp = (ulong)(baseExp * damageShare);
-            
-            // Apply level difference multiplier
-            return CalculateExpBonus(playerLevel, monsterLevel, playerExp);
-        }
 
         internal static uint CalculateBossDamage(Entity attacker, Entity attacked, ushort SpellID)
         {

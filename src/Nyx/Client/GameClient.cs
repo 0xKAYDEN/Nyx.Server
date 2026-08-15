@@ -2775,7 +2775,7 @@ namespace Nyx.Server.Client
             if (Proficiencies.ContainsKey(id))
             {
                 Interfaces.IProf proficiency = Proficiencies[id];
-                experience *= Constants.ExtraProficiencyRate;
+                //experience *= Constants.ExtraProficiencyRate;
                 experience += (uint)(experience * Entity.Gems[5] / 100);
                 if (Entity.VIPLevel > 0)
                 {
