@@ -166,7 +166,7 @@ public sealed record CombatOptions
     // ---- mvp -------------------------------------------------------------
 
     /// <summary>Base minimum damage a monster deals to a player.</summary>
-    public int MonsterMinimumDamage { get; init; } = 7;
+    public int MonsterMinimumDamage { get; init; } = 1;
 
     /// <summary>Players at or below this level are exempt from the monster damage floor.</summary>
     public int MonsterMinimumDamageLevelExemption { get; init; } = 15;
@@ -188,7 +188,7 @@ public sealed record CombatOptions
     public uint MeleeCooldownMs { get; init; } = 500;
 
     /// <summary>Floor between two basic ranged shots, in milliseconds.</summary>
-    public uint RangedCooldownMs { get; init; } = 800;
+    public uint RangedCooldownMs { get; init; } = 100;
 
     /// <summary>Floor between two magic casts, in milliseconds.</summary>
     public uint MagicCooldownMs { get; init; } = 1_000;
@@ -197,7 +197,7 @@ public sealed record CombatOptions
     /// Fallback floor for a skill whose <c>cq_magictype</c> row declares neither a
     /// <c>coldtime</c> nor an <c>atk_interval</c>.
     /// </summary>
-    public uint DefaultSkillCooldownMs { get; init; } = 2_000;
+    public uint DefaultSkillCooldownMs { get; init; } = 1_000;
 
     /// <summary>
     /// Whether the basic-attack floors above are enforced. Off by default: the live
