@@ -40,6 +40,12 @@ public sealed class RedisService : IRedisService, IDisposable
     private long _totalCommandTimeTicks;
     private bool _disposed;
 
+    /// <summary>Raw StackExchange database handle for subsystems that need atomic primitives (e.g. auth tickets).</summary>
+    public IDatabase Database => _database;
+
+    /// <summary>Configured key prefix (e.g. <c>nyx:</c>). Must match Nyx.Auth.</summary>
+    public string InstanceName => _config.InstanceName ?? string.Empty;
+
     public RedisService(RedisConfiguration config, ILogger<RedisService> logger)
     {
         _config = config;

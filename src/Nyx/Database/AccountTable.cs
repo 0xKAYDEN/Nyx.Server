@@ -1,10 +1,9 @@
 using Nyx.Server.Database.PostgreSQL;
 using Nyx.Server.Scripts;
+using Nyx.Shared.Auth;
 using Serilog;
 using System;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 
@@ -84,6 +83,26 @@ namespace Nyx.Server.Database
         public static AccountTable CreateDetached(string? username = null)
             => new AccountTable(username ?? string.Empty) { Exists = false };
 
+        /// <summary>
+        /// Reconstructs an account carrier from a one-shot auth ticket published by Nyx.Auth.
+        /// No database I/O — the ticket already carries every field the login path needs.
+        /// </summary>
+        public static AccountTable FromTicket(AuthTicket ticket)
+        {
+            ArgumentNullException.ThrowIfNull(ticket);
+
+            return new AccountTable(ticket.Username)
+            {
+                Exists = true,
+                Password = ticket.Password ?? string.Empty,
+                EntityID = ticket.EntityId,
+                State = (AccountState)ticket.State,
+                MacAddress = ticket.MacAddress ?? string.Empty,
+                IP = ticket.Ip ?? string.Empty,
+                RandomKey = ticket.RandomKey
+            };
+        }
+
         private async Task LoadAsync()
         {
             try
@@ -113,15 +132,11 @@ namespace Nyx.Server.Database
 
         public uint GenerateKey(int? randomKey = null)
         {
-            RandomKey = randomKey ?? Kernel.Random.Next(11, 253) % 100 + 1;
-
-            using var sha = SHA256.Create();
-            var input = $"{Username}:{Password}:{RandomKey}";
-            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return BitConverter.ToUInt32(hash, 0);
+            RandomKey = randomKey ?? AuthTokenGenerator.NextRandomKey();
+            return AuthTokenGenerator.Generate(Username, Password, RandomKey);
         }
 
-        public bool MatchKey(uint key) => key == GenerateKey(RandomKey);
+        public bool MatchKey(uint key) => AuthTokenGenerator.Matches(key, Username, Password, RandomKey);
 
         public void Save(Client.GameClient client)
         {

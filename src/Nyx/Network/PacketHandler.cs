@@ -25269,10 +25269,25 @@ namespace Nyx.Server.Network
                 return;
             }
             bool doLogin = false;
+
+            // Consume the one-shot ticket published by Nyx.Auth (Redis GETDEL).
+            // Fall back to the in-process AwaitingPool for any residual co-hosted path.
+            Database.AccountTable? ticketAccount = null;
+            var tickets = Nyx.Server.Program.AuthTickets;
+            if (tickets is not null)
+            {
+                var ticket = await tickets.TakeAsync(appendConnect.Identifier).ConfigureAwait(false);
+                if (ticket is not null)
+                    ticketAccount = Database.AccountTable.FromTicket(ticket);
+            }
+
             lock (LoginSyncRoot)
             {
-                Database.AccountTable Account = null;
-                if (Kernel.AwaitingPool.TryGetValue(appendConnect.Identifier, out Account))
+                Database.AccountTable Account = ticketAccount;
+                if (Account is null)
+                    Kernel.AwaitingPool.TryGetValue(appendConnect.Identifier, out Account);
+
+                if (Account is not null)
                 {
                     if (!Account.MatchKey(appendConnect.Identifier))
                     {

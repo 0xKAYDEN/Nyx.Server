@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nyx.Network;
-using Nyx.Network.Cryptography;
 using Nyx.Network.Protocol;
 using Nyx.Server.Caching;
 using Nyx.Server.Client;
@@ -21,13 +20,13 @@ using Nyx.Server.Network;
 using Nyx.Server.Network.GamePackets;
 using Nyx.Server.Network.GamePackets.Union;
 using Nyx.Server.Network.Dispatching;
-using Nyx.Server.Network.Sockets;
 using Nyx.Server.Scripts.DynamicItems;
 using Nyx.Server.Scripts.DynamicMonsters;
 using Nyx.Server.Scripts.DynamicNpcDialog;
 using Nyx.Server.Scripts.DynamicNpcs;
 using Nyx.Server.Soul;
 using Nyx.Server.Threading;
+using Nyx.Shared.Auth;
 using Nyx.Threading.Core;
 using Serilog;
 using System;
@@ -95,7 +94,12 @@ public sealed class Program
     // Network configuration
     public static string GameIP = "0.0.0.0";
     public static ushort GamePort = 5816;
-    public static ushort AuthPort = 9960;
+
+    /// <summary>
+    /// Cross-process login ticket store shared with Nyx.Auth (Redis).
+    /// Populated during <see cref="ConfigureServices"/>; consumed by MsgConnect.
+    /// </summary>
+    public static IAuthTicketStore? AuthTickets { get; private set; }
 
     public static Int64 RandomSeed = 3721;
 
@@ -316,6 +320,12 @@ public sealed class Program
 
             ApplicationHost = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .UseSerilog()
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    // Load the shared operator config (historical filename typo preserved).
+                    config.AddJsonFile("ServerConfigrations.json", optional: true, reloadOnChange: true);
+                    config.AddJsonFile("ServerConfigurations.json", optional: true, reloadOnChange: true);
+                })
                 .ConfigureServices((context, services) =>
                 {
                     ConfigureServices(services, context.Configuration);
@@ -356,9 +366,8 @@ public sealed class Program
         configuration.GetSection("Telemetry")?.Bind(serverConfig.Telemetry);
         configuration.GetSection("Combat")?.Bind(serverConfig.Combat);
 
-        // Store ports for later use
+        // Store ports for later use. Auth now lives in the standalone Nyx.Auth process.
         GamePort = (ushort)serverConfig.Server.GamePort;
-        AuthPort = (ushort)serverConfig.Server.AuthPort;
         GameIP = serverConfig.Server.ServerAddress;
 
         services.AddSingleton(Options.Create(serverConfig));
@@ -381,10 +390,15 @@ public sealed class Program
         services.AddSingleton<IRedisService, RedisService>();
         services.AddSingleton<IDataLoader, PartitionedDataLoader>();
 
-        // Register Network Services
-        services.AddSingleton<Nyx.Network.AuthNetworkService>();
+        // Auth → game login tickets. Reuses the same Redis connection as IRedisService.
+        services.AddSingleton<IAuthTicketStore>(sp =>
+        {
+            var redis = (RedisService)sp.GetRequiredService<IRedisService>();
+            return new RedisAuthTicketStore(redis.Database, redis.InstanceName);
+        });
+
+        // Game network only — authentication is handled by the Nyx.Auth process.
         services.AddSingleton<Nyx.Network.GameNetworkService>();
-        services.AddHostedService<Nyx.Network.AuthNetworkService>(provider => provider.GetRequiredService<Nyx.Network.AuthNetworkService>());
         services.AddHostedService<Nyx.Network.GameNetworkService>(provider => provider.GetRequiredService<Nyx.Network.GameNetworkService>());
 
         // Register Game Logic Processing Services
@@ -617,11 +631,8 @@ public sealed class Program
             Log.Warning(ex, "Phase 2: Failed to wire MonsterManager — monsters will not be lazy-loaded");
         }
 
-        // Initialize brute force protection
-        BruteForceProtection.CreatePoll();
-
-        // Initialize cryptography
-        AuthCryptography.PrepareAuthCryptography();
+        // Resolve the auth ticket store once the host is built (Redis is ready).
+        AuthTickets = ApplicationHost!.Services.GetRequiredService<IAuthTicketStore>();
 
         try
         {
@@ -644,24 +655,15 @@ public sealed class Program
         Log.Information("Nyx.Threading: {Network} network containers, {Shards} game-logic shards",
             ThreadingController.NetworkContainerCount,
             ThreadingController.GameLogicShardCount);
-        Log.Information("Network services: Auth on port {AuthPort}, Game on port {GamePort}", AuthPort, GamePort);
+        Log.Information("Game network on port {GamePort} (auth is the standalone Nyx.Auth process)", GamePort);
     }
 
     private static void InitializeNetworkServices()
     {
         Log.Information("Initializing network services...");
 
-        // Initialize Auth Network Service
-        var authService = ApplicationHost!.Services.GetRequiredService<Nyx.Network.AuthNetworkService>();
-        authService.Configure(AuthPort);
-        authService.OnSessionConnected += AuthServer_OnClientConnect;
-        authService.SessionPacketProcessor = ProcessAuthSessionPacketsAsync;
-
-        // Socket teardown -> auth-state teardown. This subscription was missing, so
-        // AuthServer_OnClientDisconnect was dead code and auth sessions were never released.
-        authService.OnSessionDisconnected += AuthServer_OnClientDisconnect;
-
-        // Initialize Game Network Service
+        // Game network only. Authentication was extracted into Nyx.Auth so this process
+        // no longer binds the auth port or runs the TQ auth stream cipher.
         var gameService = ApplicationHost!.Services.GetRequiredService<Nyx.Network.GameNetworkService>();
         gameService.Configure(GamePort);
         gameService.OnSessionConnected += GameServer_OnClientConnect;
@@ -678,24 +680,6 @@ public sealed class Program
         gameService.OnSessionDisconnected += GameServer_OnClientDisconnect;
 
         Log.Information("Network services initialized successfully");
-    }
-
-    private static async Task ProcessAuthSessionPacketsAsync(Nyx.Network.GameSession session)
-    {
-        try
-        {
-            await foreach (var packet in session.Channel.Reader.ReadAllAsync())
-                await AuthServer_OnClientReceiveAsync(packet, packet.Length, session);
-        }
-        catch (OperationCanceledException)
-        {
-            // Normal shutdown
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error in auth session packet processing for {IP}", session.IP);
-            session.Disconnect();
-        }
     }
 
     private static async Task ProcessGameSessionPacketsAsync(Nyx.Network.GameSession session)
@@ -910,127 +894,6 @@ public sealed class Program
         catch (Exception ex)
         {
             Log.Error(ex, "Error handling routed packet ID {ID} from {Name}", packetId, client.Entity?.Name ?? "Unknown");
-        }
-    }
-
-    private static void AuthServer_OnClientConnect(Nyx.Network.GameSession session)
-    {
-        Log.Information("Auth client connected: {IP}", session.IP);
-        Client.AuthClient authState;
-        session.Connector = (authState = new Client.AuthClient(session));
-        authState.Cryptographer = new AuthCryptography();
-        Network.AuthPackets.PasswordCryptographySeed pcs = new Network.AuthPackets.PasswordCryptographySeed();
-        pcs.Seed = (int)RandomSeed;
-        authState.PasswordSeed = pcs.Seed;
-        authState.Send(pcs);
-    }
-
-    private static void AuthServer_OnClientDisconnect(Nyx.Network.GameSession session)
-    {
-        Log.Information("Auth client disconnected: {IP}", session.IP);
-        if (session.Connector is Client.AuthClient client)
-            client.Disconnect();
-        else
-            session.Disconnect();
-    }
-
-    private static async Task AuthServer_OnClientReceiveAsync(byte[] buffer, int length, Nyx.Network.GameSession session)
-    {
-        try
-        {
-            Log.Debug("Auth server received {Length} bytes from {IP}", length, session.IP);
-            var player = session.Connector as Client.AuthClient;
-
-            if (player == null)
-            {
-                Log.Warning("Auth client wrapper is null for {IP}", session.IP);
-                session.Disconnect();
-                return;
-            }
-
-            player.Cryptographer.Decrypt(buffer, length);
-            player.InboundPackets.Append(buffer.AsSpan(0, length));
-
-            while (true)
-            {
-                TqPacketDecodeStatus status = player.InboundPackets.TryRead(
-                    out byte[]? packet,
-                    out TqPacketStreamError error);
-
-                if (status == TqPacketDecodeStatus.NeedMoreData)
-                    return;
-
-                if (status == TqPacketDecodeStatus.InvalidData)
-                {
-                    Log.Warning("Invalid TQ auth stream ({Error}) from {IP}", error, session.IP);
-                    player.Disconnect();
-                    return;
-                }
-
-                ushort len = BitConverter.ToUInt16(packet!, 0);
-                ushort id = BitConverter.ToUInt16(packet!, 2);
-                Log.Debug("Auth packet: Length={Len}, ID={ID}", len, id);
-
-                if (len != 312)
-                    continue;
-
-                player.Info = new Network.AuthPackets.Authentication();
-                player.Info.Deserialize(packet!);
-                // Awaited, not blocked: the account lookup is a database round-trip and this
-                // runs on the auth session's packet-processing loop.
-                player.Account = await AccountTable.CreateAsync(player.Info.Username);
-
-                if (!BruteForceProtection.AcceptJoin(session.IP))
-                {
-                    Log.Warning("Brute force protection blocked login from {IP} for user {Username}", session.IP, player.Info.Username);
-                    BruteForceProtection.ClientRegistred(session.IP);
-                    var blocked = new Network.AuthPackets.Forward { Type = Network.AuthPackets.Forward.ForwardType.InvalidInfo };
-                    player.Send(blocked);
-                    return;
-                }
-
-                var forward = new Network.AuthPackets.Forward();
-                if (player.Account.Password == player.Info.Password && player.Account.Exists)
-                {
-                    Log.Information("Auth login success: {Username} from {IP}", player.Account.Username, session.IP);
-                    forward.Type = Network.AuthPackets.Forward.ForwardType.Ready;
-                }
-                else
-                {
-                    Log.Warning("Auth login failed: invalid credentials for {Username} from {IP} (Password match: {PwdMatch}, Account exists: {Exists})",
-                        player.Info.Username, session.IP,
-                        player.Account.Password == player.Info.Password,
-                        player.Account.Exists);
-                    BruteForceProtection.ClientRegistred(session.IP);
-                    forward.Type = Network.AuthPackets.Forward.ForwardType.InvalidInfo;
-                }
-
-                if (Nyx.Server.Database.IPBan.IsBanned(session.IP))
-                {
-                    Log.Warning("IP banned: {IP}", session.IP);
-                    forward.Type = Network.AuthPackets.Forward.ForwardType.Banned;
-                    player.Send(forward);
-                    return;
-                }
-
-                if (forward.Type == Network.AuthPackets.Forward.ForwardType.Ready)
-                {
-                    forward.Identifier = player.Account.GenerateKey();
-                    Kernel.AwaitingPool[forward.Identifier] = player.Account;
-                    forward.IP = GameIP;
-                    forward.Port = GamePort;
-
-                    Log.Information("Forwarding client to game server: {IP}:{Port} with identifier {Identifier}", forward.IP, forward.Port, forward.Identifier);
-                }
-
-                player.Send(forward);
-                Log.Debug("Forward packet sent to client {IP}", session.IP);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error in AuthServer_OnClientReceiveAsync");
-            session.Disconnect();
         }
     }
 

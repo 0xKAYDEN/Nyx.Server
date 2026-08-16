@@ -63,7 +63,10 @@
     "PrometheusPort": 9090
   },
   "Serilog": {
-    "Using": ["Serilog.Sinks.Console", "Serilog.Sinks.File"],
+    "Using": [
+      "Serilog.Sinks.Console",
+      "Serilog.Sinks.File"
+    ],
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
@@ -89,6 +92,16 @@
         }
       }
     ],
-    "Enrich": ["FromLogContext", "WithMachineName", "WithThreadId"]
+    "Enrich": [
+      "FromLogContext",
+      "WithMachineName",
+      "WithThreadId"
+    ]
+  },
+  "Auth": {
+    "PasswordSeed": 3721,
+    "MaxFailedAttempts": 5,
+    "AttemptDecaySeconds": 30,
+    "TicketTtlSeconds": 90
   }
 }
