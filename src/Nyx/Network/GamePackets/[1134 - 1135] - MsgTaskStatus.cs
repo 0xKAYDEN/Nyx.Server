@@ -282,7 +282,7 @@ namespace Nyx.Server
             writer.Write((byte)src.Count);
             foreach (var quest in src.Values) quest.WriteItem(writer);
 
-            string sql = "UPDATE quests SET quests = @quests WHERE UID = @uid";
+            string sql = "UPDATE quests SET quests = @quests WHERE \"UID\" = @uid";
             byte[] raw = ms.ToArray();
 
             using var conn = DataHolder.MySqlConnection;

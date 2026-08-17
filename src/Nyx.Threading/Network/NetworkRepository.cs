@@ -26,20 +26,39 @@ namespace Nyx.Threading.Network
         /// <summary>
         /// Enqueues a packet processing task for a specific session.
         /// </summary>
-        public ValueTask EnqueuePacketAsync(GameSession session, byte[] packet, Func<GameSession, byte[], CancellationToken, ValueTask> handler)
+        public async ValueTask EnqueuePacketAsync(
+            GameSession session,
+            byte[] packet,
+            Func<GameSession, byte[], CancellationToken, ValueTask> handler)
         {
-            return EnqueueTaskAsync(
-                (session, packet, handler),
+            // Queue admission alone is not packet completion. Await the actual handler so the
+            // per-session channel consumer cannot finish and trigger disconnect cleanup while its
+            // final routed packet is still pending in a network container.
+            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            await EnqueueTaskAsync(
+                (session, packet, handler, completion),
                 async (state, ct) =>
                 {
-                    await state.handler(state.session, state.packet, ct);
+                    try
+                    {
+                        await state.handler(state.session, state.packet, ct).ConfigureAwait(false);
+                        state.completion.TrySetResult();
+                    }
+                    catch (OperationCanceledException ex)
+                    {
+                        state.completion.TrySetCanceled(ex.CancellationToken);
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        state.completion.TrySetException(ex);
+                        throw;
+                    }
                 },
-                static state =>
-                {
-                    // Release packet buffer if needed
-                    // The packet is usually pooled, so we could return it here
-                }
-            );
+                static state => state.completion.TrySetCanceled()
+            ).ConfigureAwait(false);
+
+            await completion.Task.ConfigureAwait(false);
         }
 
         /// <summary>

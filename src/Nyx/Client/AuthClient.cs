@@ -2,6 +2,7 @@ using System;
 using Nyx.Network.Cryptography;
 using System.Net.Sockets;
 using Nyx.Network;
+using Nyx.Network.Protocol;
 
 namespace Nyx.Server.Client
 {
@@ -13,6 +14,7 @@ namespace Nyx.Server.Client
         public Game.Entity Entity;
         public AuthCryptography Cryptographer;
         public int PasswordSeed;
+        public TqPacketStreamDecoder InboundPackets { get; } = new(TqPacketFraming.Authentication);
         
         // Expose session properties for compatibility
         public string IP => _session?.IP ?? string.Empty;
@@ -29,10 +31,16 @@ namespace Nyx.Server.Client
         {
             if (_session == null || !_session.Alive) return;
             
-            byte[] _buffer = new byte[buffer.Length];
-            Buffer.BlockCopy(buffer, 0, _buffer, 0, buffer.Length);
-            Cryptographer.Encrypt(_buffer, _buffer.Length);
-            _session.Send(_buffer);
+            byte[] encrypted = GC.AllocateUninitializedArray<byte>(buffer.Length);
+            Buffer.BlockCopy(buffer, 0, encrypted, 0, buffer.Length);
+
+            // AuthCryptography is stateful. Keep encryption and queue insertion in one critical
+            // section so concurrent replies cannot reverse the cipher stream order.
+            lock (Cryptographer)
+            {
+                Cryptographer.Encrypt(encrypted, encrypted.Length);
+                _session.Send(encrypted);
+            }
         }
         
         public void Send(Interfaces.IPacket buffer)
@@ -42,6 +50,7 @@ namespace Nyx.Server.Client
         
         public void Disconnect()
         {
+            InboundPackets.Dispose();
             _session?.Disconnect();
         }
         

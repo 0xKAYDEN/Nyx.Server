@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nyx.Network;
 using Nyx.Network.Cryptography;
+using Nyx.Network.Protocol;
 using Nyx.Server.Caching;
 using Nyx.Server.Client;
 using Nyx.Server.Database;
@@ -19,6 +20,7 @@ using Nyx.Server.Loading;
 using Nyx.Server.Network;
 using Nyx.Server.Network.GamePackets;
 using Nyx.Server.Network.GamePackets.Union;
+using Nyx.Server.Network.Dispatching;
 using Nyx.Server.Network.Sockets;
 using Nyx.Server.Scripts.DynamicItems;
 using Nyx.Server.Scripts.DynamicMonsters;
@@ -89,7 +91,7 @@ public sealed class Program
     public static IRedisService? Redis { get; private set; }
     public static IDatabaseService? Database { get; private set; }
     public static Services.NyxBrainIntegrationService? BrainService { get; private set; }
-    
+
     // Network configuration
     public static string GameIP = "0.0.0.0";
     public static ushort GamePort = 5816;
@@ -172,13 +174,13 @@ public sealed class Program
             var uptime = _serverUptime.Elapsed;
             var uptimeStr = $"{uptime.Days}d {uptime.Hours}h {uptime.Minutes}m {uptime.Seconds}s";
             var onlineClients = GetOnlineClientSnapshot();
-            
+
             // Get performance metrics
             var process = System.Diagnostics.Process.GetCurrentProcess();
             var ramMB = process.WorkingSet64 / (1024.0 * 1024.0);
             var cpuUsage = GetCpuUsage(process);
             var networkStats = GetNetworkStats();
-            
+
             var title = $"Nyx Server | Players: {onlineClients.Length} | RAM: {ramMB:F0}MB | CPU: {cpuUsage:F1}% | {networkStats} | Uptime: {uptimeStr}";
             Console.Title = title;
         }
@@ -188,7 +190,7 @@ public sealed class Program
             Console.Title = $">>>Nyx Server - Players: {GetOnlineClientSnapshot().Length}<<<";
         }
     }
-    
+
     private static double GetCpuUsage(System.Diagnostics.Process proc)
     {
         try
@@ -207,7 +209,7 @@ public sealed class Program
             return 0;
         }
     }
-    
+
     private static string GetNetworkStats()
     {
         var nowTicks = Environment.TickCount64;
@@ -221,10 +223,10 @@ public sealed class Program
             var networkInterfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
             long totalReceived = 0;
             long totalSent = 0;
-            
+
             foreach (var ni in networkInterfaces)
             {
-                if (ni.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up && 
+                if (ni.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up &&
                     ni.NetworkInterfaceType != System.Net.NetworkInformation.NetworkInterfaceType.Loopback)
                 {
                     var stats = ni.GetIPStatistics();
@@ -232,7 +234,7 @@ public sealed class Program
                     totalSent += (long)stats.BytesSent;
                 }
             }
-            
+
             var recvMB = totalReceived / (1024.0 * 1024.0);
             var sentMB = totalSent / (1024.0 * 1024.0);
             _cachedNetworkStats = $"Net: ↓{recvMB:F0}MB ↑{sentMB:F0}MB";
@@ -245,7 +247,7 @@ public sealed class Program
         Volatile.Write(ref _cachedNetworkStatsUpdatedAtTicks, nowTicks);
         return _cachedNetworkStats;
     }
-    
+
     private static void StartPerformanceMonitoring()
     {
         if (!OperatingSystem.IsWindows() || !Environment.UserInteractive)
@@ -353,7 +355,7 @@ public sealed class Program
         configuration.GetSection("HealthChecks")?.Bind(serverConfig.HealthChecks);
         configuration.GetSection("Telemetry")?.Bind(serverConfig.Telemetry);
         configuration.GetSection("Combat")?.Bind(serverConfig.Combat);
-        
+
         // Store ports for later use
         GamePort = (ushort)serverConfig.Server.GamePort;
         AuthPort = (ushort)serverConfig.Server.AuthPort;
@@ -378,7 +380,7 @@ public sealed class Program
         services.AddSingleton<IDatabaseService, DatabaseService>();
         services.AddSingleton<IRedisService, RedisService>();
         services.AddSingleton<IDataLoader, PartitionedDataLoader>();
-        
+
         // Register Network Services
         services.AddSingleton<Nyx.Network.AuthNetworkService>();
         services.AddSingleton<Nyx.Network.GameNetworkService>();
@@ -446,10 +448,10 @@ public sealed class Program
 
         // Nyx.Threading must be ready before World timers and packet routing
         ThreadingController.EnsureInitialized();
-        PacketProcessor.Initialize();
+        GamePacketDispatcher.Initialize();
 
         World = new World();
-        
+
         try
         {
             EntityTable.Load();
@@ -463,7 +465,7 @@ public sealed class Program
             MonsterInformation.Load();
             Map.CreateTimerFactories();
             Screen.CreateTimerFactories();
-            
+
             MapsTable.Load();
             Log.Information("MapsTable.Load: {Count} map definitions", MapsTable.MapInformations.Count);
         }
@@ -486,7 +488,7 @@ public sealed class Program
         Database = ApplicationHost.Services.GetRequiredService<IDatabaseService>();
         Redis = ApplicationHost.Services.GetRequiredService<IRedisService>();
         DataLoader = ApplicationHost.Services.GetRequiredService<IDataLoader>();
-        
+
         // Resolve Brain integration service (optional - may not be available yet)
         try
         {
@@ -500,7 +502,7 @@ public sealed class Program
         {
             Log.Warning(ex, "Nyx.Brain service not available");
         }
-        
+
         // Load essential item information before any item operations
         try
         {
@@ -511,7 +513,7 @@ public sealed class Program
         {
             Log.Warning(ex, "ConquerItemInformation.Load failed - item rankings may not work");
         }
-        
+
         // Load IP ban list
         try
         {
@@ -578,14 +580,14 @@ public sealed class Program
             ChiTable.LoadAllChi();
             InnerPowerTable.LoadDBInformation();
             InnerPowerTable.Load();
-            
+
             // Item & Economy
             ConquerItemInformation.Load();
             ShopFile.Load();
             EShopFile.Load();
             EShopV2File.Load();
             Flowers.LoadFlowers();
-            
+
             // Server Variables (Entity ID 0)
             EntityVariableTable.Load(0, out var vars);
             Vars = vars;
@@ -607,17 +609,17 @@ public sealed class Program
             var monsterManager = ApplicationHost!.Services.GetRequiredService<MonsterManager>();
             monsterManager.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
             World.SetMonsterManager(monsterManager);
-            
+
             Log.Information("Phase 2: MonsterManager wired (lazy load + 20 TPS AI tick)");
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "Phase 2: Failed to wire MonsterManager — monsters will not be lazy-loaded");
         }
-        
+
         // Initialize brute force protection
         BruteForceProtection.CreatePoll();
-        
+
         // Initialize cryptography
         AuthCryptography.PrepareAuthCryptography();
 
@@ -629,10 +631,10 @@ public sealed class Program
         {
             Log.Warning(ex, "Failed to preload essential data - continuing without preloaded data");
         }
-        
+
         // Initialize Network Services
         InitializeNetworkServices();
-        
+
         // Start performance monitoring (updates console title)
         _serverUptime.Start();
         StartPerformanceMonitoring();
@@ -644,38 +646,26 @@ public sealed class Program
             ThreadingController.GameLogicShardCount);
         Log.Information("Network services: Auth on port {AuthPort}, Game on port {GamePort}", AuthPort, GamePort);
     }
-    
+
     private static void InitializeNetworkServices()
     {
         Log.Information("Initializing network services...");
-        
+
         // Initialize Auth Network Service
         var authService = ApplicationHost!.Services.GetRequiredService<Nyx.Network.AuthNetworkService>();
         authService.Configure(AuthPort);
-        authService.OnSessionConnected += (session) =>
-        {
-            // Directly use GameSession without ClientWrapper
-            AuthServer_OnClientConnect(session);
-            
-            // Start processing packets from the session
-            _ = ProcessAuthSessionPacketsAsync(session);
-        };
+        authService.OnSessionConnected += AuthServer_OnClientConnect;
+        authService.SessionPacketProcessor = ProcessAuthSessionPacketsAsync;
 
         // Socket teardown -> auth-state teardown. This subscription was missing, so
         // AuthServer_OnClientDisconnect was dead code and auth sessions were never released.
         authService.OnSessionDisconnected += AuthServer_OnClientDisconnect;
-        
-        // Initialize Game Network Service  
+
+        // Initialize Game Network Service
         var gameService = ApplicationHost!.Services.GetRequiredService<Nyx.Network.GameNetworkService>();
-        gameService.Configure(GamePort, System.Text.Encoding.Default.GetBytes(Constants.GameCryptographyKey));
-        gameService.OnSessionConnected += (session) =>
-        {
-            // Register with game logic (sets up GameClient and sends DH packet)
-            GameServer_OnClientConnect(session);
-            
-            // Start processing packets from the session
-            _ = ProcessGameSessionPacketsAsync(session);
-        };
+        gameService.Configure(GamePort);
+        gameService.OnSessionConnected += GameServer_OnClientConnect;
+        gameService.SessionPacketProcessor = ProcessGameSessionPacketsAsync;
 
         // Socket teardown -> game-state teardown.
         //
@@ -686,19 +676,16 @@ public sealed class Program
         // the per-connection handler, so it fires for every termination path (clean close,
         // socket error, idle reap, and server shutdown).
         gameService.OnSessionDisconnected += GameServer_OnClientDisconnect;
-        
+
         Log.Information("Network services initialized successfully");
     }
-    
+
     private static async Task ProcessAuthSessionPacketsAsync(Nyx.Network.GameSession session)
     {
         try
         {
             await foreach (var packet in session.Channel.Reader.ReadAllAsync())
-            {
-                if (!session.Alive) return;
                 await AuthServer_OnClientReceiveAsync(packet, packet.Length, session);
-            }
         }
         catch (OperationCanceledException)
         {
@@ -710,7 +697,7 @@ public sealed class Program
             session.Disconnect();
         }
     }
-    
+
     private static async Task ProcessGameSessionPacketsAsync(Nyx.Network.GameSession session)
     {
         try
@@ -718,13 +705,19 @@ public sealed class Program
             Log.Information("Starting packet processing for {IP}", session.IP);
             await foreach (var packet in session.Channel.Reader.ReadAllAsync())
             {
-                if (!session.Alive)
-                {
-                    Log.Warning("Session not alive for {IP}, stopping packet processing", session.IP);
-                    return;
-                }
-                Log.Debug("Received packet of {Length} bytes from {IP}", packet.Length, session.IP);
+                // Keep the connector reference across dispatch. Disconnecting a fully loaded player
+                // clears session.Connector during ShutDown(), so looking it up only after dispatch
+                // misses the disconnected state and processes another already-queued TCP chunk.
+                if (session.Connector is not Client.GameClient client)
+                    break;
+
+                Log.Debug("Received encrypted chunk of {Length} bytes from {IP}", packet.Length, session.IP);
                 await GameServer_OnClientReceiveAsync(packet, packet.Length, session);
+
+                // A protocol rejection closes the session and may leave already-queued TCP chunks.
+                // Stop at that boundary instead of feeding them into disposed packet/client state.
+                if (client.Disconnected)
+                    break;
             }
             Log.Information("Packet processing ended for {IP}", session.IP);
         }
@@ -738,9 +731,9 @@ public sealed class Program
             session.Disconnect();
         }
     }
-    
+
     #region Network Handler Methods
-    
+
     private static void GameServer_OnClientConnect(Nyx.Network.GameSession session)
     {
         Log.Information("Client connected: {IP}", session.IP);
@@ -749,7 +742,7 @@ public sealed class Program
         client.Send(client.DHKeyExchange.CreateServerKeyPacket());
         session.Connector = client;
     }
-    
+
     private static void GameServer_OnClientDisconnect(Nyx.Network.GameSession session)
     {
         if (session.Connector != null)
@@ -764,7 +757,7 @@ public sealed class Program
             session.Disconnect();
         }
     }
-    
+
     private static async Task GameServer_OnClientReceiveAsync(byte[] buffer, int length, Nyx.Network.GameSession session)
     {
         try
@@ -777,72 +770,47 @@ public sealed class Program
             }
 
             Client.GameClient client = session.Connector as Client.GameClient;
+            if (client == null || client.Disconnected)
+                return;
 
             if (client.Exchange)
             {
-                Log.Information("Processing Handshake: Received {Length} bytes from {IP}", length, client.IP);
+                Log.Debug("Processing handshake bytes: received {Length} from {IP}", length, client.IP);
+
+                // Keep the original patch-6323 behavior: decrypt the client DH stream with a
+                // default-key receive cipher independent of the cipher that encrypted the server
+                // response. The fixed 140-byte key record follows a variable envelope, so the
+                // accumulator locates its validated structure instead of treating offset zero as
+                // the public-key length. Persisting this cipher also supports fragmented TCP reads.
+                GameCryptography handshakeCryptography = client.HandshakeCryptography
+                    ?? throw new InvalidOperationException("Handshake cipher is unavailable before key exchange completion.");
+                handshakeCryptography.Decrypt(buffer, length);
+                if (!client.TryAppendHandshake(buffer, length, out byte[] handshake, out byte[] trailingBytes))
+                    return;
+
+                int pos = 0;
+                int publicKeyLength = BitConverter.ToInt32(handshake, pos);
+                pos += sizeof(int);
+                if (publicKeyLength != 128)
+                {
+                    Log.Error("Handshake public key length invalid: {Length} from {IP}", publicKeyLength, client.IP);
+                    client.Disconnect();
+                    return;
+                }
+
+                string publicKey = System.Text.Encoding.ASCII.GetString(handshake, pos, publicKeyLength);
+                client.Cryptography = client.DHKeyExchange.HandleClientKeyPacket(publicKey, client.Cryptography);
+                handshakeCryptography.Dispose();
+                client.HandshakeCryptography = null;
                 client.Exchange = false;
                 client.Action = 1;
 
-                var crypto = new GameCryptography(System.Text.Encoding.Default.GetBytes(Constants.GameCryptographyKey));
-                byte[] otherData = new byte[length];
-                Array.Copy(buffer, otherData, length);
-                crypto.Decrypt(otherData, length);
+                Log.Information("Handshake successful; keys exchanged for {IP}", client.IP);
 
-                bool extra = false;
-                int pos = 0;
-
-                if (length < 140)
-                {
-                    Log.Error("Handshake packet too short: {Length} bytes from {IP}. Expected >= 140.", length, client.IP);
-                    Log.Error("First 20 bytes: {Data}", BitConverter.ToString(otherData, 0, Math.Min(20, length)));
-                    client.Disconnect();
-                    return;
-                }
-
-                if (BitConverter.ToInt32(otherData, length - 140) == 128)
-                {
-                    pos = length - 140;
-                }
-                else if (length >= 176 && BitConverter.ToInt32(otherData, length - 176) == 128)
-                {
-                    pos = length - 176;
-                    extra = true;
-                }
-                else
-                {
-                    Log.Error("Handshake validation failed. Header not found at expected offsets. Length: {Length} from {IP}", length, client.IP);
-                    Log.Error("Bytes at length-140: {Val1}, Bytes at length-176: {Val2}", 
-                        length >= 140 ? BitConverter.ToInt32(otherData, length - 140) : -1,
-                        length >= 176 ? BitConverter.ToInt32(otherData, length - 176) : -1);
-                    Log.Error("Last 20 bytes: {Data}", BitConverter.ToString(otherData, Math.Max(0, length - 20), Math.Min(20, length)));
-                    client.Disconnect();
-                    return;
-                }
-
-                int len = BitConverter.ToInt32(otherData, pos); pos += 4;
-                if (len != 128)
-                {
-                    Log.Error("Handshake Public Key Length Invalid: {Length}", len);
-                    client.Disconnect();
-                    return;
-                }
-                
-                byte[] pubKey = new byte[128];
-                for (int x = 0; x < len; x++, pos++) pubKey[x] = otherData[pos];
-
-                string pubKeyStr = System.Text.Encoding.Default.GetString(pubKey);
-                client.Cryptography = client.DHKeyExchange.HandleClientKeyPacket(pubKeyStr, client.Cryptography);
-
-                Log.Information("Handshake Successful! Keys exchanged for {IP}", client.IP);
-
-                if (extra)
-                {
-                    // Process the extra data as a packet
-                    byte[] data = new byte[36];
-                    Buffer.BlockCopy(otherData, length - 36, data, 0, 36);
-                    await ProcessDecryptedPacketAsync(data, client);
-                }
+                // Some clients coalesce the first 36-byte game packet with the DH response. Those
+                // bytes were encrypted under the old key and have already been decrypted above.
+                if (trailingBytes.Length != 0)
+                    await ProcessPlaintextDataAsync(trailingBytes, trailingBytes.Length, client);
             }
             else
             {
@@ -852,82 +820,22 @@ public sealed class Program
         catch (Exception ex)
         {
             Log.Error(ex, "Error in GameServer_OnClientReceive. Length: {Length}", length);
-            session.Disconnect();
+            if (session.Connector is Client.GameClient client)
+                client.Disconnect();
+            else
+                session.Disconnect();
         }
     }
-    
-    /// <summary>
-    /// Upper bound on decrypted bytes held per connection while waiting for a packet to complete.
-    /// Comfortably above the 8192-byte maximum packet size.
-    /// </summary>
-    private const int MaxPendingPacketBytes = 16384;
 
     private static async Task ProcessEncryptedDataAsync(byte[] buffer, int length, Client.GameClient client)
     {
         try
         {
-            // Decrypt in place. The cipher is stateful and stream-ordered, so every received byte
-            // must be decrypted exactly once, in arrival order -- including bytes that turn out to
-            // belong to a packet that is still incomplete.
+            // CAST5 is stream ordered: decrypt every byte exactly once before passing it to the
+            // incremental frame decoder. The decoder retains torn tails and emits all coalesced
+            // frames without guessing at TCP read boundaries.
             client.Cryptography.Decrypt(buffer, length);
-
-            // Prepend the plaintext tail left over from the previous read, so a packet split across
-            // two socket reads is reassembled instead of dropped.
-            var data = client.CombineWithRemainder(buffer, length, out int available);
-
-            // Frame packets from decrypted data
-            // TQ format: [Length:2][Data:Length-4][Seal:8]
-            // The Length field does NOT include the 8-byte seal
-            const int SealSize = 8;
-            int offset = 0;
-            while (offset + 2 <= available)
-            {
-                ushort packetLen = BitConverter.ToUInt16(data, offset);
-                
-                // Validate packet length
-                if (packetLen < 4 || packetLen > 8192)
-                {
-                    // A bad length means the stream is no longer trustworthy: either the cipher is
-                    // out of sync or the peer is malicious. Framing cannot resynchronise, so drop
-                    // the connection rather than resume at a guessed offset.
-                    Log.Warning("Invalid packet length {Length} at offset {Offset} from {Name}", packetLen, offset, client.Entity?.Name ?? "Unknown");
-                    client.SaveReceiveRemainder(data, 0, 0);
-                    client.Disconnect();
-                    return;
-                }
-                
-                // Total size = packet length + seal (8 bytes)
-                int totalSize = packetLen + SealSize;
-                
-                if (offset + totalSize > available)
-                {
-                    // Incomplete packet: keep the tail and wait for the rest of it.
-                    break;
-                }
-                
-                // Extract packet INCLUDING seal
-                byte[] packet = new byte[totalSize];
-                Buffer.BlockCopy(data, offset, packet, 0, totalSize);
-                
-                // Process the framed packet
-                await ProcessDecryptedPacketAsync(packet, client);
-                
-                offset += totalSize;
-            }
-
-            // Carry the unconsumed tail (if any) into the next read.
-            int remaining = available - offset;
-            if (remaining > MaxPendingPacketBytes)
-            {
-                // Guard against a peer that sends a valid-looking header and then stalls, pinning
-                // memory per connection indefinitely.
-                Log.Warning("Reassembly buffer overflow ({Bytes} bytes) from {Name}", remaining, client.Entity?.Name ?? "Unknown");
-                client.SaveReceiveRemainder(data, 0, 0);
-                client.Disconnect();
-                return;
-            }
-
-            client.SaveReceiveRemainder(data, offset, remaining);
+            await ProcessPlaintextDataAsync(buffer, length, client);
         }
         catch (Exception ex)
         {
@@ -935,12 +843,39 @@ public sealed class Program
             client.Disconnect();
         }
     }
-    
+
+    private static async Task ProcessPlaintextDataAsync(byte[] buffer, int length, Client.GameClient client)
+    {
+        client.InboundPackets.Append(buffer.AsSpan(0, length));
+
+        while (true)
+        {
+            TqPacketDecodeStatus status = client.InboundPackets.TryRead(
+                out byte[]? packet,
+                out TqPacketStreamError error);
+
+            if (status == TqPacketDecodeStatus.NeedMoreData)
+                return;
+
+            if (status == TqPacketDecodeStatus.InvalidData)
+            {
+                Log.Warning(
+                    "Invalid TQ game stream ({Error}) from {Name}",
+                    error,
+                    client.Entity?.Name ?? "Unknown");
+                client.Disconnect();
+                return;
+            }
+
+            await ProcessDecryptedPacketAsync(packet!, client);
+        }
+    }
+
     private static async Task ProcessDecryptedPacketAsync(byte[] data, Client.GameClient client)
     {
         try
         {
-            if (data.Length < 2)
+            if (data.Length < TqPacketProtocol.HeaderSize)
             {
                 Log.Warning("Invalid packet size: {Length} bytes from {Name}", data.Length, client.Entity?.Name ?? "Unknown");
                 return;
@@ -965,17 +900,19 @@ public sealed class Program
         if (session.Connector is not Client.GameClient client)
             return;
 
-        ushort packetId = packet.Length >= 2 ? BitConverter.ToUInt16(packet, 2) : (ushort)0;
+        ushort packetId = packet.Length >= TqPacketProtocol.HeaderSize
+            ? BitConverter.ToUInt16(packet, 2)
+            : (ushort)0;
         try
         {
-            await PacketHandler.HandlePacket(packet, client);
+            await GamePacketDispatcher.DispatchAsync(client, packet, ct);
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error handling routed packet ID {ID} from {Name}", packetId, client.Entity?.Name ?? "Unknown");
         }
     }
-    
+
     private static void AuthServer_OnClientConnect(Nyx.Network.GameSession session)
     {
         Log.Information("Auth client connected: {IP}", session.IP);
@@ -987,20 +924,23 @@ public sealed class Program
         authState.PasswordSeed = pcs.Seed;
         authState.Send(pcs);
     }
-    
+
     private static void AuthServer_OnClientDisconnect(Nyx.Network.GameSession session)
     {
         Log.Information("Auth client disconnected: {IP}", session.IP);
-        session.Disconnect();
+        if (session.Connector is Client.AuthClient client)
+            client.Disconnect();
+        else
+            session.Disconnect();
     }
-    
+
     private static async Task AuthServer_OnClientReceiveAsync(byte[] buffer, int length, Nyx.Network.GameSession session)
     {
         try
         {
             Log.Debug("Auth server received {Length} bytes from {IP}", length, session.IP);
             var player = session.Connector as Client.AuthClient;
-            
+
             if (player == null)
             {
                 Log.Warning("Auth client wrapper is null for {IP}", session.IP);
@@ -1008,96 +948,83 @@ public sealed class Program
                 return;
             }
 
-            // Manual decryption for Auth
             player.Cryptographer.Decrypt(buffer, length);
+            player.InboundPackets.Append(buffer.AsSpan(0, length));
 
-            // Frame packets from decrypted data (TQ format: [Length:2][Data:Length-2])
-            int offset = 0;
-            while (offset + 2 <= length)
+            while (true)
             {
-                ushort packetLen = BitConverter.ToUInt16(buffer, offset);
-                
-                // Validate packet length
-                if (packetLen < 4 || packetLen > 8192)
-                {
-                    Log.Warning("Invalid auth packet length {Length} at offset {Offset}", packetLen, offset);
-                    break;
-                }
-                
-                if (offset + packetLen > length)
-                {
-                    // Not enough data for complete packet
-                    break;
-                }
-                
-                // Extract packet
-                byte[] packet = new byte[packetLen];
-                Buffer.BlockCopy(buffer, offset, packet, 0, packetLen);
-                
-                // Process the framed packet
-                ushort len = BitConverter.ToUInt16(packet, 0);
-                ushort id = BitConverter.ToUInt16(packet, 2);
+                TqPacketDecodeStatus status = player.InboundPackets.TryRead(
+                    out byte[]? packet,
+                    out TqPacketStreamError error);
 
+                if (status == TqPacketDecodeStatus.NeedMoreData)
+                    return;
+
+                if (status == TqPacketDecodeStatus.InvalidData)
+                {
+                    Log.Warning("Invalid TQ auth stream ({Error}) from {IP}", error, session.IP);
+                    player.Disconnect();
+                    return;
+                }
+
+                ushort len = BitConverter.ToUInt16(packet!, 0);
+                ushort id = BitConverter.ToUInt16(packet!, 2);
                 Log.Debug("Auth packet: Length={Len}, ID={ID}", len, id);
 
-                if (len == 312)
+                if (len != 312)
+                    continue;
+
+                player.Info = new Network.AuthPackets.Authentication();
+                player.Info.Deserialize(packet!);
+                // Awaited, not blocked: the account lookup is a database round-trip and this
+                // runs on the auth session's packet-processing loop.
+                player.Account = await AccountTable.CreateAsync(player.Info.Username);
+
+                if (!BruteForceProtection.AcceptJoin(session.IP))
                 {
-                    player.Info = new Network.AuthPackets.Authentication();
-                    player.Info.Deserialize(packet);
-                    // Awaited, not blocked: the account lookup is a database round-trip and this
-                    // runs on the auth session's packet-processing loop.
-                    player.Account = await AccountTable.CreateAsync(player.Info.Username);
-                    
-                    // Check brute force protection
-                    if (!BruteForceProtection.AcceptJoin(session.IP))
-                    {
-                        Log.Warning("Brute force protection blocked login from {IP} for user {Username}", session.IP, player.Info.Username);
-                        BruteForceProtection.ClientRegistred(session.IP);
-                        var fw = new Network.AuthPackets.Forward { Type = Network.AuthPackets.Forward.ForwardType.InvalidInfo };
-                        player.Send(fw);
-                        return;
-                    }
-                    
-                    Network.AuthPackets.Forward Fw = new Network.AuthPackets.Forward();
-                    if (player.Account.Password == player.Info.Password && player.Account.Exists)
-                    {
-                        Log.Information("Auth login success: {Username} from {IP}", player.Account.Username, session.IP);
-                        Fw.Type = Network.AuthPackets.Forward.ForwardType.Ready;
-                    }
-                    else
-                    {
-                        Log.Warning("Auth login failed: invalid credentials for {Username} from {IP} (Password match: {PwdMatch}, Account exists: {Exists})", 
-                            player.Info.Username, session.IP, 
-                            player.Account.Password == player.Info.Password, 
-                            player.Account.Exists);
-                        BruteForceProtection.ClientRegistred(session.IP);
-                        Fw.Type = Network.AuthPackets.Forward.ForwardType.InvalidInfo;
-                    }
-                    
-                    // Check IP ban
-                    if (Nyx.Server.Database.IPBan.IsBanned(session.IP))
-                    {
-                        Log.Warning("IP banned: {IP}", session.IP);
-                        Fw.Type = Network.AuthPackets.Forward.ForwardType.Banned;
-                        player.Send(Fw);
-                        return;
-                    }
-                    
-                    if (Fw.Type == Network.AuthPackets.Forward.ForwardType.Ready)
-                    {
-                        Fw.Identifier = player.Account.GenerateKey();
-                        Kernel.AwaitingPool[Fw.Identifier] = player.Account;
-                        Fw.IP = GameIP;
-                        Fw.Port = GamePort;
-                        
-                        Log.Information("Forwarding client to game server: {IP}:{Port} with identifier {Identifier}", Fw.IP, Fw.Port, Fw.Identifier);
-                    }
-                    
-                    player.Send(Fw);
-                    Log.Debug("Forward packet sent to client {IP}", session.IP);
+                    Log.Warning("Brute force protection blocked login from {IP} for user {Username}", session.IP, player.Info.Username);
+                    BruteForceProtection.ClientRegistred(session.IP);
+                    var blocked = new Network.AuthPackets.Forward { Type = Network.AuthPackets.Forward.ForwardType.InvalidInfo };
+                    player.Send(blocked);
+                    return;
                 }
-                
-                offset += packetLen;
+
+                var forward = new Network.AuthPackets.Forward();
+                if (player.Account.Password == player.Info.Password && player.Account.Exists)
+                {
+                    Log.Information("Auth login success: {Username} from {IP}", player.Account.Username, session.IP);
+                    forward.Type = Network.AuthPackets.Forward.ForwardType.Ready;
+                }
+                else
+                {
+                    Log.Warning("Auth login failed: invalid credentials for {Username} from {IP} (Password match: {PwdMatch}, Account exists: {Exists})",
+                        player.Info.Username, session.IP,
+                        player.Account.Password == player.Info.Password,
+                        player.Account.Exists);
+                    BruteForceProtection.ClientRegistred(session.IP);
+                    forward.Type = Network.AuthPackets.Forward.ForwardType.InvalidInfo;
+                }
+
+                if (Nyx.Server.Database.IPBan.IsBanned(session.IP))
+                {
+                    Log.Warning("IP banned: {IP}", session.IP);
+                    forward.Type = Network.AuthPackets.Forward.ForwardType.Banned;
+                    player.Send(forward);
+                    return;
+                }
+
+                if (forward.Type == Network.AuthPackets.Forward.ForwardType.Ready)
+                {
+                    forward.Identifier = player.Account.GenerateKey();
+                    Kernel.AwaitingPool[forward.Identifier] = player.Account;
+                    forward.IP = GameIP;
+                    forward.Port = GamePort;
+
+                    Log.Information("Forwarding client to game server: {IP}:{Port} with identifier {Identifier}", forward.IP, forward.Port, forward.Identifier);
+                }
+
+                player.Send(forward);
+                Log.Debug("Forward packet sent to client {IP}", session.IP);
             }
         }
         catch (Exception ex)
@@ -1106,7 +1033,7 @@ public sealed class Program
             session.Disconnect();
         }
     }
-    
+
     #endregion
 
     private static void Shutdown()

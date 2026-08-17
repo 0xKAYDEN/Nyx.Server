@@ -1182,7 +1182,7 @@ namespace Nyx.Server
                         AutoHunt AutoHunt = new AutoHunt();
                         AutoHunt.Action = AutoHunt.Mode.Start;
                         client.Entity.InAutoHunt = true;
-                        // PacketHandler.HandlePacket(AutoHunt.Encode(), client);  
+                        // GamePacketDispatcher.DispatchAsync(client, AutoHunt.Encode());
 
                     }
                 }

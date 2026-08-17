@@ -1,4 +1,3 @@
-using Nyx.Network.Core.Packets;
 using Nyx.Server.Utilities;
 
 namespace Nyx.Server.Network.GamePackets
@@ -147,73 +146,13 @@ namespace Nyx.Server.Network.GamePackets
             }
         }
 
-        //private uint[] _batch = Array.Empty<uint>();
-
-        ///// <summary>
-        ///// Batch of UIDs / values (used when dwExtraInfo indicates count)
-        ///// </summary>
-        //public uint[] Batch
-        //{
-        //    get => _batch;
-        //    set => _batch = value ?? Array.Empty<uint>();
-        //}
-
         public byte[] Encode()
         {
-            //PacketWriter writer = new PacketWriter();
-            //writer.Write(1009);
-            //writer.Write((uint)GameTime.Now.GetHashCode()); //4
-            //writer.Write(UID); //8 - 12
-            //writer.Write(dwParam); //12 - 16
-            //writer.BaseStream.Seek(20, SeekOrigin.Begin);
-            //writer.Write(ID); //20
-            //writer.BaseStream.Seek(26, SeekOrigin.Begin);
-            //writer.Write(dwExtraInfo); //26
-            //writer.Write(dwExtraInfo2); //30
-            //writer.Write(dwExtraInfo3); //34
-            //writer.BaseStream.Seek(91, SeekOrigin.Begin);
-            //writer.Write(dwParam2); //91
-
-            //foreach (uint item in _batch)
-            //{
-            //    writer.Write(item);
-            //}
-
-            //return writer.ToArray();
             return Buffer;
-
         }
 
         public void Deserialize(byte[] buffer)
         {
-            //PacketReader reader = new PacketReader(buffer);
-            //reader.ReadUInt16(); //lengh 0 - 2
-            //reader.ReadUInt16(); //id 2 - 4
-            //uint timestamp = reader.ReadUInt32(); // 4- 8
-            //UID = reader.ReadUInt32();
-            //dwParam = reader.ReadUInt32();
-            //reader.BaseStream.Seek(20, SeekOrigin.Begin);
-            //ID = reader.ReadByte();
-            //reader.BaseStream.Seek(26, SeekOrigin.Begin);
-            //dwExtraInfo = reader.ReadUInt32();
-            //dwExtraInfo2 = reader.ReadUInt32();
-            //dwExtraInfo3 = reader.ReadUInt32();
-            //reader.BaseStream.Seek(91, SeekOrigin.Begin);
-            //dwParam2 = reader.ReadUInt32();
-
-            //// Read Batch using dwExtraInfo as count
-            //if (dwExtraInfo > 0)
-            //{
-            //    _batch = new uint[dwExtraInfo];
-            //    for (int i = 0; i < dwExtraInfo; i++)
-            //    {
-            //        _batch[i] = reader.ReadUInt32();
-            //    }
-            //}
-            //else
-            //{
-            //    _batch = Array.Empty<uint>();
-            //}
             Buffer = buffer;
         }
         public void Send(Client.GameClient client)

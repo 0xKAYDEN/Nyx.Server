@@ -1,44 +1,39 @@
-using System;
-using System.Buffers.Binary;
-using System.Text;
-namespace Nyx.Server.Network.AuthPackets
+using Nyx.Network.Protocol;
+
+namespace Nyx.Server.Network.AuthPackets;
+
+public sealed class PasswordCryptographySeed : Interfaces.IPacket
 {
-    public class PasswordCryptographySeed : Interfaces.IPacket
+    private const ushort MessageId = (ushort)PacketType.MsgEncryptCode;
+    private const int PayloadSize = sizeof(int);
+
+    public int Seed { get; set; }
+
+    public void Deserialize(byte[] buffer)
     {
-        public int Seed { get; set; }
-
-        private const ushort PacketType = 1059;
-        private const ushort PacketLength = 8;
-
-        public PasswordCryptographySeed()
+        if (!TqPacket.TryParse(
+                buffer,
+                TqPacketFraming.Authentication,
+                TqPacketSeal.None,
+                out TqPacket packet,
+                out TqPacketValidationError error) ||
+            packet.Id != MessageId || packet.Payload.Length != PayloadSize)
         {
-            // You can initialize a random seed here if desired
-            Seed = 0;
+            throw new ArgumentException($"Invalid password-seed packet: {error}.", nameof(buffer));
         }
 
-        public void Deserialize(byte[] buffer)
-        {
-            if (buffer == null || buffer.Length < PacketLength)
-                throw new ArgumentException("Invalid packet buffer.", nameof(buffer));
-
-            Seed = BinaryPrimitives.ReadInt32LittleEndian(buffer.AsSpan(4, 4));
-        }
-
-        public byte[] Encode()
-        {
-            // Allocate exactly 8 bytes: [Len=2][Type=2][Seed=4]
-            Span<byte> buffer = stackalloc byte[PacketLength];
-            BinaryPrimitives.WriteUInt16LittleEndian(buffer, PacketLength);
-            BinaryPrimitives.WriteUInt16LittleEndian(buffer[2..], PacketType);
-            BinaryPrimitives.WriteInt32LittleEndian(buffer[4..], Seed);
-
-            // Return as byte[] for Send()
-            return buffer.ToArray();
-        }
-
-        public void Send(Client.GameClient client)
-        {
-            client.Send(Encode());
-        }
+        var reader = new TqPacketReader(packet.Payload.Span);
+        Seed = reader.ReadInt32();
     }
+
+    public byte[] Encode()
+    {
+        byte[] packet = GC.AllocateUninitializedArray<byte>(TqPacketProtocol.HeaderSize + PayloadSize);
+        var writer = new TqPacketWriter(packet, MessageId, TqPacketSeal.None);
+        writer.WriteInt32(Seed);
+        writer.Complete();
+        return packet;
+    }
+
+    public void Send(Client.GameClient client) => client.Send(Encode());
 }

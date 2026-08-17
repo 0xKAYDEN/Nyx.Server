@@ -3,14 +3,15 @@ using System.Buffers;
 using System.IO.Pipelines;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
-using Nyx.Network.Cryptography;
 
 namespace Nyx.Network;
 
 /// <summary>
 /// Represents a network session with a connected client.
-/// Handles packet framing, encryption, and connection lifecycle.
+/// Owns encrypted transport chunks, serialized outbound writes, and connection lifecycle.
+/// Protocol framing and encryption are deliberately handled above this transport boundary.
 /// 
 /// Thread Safety: This class is designed to be used from multiple threads.
 /// The Alive property uses volatile reads/writes for visibility.
@@ -21,24 +22,11 @@ public sealed class GameSession : IDisposable
     #region Constants
 
     /// <summary>
-    /// Minimum valid TQ packet size (length + id).
-    /// </summary>
-    private const int MinPacketSize = 4;
-
-    /// <summary>
-    /// Maximum valid TQ packet size to prevent memory attacks.
-    /// </summary>
-    private const int MaxPacketSize = 1024;
-
-    /// <summary>
-    /// Size of the TQClient seal appended to packets.
-    /// </summary>
-    private const int SealSize = 8;
-
-    /// <summary>
-    /// Buffer size for socket reads.
+    /// Buffer size requested from the receive PipeWriter.
     /// </summary>
     private const int SocketBufferSize = 2048;
+    private const int InboundChunkCapacity = 256;
+    private const int OutboundFrameCapacity = 1024;
 
     #endregion
 
@@ -54,6 +42,13 @@ public sealed class GameSession : IDisposable
     /// </summary>
     private volatile bool _alive = true;
 
+    /// <summary>
+    /// Serializes all writes for this socket. TCP is ordered, but overlapping SendAsync calls are
+    /// not a message queue and can otherwise interleave or reorder packet fragments.
+    /// </summary>
+    private readonly Channel<byte[]> _outbound;
+    private readonly CancellationTokenSource _lifetime = new();
+
     #endregion
 
     #region Properties
@@ -64,14 +59,9 @@ public sealed class GameSession : IDisposable
     public Socket Socket { get; }
 
     /// <summary>
-    /// Channel for receiving parsed packets from the network layer.
+    /// Channel for receiving ordered encrypted chunks from the network layer.
     /// </summary>
     public PacketChannel<byte[]> Channel { get; }
-
-    /// <summary>
-    /// Cryptography handler for this session (set during handshake).
-    /// </summary>
-    public ICipher? Cryptography { get; private set; }
 
     /// <summary>
     /// The client's IP address.
@@ -108,11 +98,6 @@ public sealed class GameSession : IDisposable
     /// </summary>
     public DateTime LastReceiveTime { get; set; }
 
-    /// <summary>
-    /// Whether this session is in raw mode (no packet framing).
-    /// </summary>
-    public bool RawMode { get; set; }
-
     #endregion
 
     #region Constructor
@@ -121,28 +106,17 @@ public sealed class GameSession : IDisposable
     {
         Socket = socket ?? throw new ArgumentNullException(nameof(socket));
         IP = (socket.RemoteEndPoint as System.Net.IPEndPoint)?.Address.ToString() ?? "unknown";
-        Channel = new PacketChannel<byte[]>();
+        Channel = new PacketChannel<byte[]>(InboundChunkCapacity);
+        _outbound = System.Threading.Channels.Channel.CreateBounded<byte[]>(new BoundedChannelOptions(OutboundFrameCapacity)
+        {
+            SingleReader = true,
+            SingleWriter = false,
+            FullMode = BoundedChannelFullMode.Wait,
+            AllowSynchronousContinuations = false
+        });
         _alive = true;
         LastReceiveTime = DateTime.UtcNow;
-    }
-
-    #endregion
-
-    #region Configuration
-
-    public void SetCryptography(ICipher cipher)
-    {
-        Cryptography = cipher;
-    }
-
-    public void EnablePacketFraming()
-    {
-        RawMode = false;
-    }
-
-    public void EnableRawMode()
-    {
-        RawMode = true;
+        _ = ProcessSendQueueAsync();
     }
 
     #endregion
@@ -185,20 +159,16 @@ public sealed class GameSession : IDisposable
     /// </summary>
     private async Task FillPipeAsync(Socket socket, PipeWriter writer, CancellationToken token)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(SocketBufferSize);
-
         try
         {
             while (!token.IsCancellationRequested && _alive)
             {
+                Memory<byte> memory = writer.GetMemory(SocketBufferSize);
                 int bytesRead;
 
                 try
                 {
-                    bytesRead = await socket.ReceiveAsync(
-                        new Memory<byte>(buffer),
-                        SocketFlags.None,
-                        token);
+                    bytesRead = await socket.ReceiveAsync(memory, SocketFlags.None, token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -207,12 +177,12 @@ public sealed class GameSession : IDisposable
                 catch (SocketException ex) when (
                     ex.SocketErrorCode == SocketError.ConnectionReset ||
                     ex.SocketErrorCode == SocketError.ConnectionAborted ||
+                    ex.SocketErrorCode == SocketError.OperationAborted ||
                     ex.SocketErrorCode == SocketError.Shutdown ||
                     ex.SocketErrorCode == SocketError.HostUnreachable ||
                     ex.SocketErrorCode == SocketError.NetworkDown ||
                     ex.SocketErrorCode == SocketError.NetworkReset)
                 {
-                    // Cross-platform disconnection scenarios
                     break;
                 }
                 catch (ObjectDisposedException)
@@ -221,18 +191,18 @@ public sealed class GameSession : IDisposable
                 }
 
                 if (bytesRead == 0)
-                    break; // Client disconnected gracefully
+                    break;
 
                 LastReceiveTime = DateTime.UtcNow;
-
-                // Write raw bytes to pipe
-                await writer.WriteAsync(new ReadOnlyMemory<byte>(buffer, 0, bytesRead), token);
+                writer.Advance(bytesRead);
+                FlushResult flush = await writer.FlushAsync(token).ConfigureAwait(false);
+                if (flush.IsCanceled || flush.IsCompleted)
+                    break;
             }
         }
-        catch (OperationCanceledException ez)
+        catch (OperationCanceledException)
         {
-            Console.WriteLine(ez.ToString());
-            // Normal shutdown
+            // Normal shutdown.
         }
         catch (Exception ex)
         {
@@ -240,15 +210,13 @@ public sealed class GameSession : IDisposable
         }
         finally
         {
-            ArrayPool<byte>.Shared.Return(buffer);
-            await writer.CompleteAsync();
+            await writer.CompleteAsync().ConfigureAwait(false);
             _alive = false;
         }
     }
 
     /// <summary>
-    /// Reads packets from the pipe and writes them to the channel.
-    /// Handles both raw mode and framed mode.
+    /// Moves ordered encrypted chunks from the pipe to the bounded processing channel.
     /// </summary>
     private async Task ReadPipeAsync(PipeReader reader, CancellationToken token)
     {
@@ -267,32 +235,18 @@ public sealed class GameSession : IDisposable
                     break;
                 }
 
-                var buffer = result.Buffer;
+                ReadOnlySequence<byte> buffer = result.Buffer;
 
-                if (RawMode)
+                // Encryption and the irregular DH exchange live above the transport boundary. The
+                // channel therefore carries ordered encrypted chunks; protocol framing occurs once,
+                // after decryption, in TqPacketStreamDecoder.
+                if (!buffer.IsEmpty)
                 {
-                    // Raw mode: pass all available data as a single chunk
-                    if (!buffer.IsEmpty)
-                    {
-                        var packet = buffer.ToArray();
-                        await Channel.WriteAsync(packet);
-                        reader.AdvanceTo(buffer.End);
-                    }
-                    else
-                    {
-                        reader.AdvanceTo(buffer.Start);
-                    }
-                }
-                else
-                {
-                    // Framed mode: extract individual packets
-                    while (TryReadPacket(ref buffer, out var packet))
-                    {
-                        await Channel.WriteAsync(packet);
-                    }
-                    reader.AdvanceTo(buffer.Start, buffer.End);
+                    byte[] chunk = buffer.ToArray();
+                    await Channel.WriteAsync(chunk, token).ConfigureAwait(false);
                 }
 
+                reader.AdvanceTo(buffer.End);
                 if (result.IsCompleted)
                     break;
             }
@@ -308,50 +262,9 @@ public sealed class GameSession : IDisposable
         finally
         {
             _alive = false;
+            Channel.Complete();
+            await reader.CompleteAsync().ConfigureAwait(false);
         }
-    }
-
-    /// <summary>
-    /// Attempts to read a single TQ packet from the buffer.
-    /// TQ Packet Format: [Length:2][Data:Length-2][Seal:8]
-    /// </summary>
-    private static bool TryReadPacket(ref ReadOnlySequence<byte> buffer, out byte[]? packet)
-    {
-        // TQ Packet Structure: 
-        // First 2 bytes = Length (inclusive of header)
-        // Length is Little Endian usually.
-
-        packet = null;
-
-        if (buffer.Length < 2)
-            return false;
-
-        // Read first 2 bytes to get length
-        var lengthSlice = buffer.Slice(0, 2);
-        Span<byte> lengthBytes = stackalloc byte[2];
-        lengthSlice.CopyTo(lengthBytes);
-        ushort length = BitConverter.ToUInt16(lengthBytes);
-
-        // Sanity check
-        if (length < 4 || length > 8192)
-        {
-            packet = null;
-            return false;
-        }
-
-        if (buffer.Length < length)
-        {
-            packet = null;
-            return false;
-        }
-
-        // Copy data to array
-        packet = new byte[length];
-        buffer.Slice(0, length).CopyTo(packet);
-
-        // Update buffer cursor
-        buffer = buffer.Slice(length);
-        return true;
     }
 
     #endregion
@@ -359,47 +272,88 @@ public sealed class GameSession : IDisposable
     #region Send
 
     /// <summary>
-    /// Sends raw data to the client asynchronously.
-    /// Thread-safe: can be called from any thread.
+    /// Queues immutable, session-owned bytes for the single socket writer.
+    /// Backpressure is applied when a client cannot consume the bounded queue.
     /// </summary>
     public async Task SendAsync(byte[] data)
     {
-        if (data == null || data.Length == 0)
-            return;
-
-        if (!_alive)
+        if (data is null || data.Length == 0 || !_alive)
             return;
 
         try
         {
-            await Socket.SendAsync(data, SocketFlags.None);
+            await _outbound.Writer.WriteAsync(data, _lifetime.Token).ConfigureAwait(false);
         }
-        catch (SocketException)
+        catch (OperationCanceledException)
         {
-            _alive = false;
-            // Don't rethrow - let the receive loop handle disconnect
+            // Session is shutting down.
         }
-        catch (ObjectDisposedException)
+        catch (ChannelClosedException)
         {
             _alive = false;
         }
     }
 
-    /// <summary>
-    /// Sends raw data to the client synchronously (fire-and-forget).
-    /// Use for legacy compatibility. Prefer SendAsync when possible.
-    /// </summary>
+    /// <summary>Compatibility enqueue API used by game packet producers.</summary>
     public void Send(byte[] data)
     {
-        if (data == null || data.Length == 0)
+        if (data is null || data.Length == 0 || !_alive)
             return;
 
-        if (!_alive)
-            return;
+        if (!_outbound.Writer.TryWrite(data))
+        {
+            // Never drop or reorder a stateful encrypted packet. A client that cannot consume a
+            // OutboundFrameCapacity-packet backlog is disconnected instead of creating unbounded
+            // asynchronous waiters.
+            FailSocket();
+        }
+    }
 
-        // Fire and forget - directly call SendAsync without Task.Run
-        // Task.Run introduces scheduling delay which causes DH handshake to fail
-        _ = SendAsync(data);
+    private async Task ProcessSendQueueAsync()
+    {
+        try
+        {
+            await foreach (byte[] data in _outbound.Reader.ReadAllAsync(_lifetime.Token).ConfigureAwait(false))
+            {
+                int sent = 0;
+                while (sent < data.Length)
+                {
+                    int count = await Socket.SendAsync(
+                        data.AsMemory(sent),
+                        SocketFlags.None,
+                        _lifetime.Token).ConfigureAwait(false);
+                    if (count == 0)
+                        throw new SocketException((int)SocketError.ConnectionReset);
+                    sent += count;
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Session is shutting down.
+        }
+        catch (SocketException)
+        {
+            FailSocket();
+        }
+        catch (ObjectDisposedException)
+        {
+            _alive = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Error] Send loop failed: {ex.Message}");
+            FailSocket();
+        }
+    }
+
+    private void FailSocket()
+    {
+        _alive = false;
+        _outbound.Writer.TryComplete();
+        try { Socket.Shutdown(SocketShutdown.Both); }
+        catch (SocketException) { }
+        catch (ObjectDisposedException) { }
     }
 
     #endregion
@@ -417,6 +371,9 @@ public sealed class GameSession : IDisposable
             return;
 
         _alive = false;
+        _outbound.Writer.TryComplete();
+        _lifetime.Cancel();
+        Channel.Complete();
 
         try
         {
@@ -461,22 +418,9 @@ public sealed class GameSession : IDisposable
         {
             Console.WriteLine($"[Error] GameSession.Disconnect: {ex.Message}");
         }
-        finally
-        {
-            // Clear references to allow GC
-            Connector = null;
 
-            try
-            {
-                Cryptography?.Dispose();
-            }
-            catch
-            {
-                // Ignore crypto dispose errors
-            }
-
-            Cryptography = null;
-        }
+        // Connector deliberately remains available until NetworkService has drained inbound work
+        // and raised its disconnect callback. Domain teardown (saving/removing the player) needs it.
     }
 
     #endregion
@@ -486,6 +430,9 @@ public sealed class GameSession : IDisposable
     public void Dispose()
     {
         Disconnect();
+        Connector = null;
+        Channel.Dispose();
+        _lifetime.Dispose();
         GC.SuppressFinalize(this);
     }
 

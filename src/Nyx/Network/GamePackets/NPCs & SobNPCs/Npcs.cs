@@ -1,161 +1,113 @@
 using System;
+using System.Buffers.Binary;
 using System.Text;
-using Nyx.Network.Core.Packets;
+using Nyx.Network.Protocol;
 using Nyx.Server.Utilities;
 
 namespace Nyx.Server.Network.GamePackets
 {
     public class NpcRequest : Writer, Interfaces.IPacket
     {
-        private byte[] Buffer;
+        private const ushort NpcMessageId = (ushort)PacketType.MsgNpc;
+        private const ushort TaskDialogMessageId = (ushort)PacketType.MsgTaskDialog;
+        private byte[] Buffer = Array.Empty<byte>();
 
         public void Deserialize(byte[] buffer)
         {
+            ArgumentNullException.ThrowIfNull(buffer);
+            if (!TqPacket.TryParse(
+                    buffer,
+                    TqPacketFraming.Game,
+                    TqPacketSeal.Client,
+                    out TqPacket packet,
+                    out TqPacketValidationError error) ||
+                (packet.Id != NpcMessageId && packet.Id != TaskDialogMessageId))
+            {
+                throw new InvalidDataException($"Invalid NpcRequest frame: {error}.");
+            }
+
             Buffer = buffer;
         }
-        public byte[] Encode()
-        {
-            throw new NotImplementedException();
-        }
 
-        /// <summary>
-        /// Gets or sets the NPC ID using PacketReader for reading
-        /// </summary>
+        public byte[] Encode() => Buffer;
+
         public uint NpcID
         {
-            get 
-            { 
-                if (Buffer == null || Buffer.Length < 12)
-                    return 0;
-                
-                // Use PacketReader for cleaner reading
-                using var reader = new PacketReader(Buffer);
-                reader.BaseStream.Position = 8;
-                return reader.ReadUInt32();
+            get => Buffer.Length >= 12
+                ? BinaryPrimitives.ReadUInt32LittleEndian(Buffer.AsSpan(8))
+                : 0;
+            set
+            {
+                EnsureBuffer(12);
+                BinaryPrimitives.WriteUInt32LittleEndian(Buffer.AsSpan(8), value);
             }
-            set { Write(value, 8, Buffer); }
         }
 
-        /// <summary>
-        /// Gets or sets the Option ID using PacketReader for reading
-        /// </summary>
         public byte OptionID
         {
-            get 
-            { 
-                if (Buffer == null || Buffer.Length < 15)
-                    return 0;
-                
-                // Use PacketReader for cleaner reading
-                using var reader = new PacketReader(Buffer);
-                reader.BaseStream.Position = 14;
-                return reader.ReadByte();
-            }
-            set 
-            { 
-                if (Buffer != null && Buffer.Length > 14)
-                    Buffer[14] = value; 
+            get => Buffer.Length > 14 ? Buffer[14] : (byte)0;
+            set
+            {
+                EnsureBuffer(15);
+                Buffer[14] = value;
             }
         }
 
-        /// <summary>
-        /// Gets the Interact Type using PacketReader for reading
-        /// </summary>
-        public byte InteractType
-        {
-            get 
-            { 
-                if (Buffer == null || Buffer.Length < 16)
-                    return 0;
-                
-                // Use PacketReader for cleaner reading
-                using var reader = new PacketReader(Buffer);
-                reader.BaseStream.Position = 15;
-                return reader.ReadByte();
-            }
-        }
+        public byte InteractType => Buffer.Length > 15 ? Buffer[15] : (byte)0;
 
-        /// <summary>
-        /// Gets the Input string using PacketReader for reading
-        /// </summary>
         public string Input
         {
-            get 
-            { 
-                if (Buffer == null || Buffer.Length < 19)
+            get
+            {
+                if (Buffer.Length <= 17)
                     return string.Empty;
-                
-                // Use PacketReader for cleaner reading
-                using var reader = new PacketReader(Buffer);
-                reader.BaseStream.Position = 17;
-                byte inputLength = reader.ReadByte();
-                
-                if (inputLength == 0 || Buffer.Length < 18 + inputLength)
-                    return string.Empty;
-                
-                return reader.ReadString(inputLength);
+
+                int length = Buffer[17];
+                int declaredLength = BinaryPrimitives.ReadUInt16LittleEndian(Buffer);
+                return length == 0 || length > declaredLength - 18
+                    ? string.Empty
+                    : Encoding.ASCII.GetString(Buffer, 18, length);
             }
         }
 
-        /// <summary>
-        /// Creates an NpcRequest from a packet using PacketReader
-        /// </summary>
-        public static NpcRequest FromPacket(byte[] packet)
+        public static NpcRequest? FromPacket(byte[]? packet)
         {
-            if (packet == null)
+            if (packet is null)
                 return null;
-            
+
             var request = new NpcRequest();
             request.Deserialize(packet);
             return request;
         }
 
-        /// <summary>
-        /// Creates an NpcRequest packet using PacketWriter
-        /// </summary>
         public static byte[] CreatePacket(uint npcId, byte optionId, byte interactType, string input = "")
         {
-            using var writer = new PacketWriter();
-            
-            // Write header
-            writer.Write((ushort)2031); // Packet ID (NpcRequest)
-            writer.Write((ushort)0); // Type
-            writer.Write((ushort)0); // Offset
-            
-            // Write packet data
-            writer.Write(npcId);
-            writer.Write((ushort)0); // Padding
-            writer.Write(optionId);
-            writer.Write(interactType);
-            
-            // Write input string length and value
-            if (!string.IsNullOrEmpty(input))
-            {
-                writer.Write((byte)input.Length);
-                writer.Write(input, input.Length); // Fixed length
-            }
-            else
-            {
-                writer.Write((byte)0);
-            }
-            
-            byte[] packetData = writer.ToArray();
-            
-            // Add seal
-            byte[] finalPacket = new byte[packetData.Length + 8];
-            Array.Copy(packetData, finalPacket, packetData.Length);
-            ulong clientSeal = BitConverter.ToUInt64(Encoding.Default.GetBytes("TQClient"), 0);
-            Array.Copy(BitConverter.GetBytes(clientSeal), 0, finalPacket, packetData.Length, 8);
-            
-            // Update length in header
-            BitConverter.TryWriteBytes(new Span<byte>(finalPacket, 0, 2), (ushort)finalPacket.Length);
-            
-            return finalPacket;
+            input ??= string.Empty;
+            int inputLength = Encoding.ASCII.GetByteCount(input);
+            if (inputLength > byte.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(input));
+
+            // Header + timestamp + NPC + padding/options + reserved byte + string8 + client seal.
+            byte[] frame = GC.AllocateUninitializedArray<byte>(
+                TqPacketProtocol.HeaderSize + 14 + inputLength + TqPacketProtocol.SealSize);
+            var writer = new TqPacketWriter(frame, NpcMessageId, TqPacketSeal.Client);
+            writer.WriteUInt32(0);
+            writer.WriteUInt32(npcId);
+            writer.WriteUInt16(0);
+            writer.WriteByte(optionId);
+            writer.WriteByte(interactType);
+            writer.WriteByte(0);
+            writer.WriteString8(input);
+            writer.Complete();
+            return frame;
         }
 
-        public void Send(Client.GameClient client)
+        public void Send(Client.GameClient client) => client.Send(Buffer);
+
+        private void EnsureBuffer(int requiredLength)
         {
-            client.Send(Buffer);
+            if (Buffer.Length < requiredLength)
+                throw new InvalidOperationException("NpcRequest has not been deserialized.");
         }
     }
     public class NpcReply : Writer, Interfaces.IPacket

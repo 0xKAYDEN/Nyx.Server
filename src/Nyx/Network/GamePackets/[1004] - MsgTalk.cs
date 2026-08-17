@@ -1,4 +1,3 @@
-﻿using Nyx.Network.Core.Packets;
 using Nyx.Server.Utilities;
 using Org.BouncyCastle.Tls;
 using System;
@@ -135,28 +134,6 @@ namespace Nyx.Server.Network.GamePackets
 
         public byte[] Encode()
         {
-
-            //    var writer = new PacketWriter();
-            //    writer.Write((ushort)PacketType.MsgTalk);
-
-            //    writer.Write((uint)GameTime.Now.GetHashCode());//4
-            //    writer.Write((uint)Color.ToArgb());//8
-            //    writer.Write((uint)ChatType);//12
-            //    writer.Write(MessageUID1);//16
-            //    writer.Write(MessageUID2);//20
-            //    writer.Write(Mesh);//24
-            //    //writer.Write(SenderMesh);//28
-            //    writer.BaseStream.Seek(4, SeekOrigin.Current);//32
-            //    writer.Write(new List<string>//34
-            //{
-            //    _From ?? SYSTEM,
-            //    _To ?? ALLUSERS,
-            //    "" ?? string.Empty,
-            //    __Message ?? string.Empty
-            //});
-
-            //    return writer.ToArray();
-
             byte[] Packet = new byte[(((32 + _From.Length) + _To.Length) + __Message.Length) + 18 + 1];
             Writer.Write((ushort)(Packet.Length - 8), 0, Packet);
             Writer.Write(1004, 2, Packet);

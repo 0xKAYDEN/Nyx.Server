@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Nyx.Server.Network;
 using Nyx.Server.Network.Cryptography;
 using Nyx.Server.Utilities;
@@ -65,15 +64,9 @@ namespace Nyx.Server
         /// </summary>
         private static void RegisterPacketValidation()
         {
-            // Override packet handling with security validation
-            var originalHandlePacket = typeof(Network.PacketHandler).GetMethod("HandlePacket",
-                BindingFlags.Public | BindingFlags.Static);
-
-            if (originalHandlePacket != null)
-            {
-                // Add security validation wrapper
-                Console.WriteLine("[SECURITY] Packet validation registered");
-            }
+            // Packet framing, seal checks, and dispatch validation are centralized in the
+            // GamePacketDispatcher. No runtime method replacement is required.
+            Console.WriteLine("[SECURITY] Packet validation registered through GamePacketDispatcher");
         }
 
         /// <summary>

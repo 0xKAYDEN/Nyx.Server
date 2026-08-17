@@ -480,7 +480,8 @@ public static class ThreadingController
     #region Packet Routing
 
     /// <summary>
-    /// Routes a packet to the network container pinned to the session's connection id.
+    /// Routes a packet to the network container pinned to the session's connection id and waits
+    /// until its handler has completed.
     /// </summary>
     public static async ValueTask RoutePacketAsync(
         GameSession session,

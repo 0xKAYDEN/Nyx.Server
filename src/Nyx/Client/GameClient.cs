@@ -1,12 +1,14 @@
 using Albetros.Core;
 using Nyx.Network;
 using Nyx.Network.Cryptography;
+using Nyx.Network.Protocol;
 using Nyx.Server.Client;
 using Nyx.Server.Game;
 using Nyx.Server.Game.ConquerStructures;
 using Nyx.Server.Interfaces;
 using Nyx.Server.Network;
 using Nyx.Server.Network.GamePackets;
+using Nyx.Server.Network.Dispatching;
 using Nyx.Server.Network.Sockets;
 using Nyx.Server.Utilities;
 using Nyx.Threading.Core;
@@ -39,6 +41,7 @@ namespace Nyx.Server.Client
             Action = 0;
             _session = session;
             Cryptography = new GameCryptography(Encoding.Default.GetBytes(Constants.GameCryptographyKey));
+            HandshakeCryptography = new GameCryptography(Encoding.Default.GetBytes(Constants.GameCryptographyKey));
             DHKeyExchange = new Packets.DHKeyExchange.ServerKeyExchange();
             ChiPowers = new List<ChiPowerStructure>();
         }
@@ -208,71 +211,38 @@ namespace Nyx.Server.Client
         public Database.AccountTable Account;
         public QuizShow.QuizClient Quiz;
         public GameCryptography Cryptography;
+        public GameCryptography? HandshakeCryptography;
 
         /// <summary>
-        /// Carry-over buffer holding decrypted bytes that did not form a complete packet.
+        /// Incremental parser for this client's decrypted game stream. The decoder owns the
+        /// carry-over buffer, validates the TQClient footer, and preserves packet bytes exactly.
+        /// Only the serialized per-session receive path accesses it.
         /// </summary>
-        /// <remarks>
-        /// TCP is a byte stream and does not preserve message boundaries, so a socket read can end
-        /// in the middle of a packet. The framing loop used to simply discard that trailing
-        /// fragment. Because the game cipher is stateful (CAST5 in a chained mode with retained
-        /// IVs), those bytes had ALREADY advanced the decryption stream -- so dropping them
-        /// desynchronised the keystream and every subsequent packet on the connection decrypted to
-        /// garbage. The failure is invisible on a LAN, where packets almost always arrive whole,
-        /// and shows up as random disconnects under load or latency.
-        ///
-        /// Fix: keep the plaintext remainder here and prepend it to the next decrypted chunk.
-        /// Only ever touched from that client's receive path, which is serialised per session.
-        /// </remarks>
-        private byte[] _receiveRemainder = Array.Empty<byte>();
-        private int _receiveRemainderLength;
+        public TqPacketStreamDecoder InboundPackets { get; } = new(
+            TqPacketFraming.Game,
+            TqPacketSeal.Client);
+
+        private readonly TqHandshakeAccumulator _handshake = new();
 
         /// <summary>
-        /// Prepends any buffered remainder to <paramref name="freshPlaintext"/> and returns the
-        /// contiguous plaintext to be framed.
+        /// Locates and buffers the fixed 140-byte client DH record behind its variable-length
+        /// patch-6323 envelope. Any coalesced bytes after it are returned for packet framing.
         /// </summary>
-        /// <param name="freshPlaintext">Newly decrypted bytes for this read.</param>
-        /// <param name="freshLength">Number of valid bytes in <paramref name="freshPlaintext"/>.</param>
-        /// <param name="totalLength">Total valid bytes in the returned buffer.</param>
-        public byte[] CombineWithRemainder(byte[] freshPlaintext, int freshLength, out int totalLength)
+        public bool TryAppendHandshake(
+            byte[] plaintext,
+            int length,
+            out byte[] handshake,
+            out byte[] trailingPacketBytes)
         {
-            if (_receiveRemainderLength == 0)
-            {
-                totalLength = freshLength;
-                return freshPlaintext;
-            }
+            ArgumentNullException.ThrowIfNull(plaintext);
+            if ((uint)length > (uint)plaintext.Length)
+                throw new ArgumentOutOfRangeException(nameof(length));
 
-            totalLength = _receiveRemainderLength + freshLength;
-            var combined = new byte[totalLength];
-            Buffer.BlockCopy(_receiveRemainder, 0, combined, 0, _receiveRemainderLength);
-            Buffer.BlockCopy(freshPlaintext, 0, combined, _receiveRemainderLength, freshLength);
-
-            _receiveRemainderLength = 0;
-            return combined;
+            return _handshake.Append(
+                plaintext.AsSpan(0, length),
+                out handshake,
+                out trailingPacketBytes);
         }
-
-        /// <summary>
-        /// Stores the unconsumed tail of a framing pass so the next read can complete it.
-        /// </summary>
-        public void SaveReceiveRemainder(byte[] source, int offset, int count)
-        {
-            if (count <= 0)
-            {
-                _receiveRemainderLength = 0;
-                return;
-            }
-
-            if (_receiveRemainder.Length < count)
-                _receiveRemainder = new byte[Math.Max(count, 4096)];
-
-            Buffer.BlockCopy(source, offset, _receiveRemainder, 0, count);
-            _receiveRemainderLength = count;
-        }
-
-        /// <summary>
-        /// Number of bytes currently held over from a previous read.
-        /// </summary>
-        public int PendingRemainderLength => _receiveRemainderLength;
         public Network.GamePackets.Interaction Interaction;
         public ActivenessPoints ActivenessPoint;
         public Activeness Activenes;
@@ -882,38 +852,30 @@ namespace Nyx.Server.Client
             if (Fake) return;
             if (_session == null || !_session.Alive) return;
 
-            // Use a single pooled buffer to avoid double allocation
-            var pooledBuffer = System.Buffers.ArrayPool<byte>.Shared.Rent(buffer.Length);
+            if (buffer.Length < TqPacketProtocol.SealSize)
+                throw new ArgumentException("Game packets must reserve eight bytes for TQServer.", nameof(buffer));
+
             try
             {
-                // Copy original data to pooled buffer
-                Buffer.BlockCopy(buffer, 0, pooledBuffer, 0, buffer.Length);
-                
-                // Write seal (TQClient)
-                Network.PacketBuffer.WriteSeal(pooledBuffer, buffer.Length - 8);
-                
-                // Encrypt in place
+                // The queued socket write must own immutable memory, so one exact-size allocation is
+                // required. Encrypting and enqueueing under the same lock preserves CAST5 stream
+                // order when several game-logic threads send concurrently.
+                byte[] sendBuffer = GC.AllocateUninitializedArray<byte>(buffer.Length);
+                buffer.CopyTo(sendBuffer, 0);
+                TqPacketProtocol.WriteSeal(
+                    sendBuffer.AsSpan(buffer.Length - TqPacketProtocol.SealSize),
+                    TqPacketSeal.Server);
+
                 lock (Cryptography)
                 {
-                    Cryptography.Encrypt(pooledBuffer, buffer.Length);
+                    Cryptography.Encrypt(sendBuffer, sendBuffer.Length);
+                    _session.Send(sendBuffer);
                 }
-
-                // Create final array for socket send (must be separate for async safety)
-                // This is the only allocation we can't avoid for async socket operations
-                var sendBuffer = new byte[buffer.Length];
-                Buffer.BlockCopy(pooledBuffer, 0, sendBuffer, 0, buffer.Length);
-                
-                // Send (fire-and-forget for compatibility)
-                _session.Send(sendBuffer);
             }
             catch (Exception)
             {
                 _session.Alive = false;
                 Disconnect();
-            }
-            finally
-            {
-                System.Buffers.ArrayPool<byte>.Shared.Return(pooledBuffer);
             }
         }
 
@@ -1054,6 +1016,10 @@ namespace Nyx.Server.Client
             if (Interlocked.CompareExchange(ref _disconnected, 1, 0) != 0)
                 return;
 
+            InboundPackets.Dispose();
+            HandshakeCryptography?.Dispose();
+            HandshakeCryptography = null;
+
             // A client that drops before character selection has no Entity, but it still holds a
             // socket and a slot in the login pools. Release the session and stop -- the
             // Entity-dependent cleanup below would NRE.
@@ -1143,7 +1109,7 @@ namespace Nyx.Server.Client
                             0x05, 0x00, 0xf4, 0x0a, 0x02, 0x54,
                             0x51, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74
                         };
-                        _ = PacketHandler.HandlePacket(packett, this);
+                        _ = GamePacketDispatcher.DispatchAsync(this, packett);
                     }
                     if (Booth != null)
                         Booth.Remove();

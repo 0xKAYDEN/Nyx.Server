@@ -57,10 +57,18 @@ namespace Nyx.Threading.Core
         /// <summary>
         /// Enqueues a task at an explicit priority.
         /// </summary>
-        public ValueTask EnqueueTaskAsync(Func<CancellationToken, ValueTask> handler, TaskPriority priority, Action? releaseAction = null)
+        public async ValueTask EnqueueTaskAsync(Func<CancellationToken, ValueTask> handler, TaskPriority priority, Action? releaseAction = null)
         {
             var task = TaskPool.Rent(handler, releaseAction);
-            return Container.EnqueueAsync(task, priority);
+            try
+            {
+                await Container.EnqueueAsync(task, priority).ConfigureAwait(false);
+            }
+            catch
+            {
+                task.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -75,7 +83,11 @@ namespace Nyx.Threading.Core
         public bool TryEnqueueTask(Func<CancellationToken, ValueTask> handler, TaskPriority priority, Action? releaseAction = null)
         {
             var task = TaskPool.Rent(handler, releaseAction);
-            return Container.TryEnqueue(task, priority);
+            if (Container.TryEnqueue(task, priority))
+                return true;
+
+            task.Dispose();
+            return false;
         }
 
         /// <summary>
@@ -119,10 +131,18 @@ namespace Nyx.Threading.Core
         /// <summary>
         /// Enqueues a task with a payload at an explicit priority.
         /// </summary>
-        public ValueTask EnqueueTaskAsync<TPayload>(TPayload payload, Func<TPayload, CancellationToken, ValueTask> handler, TaskPriority priority, Action<TPayload>? releaseAction = null)
+        public async ValueTask EnqueueTaskAsync<TPayload>(TPayload payload, Func<TPayload, CancellationToken, ValueTask> handler, TaskPriority priority, Action<TPayload>? releaseAction = null)
         {
             var task = TaskPool<TPayload>.Rent(payload, handler, releaseAction);
-            return Container.EnqueueAsync(task, priority);
+            try
+            {
+                await Container.EnqueueAsync(task, priority).ConfigureAwait(false);
+            }
+            catch
+            {
+                task.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -137,7 +157,11 @@ namespace Nyx.Threading.Core
         public bool TryEnqueueTask<TPayload>(TPayload payload, Func<TPayload, CancellationToken, ValueTask> handler, TaskPriority priority, Action<TPayload>? releaseAction = null)
         {
             var task = TaskPool<TPayload>.Rent(payload, handler, releaseAction);
-            return Container.TryEnqueue(task, priority);
+            if (Container.TryEnqueue(task, priority))
+                return true;
+
+            task.Dispose();
+            return false;
         }
 
         public virtual void Dispose()

@@ -1,66 +1,54 @@
-using Nyx.Network.Core.Packets;
-using Nyx.Network.Cryptography;
-using Nyx.Server.Client;
-using Nyx.Server.Network.Cryptography;
-using Nyx.Shared.Cryptography;
-using Org.BouncyCastle.Utilities;
+using Nyx.Network.Protocol;
 using Serilog;
-using System;
-using System.IO;
-using System.Text;
 
-namespace Nyx.Server.Network.AuthPackets
+namespace Nyx.Server.Network.AuthPackets;
+
+public sealed class Authentication : Interfaces.IPacket
 {
-    public class Authentication : Interfaces.IPacket
+    private const ushort MessageId = (ushort)PacketType.MsgAccount;
+    private const int MessageLength = 312;
+    private readonly ILogger _logger = Log.ForContext<Authentication>();
+
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public byte[] PasswordByte { get; set; } = Array.Empty<byte>();
+    public string Server { get; set; } = string.Empty;
+    public string MacAddress { get; set; } = string.Empty;
+
+    public void Deserialize(byte[] buffer)
     {
-        public readonly ILogger logger = Log.ForContext<Authentication>();
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public byte[] PasswordByte { get; set; }
-        public string Server { get; set; }
-        public string MacAddress { get; set; }
-        public void Deserialize(byte[] buffer)
+        if (!TqPacket.TryParse(
+                buffer,
+                TqPacketFraming.Authentication,
+                TqPacketSeal.None,
+                out TqPacket packet,
+                out TqPacketValidationError error) ||
+            packet.Id != MessageId || packet.Length != MessageLength)
         {
-
-            logger.Information(PacketDump.Hex(buffer));
-            using var reader = new PacketReader(buffer);
-            ushort Length = reader.ReadUInt16();
-            ushort Type = reader.ReadUInt16();
-            if (Type != 1542) return;
-
-            //decrypt password
-            //reader.BaseStream.Seek(132, SeekOrigin.Begin);
-            //RC5 Rc5 = new RC5(buffer);
-
-            //PasswordByte = Rc5.Decrypt(reader.ReadBytes(311));
-
-            reader.BaseStream.Seek(8, SeekOrigin.Begin);
-            Username = reader.ReadString(16);
-
-            //decrypt password
-            //reader.BaseStream.Seek(132, SeekOrigin.Begin);
-            //Password = PasswordCipher.Decrypt(reader.ReadBytes(16));
-
-            reader.BaseStream.Seek(72, SeekOrigin.Begin);
-            Password = reader.ReadString(16);
-
-            //Password = reader.ReadString(16);
-            reader.BaseStream.Seek(136, SeekOrigin.Begin);
-            Server = reader.ReadString(16);
-            reader.BaseStream.Seek(152, SeekOrigin.Begin);
-            MacAddress = reader.ReadString(12);
-
-            
-            logger.Information("Authentication Packet Received: Username: {Username}, Password : {pass} Server: {Server}, MacAddress: {MacAddress}", Username, Password, Server, MacAddress);
+            throw new InvalidDataException($"Invalid authentication packet: {error}.");
         }
 
-        public byte[] Encode()
-        {
-            throw new NotImplementedException();
-        }
-        public void Send(Client.GameClient client)
-        {
-            throw new NotImplementedException();
-        }
+        // Absolute legacy offsets 8, 72, 136, and 152 become payload-relative offsets after the
+        // canonical four-byte header has been removed.
+        var reader = new TqPacketReader(packet.Payload.Span);
+        reader.Advance(4);
+        Username = reader.ReadFixedString(16);
+        reader.Advance(48);
+        Password = reader.ReadFixedString(16);
+        reader.Advance(48);
+        Server = reader.ReadFixedString(16);
+        MacAddress = reader.ReadFixedString(12);
+
+        // Do not log plaintext credentials.
+        _logger.Information(
+            "Authentication packet received: Username={Username}, Server={Server}, MacAddress={MacAddress}",
+            Username,
+            Server,
+            MacAddress);
     }
+
+    public byte[] Encode() => throw new NotSupportedException("Authentication is a client-to-server packet.");
+
+    public void Send(Client.GameClient client) =>
+        throw new NotSupportedException("Authentication is a client-to-server packet.");
 }
