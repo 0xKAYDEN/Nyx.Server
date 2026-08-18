@@ -119,25 +119,24 @@ namespace Nyx.Server
                 return new Message("You were lucky. You gained more enchantment in your item. Your generated enchant is " + newEnch + ".", System.Drawing.Color.Red, Message.TopLeft);
         }
         public const string DataHolderPath = "database\\",
-       ShopsPath = "database\\shops\\Shop.dat",
-       EShopsPath = "database\\shops\\emoneyshop.ini",
-       EShopsV2Path = "database\\shops\\emoneyshopV2.ini",
-       HonorShopPath = "database\\shops\\HonorShop.ini",
-       RaceShopPath = "database\\shops\\RacePointShop.ini",
-       ChampionShopPath = "database\\shops\\GoldenLeagueShop.ini",
-       PortalsPath = "database\\Portals.ini",
-       RevivePoints = "database\\RevivePoints.ini",
-       MonstersPath = "database\\Monsters.txt",
-       //ItemBaseInfosPath = "database\\Items.txt",
-       QuizShow = "database\\QuizShow.txt",
-       //ItemPlusInfosPath = "database\\ItemsPlus.ini",
-       SoulGearInformation = "database\\soulgear.txt",
        ServerKey = "TQServer",
        BugList = "database\\BugList.txt",
        GameCryptographyKey = "C238xs65pjy7HU9Q";
 
+        public static string ShopsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "shops", "Shop.dat");
+        public static string HonorShopPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "shops", "HonorShop.ini");
+        public static string EShopsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "shops", "emoneyshop.ini");
+        public static string EShopsV2Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "shops", "emoneyshopV2.ini");
+        public static string ChampionShopPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "shops", "GoldenLeagueShop.ini");
+        public static string RaceShopPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "shops", "RacePointShop.ini");
+        public static string RevivePoints = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "RevivePoints.ini");
+        public static string PortalsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Portals.ini");
+        public static string MonstersPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Monsters.txt");
+        public static string QuizShow = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "QuizShow.txt");
+        public static string SoulGearInformation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "soulgear.txt");
         public static string ItemBaseInfosPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Items.txt");
         public static string ItemPlusInfosPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "ItemsPlus.ini");
+
         public const int MaxBroadcasts = 50;
         // Initialize rates with default 100% values (Brain service will adjust these dynamically)
         public static uint ExtraExperienceRate = 100;
