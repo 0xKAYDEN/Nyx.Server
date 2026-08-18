@@ -22,7 +22,7 @@
     "InstanceName": "nyx:"
   },
   "Server": {
-    "ServerAddress": "26.194.141.66",
+    "ServerAddress": "192.168.0.112",
     "AuthPort": 9960,
     "GamePort": 5816
   },

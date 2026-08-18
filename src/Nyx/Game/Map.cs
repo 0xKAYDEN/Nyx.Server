@@ -784,7 +784,7 @@ namespace Nyx.Server.Game
             /*  roulette  */
             if (ID == 2807)
             {
-                string[] lines = File.ReadAllLines("database\\RouletteTables.txt");
+                string[] lines = File.ReadAllLines(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "RouletteTables.txt"));
                 foreach (var line in lines)
                 {
                     string[] p = line.Trim().Split(' ');

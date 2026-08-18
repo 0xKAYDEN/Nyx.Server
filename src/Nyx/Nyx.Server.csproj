@@ -122,4 +122,8 @@
     <ProjectReference Include="..\Nyx.Threading\Nyx.Threading.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>

@@ -128,13 +128,15 @@ namespace Nyx.Server
        PortalsPath = "database\\Portals.ini",
        RevivePoints = "database\\RevivePoints.ini",
        MonstersPath = "database\\Monsters.txt",
-       ItemBaseInfosPath = "database\\Items.txt",
+       //ItemBaseInfosPath = "database\\Items.txt",
        QuizShow = "database\\QuizShow.txt",
        ItemPlusInfosPath = "database\\ItemsPlus.ini",
        SoulGearInformation = "database\\soulgear.txt",
        ServerKey = "TQServer",
        BugList = "database\\BugList.txt",
        GameCryptographyKey = "C238xs65pjy7HU9Q";
+
+        public static string ItemBaseInfosPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Items.txt");
         public const int MaxBroadcasts = 50;
         // Initialize rates with default 100% values (Brain service will adjust these dynamically)
         public static uint ExtraExperienceRate = 100;
