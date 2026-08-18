@@ -41,7 +41,7 @@ namespace Nyx.Server
 
     public sealed class ServerConfiguration
     {
-        public string ServerAddress { get; set; } = "192.168.1.237";
+        public string ServerAddress { get; set; } = "172.27.31.108";
         public int AuthPort { get; set; } = 9960;
         public int GamePort { get; set; } = 5816;
     }

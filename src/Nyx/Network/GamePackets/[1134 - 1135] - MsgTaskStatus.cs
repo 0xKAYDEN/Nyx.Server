@@ -671,7 +671,7 @@ namespace Nyx.Server
 
         public static void Load()
         {
-            var lines = File.ReadAllLines("database\\Questinfo.ini");
+            var lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Questinfo.ini"));
             Info current = default;
 
             for (int i = 0; i < lines.Length; i++)
