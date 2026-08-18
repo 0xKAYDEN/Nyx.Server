@@ -18,7 +18,7 @@ namespace Nyx.Server.Game
     {
         public static string GetMapName(uint MapID)
         {
-            IniFile ini = new IniFile("database\\GameMapEX.ini");
+            IniFile ini = new IniFile(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "GameMapEX.ini"));
             return ini.ReadString(MapID.ToString(), "Name");
         }
         public AtomicCounter CloneCounter = new AtomicCounter(0);
@@ -423,9 +423,9 @@ namespace Nyx.Server.Game
             if (path == "") path = Database.DMaps.MapPaths[id];
             Path = path;
             #region Loading floor.
-            if (File.Exists(Constants.DataHolderPath + "\\maps\\" + id.ToString() + ".map"))
+            if (File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "maps", id.ToString() + ".map")))
             {
-                byte[] buff = File.ReadAllBytes(Constants.DataHolderPath + "\\maps\\" + id.ToString() + ".map");
+                byte[] buff = File.ReadAllBytes(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "maps", id.ToString() + ".map"));
                 MemoryStream FS = new MemoryStream(buff);
                 BinaryReader BR = new BinaryReader(FS);
                 int Width = BR.ReadInt32();
@@ -722,9 +722,9 @@ namespace Nyx.Server.Game
         }
         private void SaveMap()
         {
-            if (!File.Exists(Constants.DataHolderPath + "\\maps\\" + BaseID.ToString() + ".map"))
+            if (!File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "maps", BaseID.ToString() + ".map")))
             {
-                FileStream stream = new FileStream(Constants.DataHolderPath + "\\maps\\" + BaseID.ToString() + ".map", FileMode.Create);
+                FileStream stream = new FileStream(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "maps", BaseID.ToString() + ".map"), FileMode.Create);
                 BinaryWriter writer = new BinaryWriter(stream);
                 writer.Write((uint)Floor.Bounds.Width);
                 writer.Write((uint)Floor.Bounds.Height);
