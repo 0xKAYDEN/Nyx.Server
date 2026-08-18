@@ -66,7 +66,7 @@ namespace Nyx.Server.Database
 
         public static void ReadStats()
         {
-            string Path = Constants.DataHolderPath + "Stats.ini";
+            string Path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Stats.ini");
             if (!System.IO.File.Exists(Path))
             {
                  Console.WriteLine("Warning: Stats.ini not found at " + Path);
