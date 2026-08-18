@@ -24,7 +24,7 @@ namespace Nyx.Server.Database
         private static IniFile RaceRecords;
         public static void Load()
         {
-            RaceRecords = new IniFile("database\\racerecords.ini", "record");
+            RaceRecords = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "racerecords.ini"), "record");
             using(var cmd = new NyxSqlCommand(MySqlCommandType.SELECT).Select("maps"))
             using (var reader = cmd.CreateReader())
             {

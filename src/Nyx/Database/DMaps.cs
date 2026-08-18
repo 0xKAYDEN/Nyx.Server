@@ -13,7 +13,7 @@ namespace Nyx.Server.Database
         public static SafeDictionary<ushort, string> MapPaths = new SafeDictionary<ushort, string>(280);
         public static void Load()
         {
-            var gameMapPath = Path.Combine(AppContext.BaseDirectory, "database", "GameMap.dat");
+            var gameMapPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "GameMap.dat");
             if (File.Exists(gameMapPath))
             {
                 DateTime start = DateTime.Now;
@@ -52,9 +52,9 @@ namespace Nyx.Server.Database
         }
         public static void LoadHouses()
         {
-            if (System.IO.File.Exists(Constants.DataHolderPath + "DMapOwner.dat"))
+            if (System.IO.File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "DMapOwner.dat")))
             {
-                FileStream FS = new FileStream(Constants.DataHolderPath + "DMapOwner.dat", FileMode.Open);
+                FileStream FS = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "DMapOwner.dat"), FileMode.Open);
                 BinaryReader BR = new BinaryReader(FS);
 
                 try
@@ -82,7 +82,7 @@ namespace Nyx.Server.Database
             {
                 mapadd++;
             }
-            var gameMapPath = Path.Combine(AppContext.BaseDirectory, "database", "GameMap.dat");
+            var gameMapPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "GameMap.dat");
             FileStream FS = new FileStream(gameMapPath, FileMode.Open);
             BinaryReader BR = new BinaryReader(FS);
             uint MapCount = BR.ReadUInt32();
@@ -137,7 +137,7 @@ namespace Nyx.Server.Database
         }
         public static void Save()
         {
-            FileStream FS = new FileStream(Constants.DataHolderPath + "DMapOwner.dat", FileMode.OpenOrCreate);
+            FileStream FS = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DMapOwner.dat"), FileMode.OpenOrCreate);
             BinaryWriter BW = new BinaryWriter(FS);
             BW.Write(MapOwner.Count);
             foreach (DictionaryEntry Map in MapOwner)

@@ -118,7 +118,9 @@ namespace Nyx.Server
             else
                 return new Message("You were lucky. You gained more enchantment in your item. Your generated enchant is " + newEnch + ".", System.Drawing.Color.Red, Message.TopLeft);
         }
-        public const string DataHolderPath = "database\\",
+
+       public static string DataHolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database");
+       public const string
        ServerKey = "TQServer",
        BugList = "database\\BugList.txt",
        GameCryptographyKey = "C238xs65pjy7HU9Q";
