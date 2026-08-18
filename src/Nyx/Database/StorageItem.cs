@@ -15,7 +15,7 @@ namespace Nyx.Server.Database
         public static Dictionary<uint, StorageItem> Mounts = new Dictionary<uint, StorageItem>();
         public static void Load()
         {
-            string[] baseText = System.IO.File.ReadAllLines("database\\coat_storage_type.txt");
+            string[] baseText = System.IO.File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "coat_storage_type.txt"));
             foreach (var bas_line in baseText)
             {
                 var line = bas_line.Split(new string[] { "@@"}, StringSplitOptions.RemoveEmptyEntries);

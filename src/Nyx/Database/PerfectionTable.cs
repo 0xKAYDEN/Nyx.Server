@@ -20,9 +20,9 @@ namespace Nyx.Server.Database
         }
         public static void LoadItemRefineCost()
         {
-            if (File.Exists(Constants.DataHolderPath + "item_refine_cost.txt"))
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "item_refine_cost.txt")))
             {
-                string[] Lines = File.ReadAllLines(Constants.DataHolderPath + "item_refine_cost.txt");
+                string[] Lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "item_refine_cost.txt"));
                 foreach (var line in Lines)
                 {
                     var spilitline = line.Split(new string[] { "@@", " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -44,9 +44,9 @@ namespace Nyx.Server.Database
         }
         public static void LoadItemRefineUpgrade()
         {
-            if (File.Exists(Constants.DataHolderPath + "item_refine_upgrade.txt"))
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "item_refine_upgrade.txt")))
             {
-                string[] Lines = File.ReadAllLines(Constants.DataHolderPath + "item_refine_upgrade.txt");
+                string[] Lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "item_refine_upgrade.txt"));
                 foreach (var line in Lines)
                 {
                     var spilitline = line.Split(new string[] { "@@", " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -72,9 +72,9 @@ namespace Nyx.Server.Database
         }
         public static void LoadItemRefineAttribute()
         {
-            if (File.Exists(Constants.DataHolderPath + "item_refine_attr.txt"))
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "item_refine_attr.txt")))
             {
-                string[] Lines = File.ReadAllLines(Constants.DataHolderPath + "item_refine_attr.txt");
+                string[] Lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "item_refine_attr.txt"));
                 foreach (var line in Lines)
                 {
                     var spilitline = line.Split(new string[] { "@@", " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -112,9 +112,9 @@ namespace Nyx.Server.Database
         }
         public static void LoadItemAbilityScore()
         {
-            if (File.Exists(Constants.DataHolderPath + "ability_score.txt"))
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "ability_score.txt")))
             {
-                string[] Lines = File.ReadAllLines(Constants.DataHolderPath + "ability_score.txt");
+                string[] Lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "ability_score.txt"));
                 foreach (var line in Lines)
                 {
                     var spilitline = line.Split(new string[] { "@@", " " }, StringSplitOptions.RemoveEmptyEntries);

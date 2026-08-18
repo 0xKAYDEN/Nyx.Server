@@ -51,7 +51,7 @@ namespace Nyx.Server.Database
         {
             try
             {
-                string[] file = System.IO.File.ReadAllLines("database\\LotteryItems.txt");
+                string[] file = System.IO.File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "LotteryItems.txt"));
                 foreach (var item2 in file)
                 {
                     if (item2 == " " || item2 == "")

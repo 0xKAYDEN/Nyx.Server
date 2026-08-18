@@ -85,7 +85,7 @@ namespace Nyx.Server.Database
         public static SafeDictionary<ushort, List<ushort>> WeaponSpells = new SafeDictionary<ushort, List<ushort>>();
         public static void Load()
         {
-            foreach (string str in System.IO.File.ReadAllLines(@"database\magictype.txt"))
+            foreach (string str in System.IO.File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "magictype.txt")))
             {
                 Parse(str.Trim());
             }

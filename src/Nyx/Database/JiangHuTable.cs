@@ -74,7 +74,7 @@ namespace Nyx.Server.Database
         {
             try
             {
-                using (Read r = new Read("database\\JianghuAttributes.txt"))
+                using (Read r = new Read(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "JianghuAttributes.txt")))
                 {
                     if (r.Reader())
                     {
@@ -98,7 +98,7 @@ namespace Nyx.Server.Database
                         }
                     }
                 }
-                using (Read r = new Read("database\\JingHuCultivateStatus.txt"))
+                using (Read r = new Read(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "JingHuCultivateStatus.txt")))
                 {
                     if (r.Reader())
                     {
@@ -122,7 +122,7 @@ namespace Nyx.Server.Database
         }
         public static void LoadJiangHuOLD()
         {
-            using (Read r = new Read("database\\JiangHu.txt"))
+            using (Read r = new Read(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "JiangHu.txt")))
             {
                 if (r.Reader())
                 {
@@ -143,7 +143,7 @@ namespace Nyx.Server.Database
         }
         public static void LoadJiangHu()
         {
-            if (File.Exists("database\\JiangHu.txt"))
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "JiangHu.txt")))
             {
                 LoadJiangHuOLD();
                 foreach (var ijiang in Game.JiangHu.JiangHuClients.Values)
@@ -171,7 +171,7 @@ namespace Nyx.Server.Database
                     }
                 }
                 SaveJiangHu();
-                File.Delete("database\\JiangHu.txt");
+                File.Delete(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "JiangHu.txt"));
             }
             else
             {

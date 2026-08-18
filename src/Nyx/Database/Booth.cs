@@ -39,7 +39,7 @@ namespace Nyx.Server
         public static SafeDictionary<uint, booth> Boooths = new SafeDictionary<uint, booth>();
         public static void Load()
         {
-            string[] text = File.ReadAllLines(Constants.DataHolderPath + "/Booths.txt");
+            string[] text = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Booths.txt"));
             booth booth = new booth();
             for (int x = 0; x < text.Length; x++)
             {
