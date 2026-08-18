@@ -7,7 +7,7 @@ namespace Nyx.Server.Database
     {
         public static void SaveFlowers()
         {
-            using (Write write = new Write("database\\flowers.txt"))
+            using (Write write = new Write(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "flowers.txt")))
             {
                 var Flower = Game.Features.Flowers.Flowers_Poll.Values.ToArray();
                 uint cout = (uint)Game.Features.Flowers.Flowers_Poll.Count;
@@ -18,7 +18,7 @@ namespace Nyx.Server.Database
                 }
                 write.Add(items, items.Length).Execute(Mode.Open);
             }
-            using (Write write = new Write("database\\Kisses.txt"))
+            using (Write write = new Write(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Kisses.txt")))
             {
                 var Kisse = Game.Features.Flowers.BoyFlowers.Values.ToArray();
                 uint cout = (uint)Game.Features.Flowers.BoyFlowers.Count;
@@ -32,7 +32,7 @@ namespace Nyx.Server.Database
         }
         public static void LoadFlowers()
         {
-            using (Read r = new Read("database\\Flowers.txt"))
+            using (Read r = new Read(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Flowers.txt")))
             {
                 if (r.Reader())
                 {
@@ -58,7 +58,7 @@ namespace Nyx.Server.Database
                     }
                 }
             }
-            using (Read r = new Read("database\\Kisses.txt"))
+            using (Read r = new Read(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Kisses.txt")))
             {
                 if (r.Reader())
                 {

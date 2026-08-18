@@ -19,9 +19,9 @@ namespace Nyx.Server.Soul
         public static SafeDictionary<uint, SOulInfo> Soul_Protections = new SafeDictionary<uint, SOulInfo>();
         public static void Load()
         {
-            if (File.Exists(Constants.DataHolderPath + "souls_protection.txt"))
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "souls_protection.txt")))
             {
-                string[] lines = File.ReadAllLines(Constants.DataHolderPath + "souls_protection.txt");
+                string[] lines = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "souls_protection.txt"));
                 foreach (var item in lines)
                 {
                     try

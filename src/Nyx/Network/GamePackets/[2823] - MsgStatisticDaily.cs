@@ -87,7 +87,7 @@ namespace Nyx.Server
         public static void Load() 
         { 
             Stages = new Dictionary<uint, Stage>(); 
-            string[] text = File.ReadAllLines("database/stagegoal.txt"); 
+            string[] text = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "stagegoal.txt")); 
             Stage Stage = new Stage(); 
             for (int x = 0; x < text.Length; x++) 
             { 
