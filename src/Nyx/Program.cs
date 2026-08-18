@@ -532,11 +532,11 @@ public sealed class Program
 
             // Core Systems
             Way2Heroes.Load();
-            PromotionsRepository.LoadPromotions("database\\Promotions.json");
+            PromotionsRepository.LoadPromotions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database","Promotions.json"));
             QuestInfo.Load();
-            NpcLuaScript = new NpcLuaScript(Environment.CurrentDirectory + "\\database\\Scripts\\Npcs\\");
-            ItemScript = new ItemScript(Environment.CurrentDirectory + "\\database\\Scripts\\Items\\");
-            DynamicNpcs = new LuaDynamicNpcsScript(Environment.CurrentDirectory + "\\database\\Scripts\\DynamicNpcs\\");
+            NpcLuaScript = new NpcLuaScript(Path.Combine(Environment.CurrentDirectory ,"database","Scripts","Npcs"));
+            ItemScript = new ItemScript(Path.Combine(Environment.CurrentDirectory ,"database", "Scripts", "Items"));
+            DynamicNpcs = new LuaDynamicNpcsScript(Path.Combine(Environment.CurrentDirectory,"database", "Scripts", "DynamicNpcs"));
             AuctionBase.Load();
 
             HonorShop.Load();

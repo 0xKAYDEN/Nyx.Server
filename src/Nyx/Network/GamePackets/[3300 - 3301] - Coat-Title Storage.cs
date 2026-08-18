@@ -8,11 +8,13 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Nyx.Server.Network.GamePackets
 {
     public sealed class CoatStorage
     {
+
         public CoatStorage() { }
         public bool Read(byte[] packet)
         {
@@ -447,7 +449,9 @@ namespace Nyx.Server.Network.GamePackets
     }
     public static class Storage
     {
-        private const string Path = "database\\Storage.ini";
+        public static readonly ILogger logger = Log.ForContext<CoatStorage>();
+
+        private static string Path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "Storage.ini");
 
         public static void Read(out StorageInfo storageInfo)
         {
@@ -478,7 +482,7 @@ namespace Nyx.Server.Network.GamePackets
 
                 }
             }
-            //Console.WriteLine("Storages loaded");
+            logger.Information($"Storage.ini count {storageInfo.Count} loaded");
         }
     }
     [StructLayout(LayoutKind.Sequential)]
